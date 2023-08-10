@@ -127,4 +127,11 @@ class TaskTest {
         String object2 = "Hello";
         assertThat(instance1).isNotEqualTo(object2);
     }
+
+    @Test
+    void stringPresentation() {
+        Task task = new TaskBuilder().build();
+        String asString = task.toString();
+        assertThat(asString).as("String presentation").isEqualTo("Task[identifier=13,duration=20]");
+    }
 }

@@ -2,6 +2,8 @@ package cj.software.genetics.schedule.entity;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.constraints.Min;
 import java.io.Serial;
@@ -47,6 +49,15 @@ public class Task implements Serializable {
         } else {
             result = false;
         }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append("identifier", identifier)
+                .append("duration", durationSeconds);
+        String result = builder.build();
         return result;
     }
 
