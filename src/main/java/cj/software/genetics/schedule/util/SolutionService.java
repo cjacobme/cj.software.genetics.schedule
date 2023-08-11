@@ -20,13 +20,11 @@ public class SolutionService {
 
     public Solution createInitialSoluation(int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
         List<Worker> allWorkers = new ArrayList<>();
-        Solution result = Solution.builder().build();
         for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
             Worker worker = Worker.builder()
                     .withMaxNumTasks(numSlotsPerWorker)
                     .build();
             allWorkers.add(worker);
-            result.addWorker(worker);
         }
         for (Task task : tasks) {
             int selectedWorker = randomService.nextRandom(numWorkers);
@@ -40,6 +38,7 @@ public class SolutionService {
             }
             worker.setTaskAt(selectedSlot, task);
         }
+        Solution result = Solution.builder().withWorkers(allWorkers).build();
         return result;
     }
 }

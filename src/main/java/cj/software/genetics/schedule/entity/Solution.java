@@ -48,5 +48,11 @@ public class Solution implements Serializable {
             }
             return this;
         }
+
+        public Builder withWorkers(List<Worker> workers) {
+            instance.workers.clear();
+            instance.workers.addAll(workers);
+            return this;
+        }
     }
 }

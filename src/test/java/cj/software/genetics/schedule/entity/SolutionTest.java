@@ -9,6 +9,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,16 +53,34 @@ class SolutionTest {
         Worker worker1 = mock(Worker.class);
         Worker worker2 = mock(Worker.class);
         Worker worker3 = mock(Worker.class);
+
         Solution instance = Solution.builder()
                 .withWorkers(worker1, worker2, worker3)
                 .build();
+
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(instance.getWorkers()).as("workers").containsExactly(worker1, worker2, worker3);
+        softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker1, worker2, worker3));
         softy.assertAll();
         Worker worker4 = mock(Worker.class);
         instance.addWorker(worker4);
         assertThat(instance.getWorkers()).as("workers").hasSize(4).contains(worker4);
+    }
+
+    @Test
+    void constructFilledWithList() {
+        Worker worker1 = mock(Worker.class);
+        Worker worker2 = mock(Worker.class);
+        Worker worker3 = mock(Worker.class);
+        List<Worker> workers = List.of(worker2, worker3, worker1);
+
+        Solution instance = Solution.builder()
+                .withWorkers(workers)
+                .build();
+        assertThat(instance).as("built instance").isNotNull();
+        SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker2, worker3, worker1));
+        softy.assertAll();
     }
 
     @Test
