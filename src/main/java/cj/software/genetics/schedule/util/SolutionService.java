@@ -18,6 +18,9 @@ public class SolutionService {
     @Autowired
     private RandomService randomService;
 
+    @Autowired
+    private WorkerService workerService;
+
     public Solution createInitialSoluation(int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
         List<Worker> allWorkers = new ArrayList<>();
         for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
@@ -39,6 +42,16 @@ public class SolutionService {
             worker.setTaskAt(selectedSlot, task);
         }
         Solution result = Solution.builder().withWorkers(allWorkers).build();
+        return result;
+    }
+
+    public double calcFitnessValue(Solution solution) {
+        double result = 0.0;
+        List<Worker> workers = solution.getWorkers();
+        for (Worker worker : workers) {
+            double workerFitness = workerService.calcFitnessValue(worker);
+            result = Math.max(result, workerFitness);
+        }
         return result;
     }
 }

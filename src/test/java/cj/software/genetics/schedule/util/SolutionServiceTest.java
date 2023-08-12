@@ -1,6 +1,7 @@
 package cj.software.genetics.schedule.util;
 
 import cj.software.genetics.schedule.entity.Solution;
+import cj.software.genetics.schedule.entity.SolutionBuilder;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
 import org.assertj.core.api.SoftAssertions;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -24,6 +26,9 @@ class SolutionServiceTest {
 
     @MockBean
     private RandomService randomService;
+
+    @MockBean
+    private WorkerService workerService;
 
     @Test
     void tasks3workers2WoConflicts() {
@@ -146,5 +151,27 @@ class SolutionServiceTest {
 
         verify(randomService, times(3)).nextRandom(2);
         verify(randomService, times(4)).nextRandom(3);
+    }
+
+    @Test
+    void fitnessValue47dot11() {
+        Solution solution = new SolutionBuilder().build();
+
+        when(workerService.calcFitnessValue(any(Worker.class))).thenReturn(0.1, 47.11);
+
+        double fitnessValue = solutionService.calcFitnessValue(solution);
+
+        assertThat(fitnessValue).isEqualTo(47.11, within(0.001));
+    }
+
+    @Test
+    void fitnessValue42() {
+        Solution solution = new SolutionBuilder().build();
+
+        when(workerService.calcFitnessValue(any(Worker.class))).thenReturn(42.0, 0.0);
+
+        double fitnessValue = solutionService.calcFitnessValue(solution);
+
+        assertThat(fitnessValue).isEqualTo(42.0, within(0.001));
     }
 }
