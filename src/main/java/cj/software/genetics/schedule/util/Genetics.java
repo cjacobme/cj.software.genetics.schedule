@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class Breeder {
+public class Genetics {
 
     @Autowired
     private Converter converter;

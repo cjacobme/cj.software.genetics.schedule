@@ -17,11 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = Breeder.class)
-class BreederTest {
+@SpringBootTest(classes = Genetics.class)
+class GeneticsTest {
 
     @Autowired
-    private Breeder breeder;
+    private Genetics genetics;
 
     @MockBean
     private Converter converter;
@@ -31,7 +31,7 @@ class BreederTest {
 
     @Test
     void metadata() {
-        Service service = Breeder.class.getAnnotation(Service.class);
+        Service service = Genetics.class.getAnnotation(Service.class);
         assertThat(service).as("@Service").isNotNull();
     }
 
@@ -113,7 +113,7 @@ class BreederTest {
         when(converter.toTaskList(parent1)).thenReturn(tasks);
 
         // invoke
-        Solution offspring = breeder.mate(parent1, parent2, numWorkers, numSlots);
+        Solution offspring = genetics.mate(parent1, parent2, numWorkers, numSlots);
 
         // checks
         verify(converter).toMapTaskCoordinate(parent1);
@@ -151,7 +151,7 @@ class BreederTest {
         when(converter.toTaskList(parent1)).thenReturn(tasks);
 
         // invoke
-        Solution offspring = breeder.mate(parent1, parent2, numWorkers, numSlots);
+        Solution offspring = genetics.mate(parent1, parent2, numWorkers, numSlots);
 
         // checks
         verify(converter).toMapTaskCoordinate(parent1);
