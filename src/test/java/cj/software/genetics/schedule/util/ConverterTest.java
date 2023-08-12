@@ -28,6 +28,14 @@ class ConverterTest {
     }
 
     @Test
+    void toTaskList() {
+        Solution solution = new SolutionBuilder().build();
+        List<Task> taskList = converter.toTaskList(solution);
+        List<Task> expected = SolutionBuilder.createTasks();
+        assertThat(taskList).usingRecursiveAssertion().isEqualTo(expected);
+    }
+
+    @Test
     void solutionToMap1() {
         Solution solution = new SolutionBuilder().build();
         List<Task> tasks = SolutionBuilder.createTasks();

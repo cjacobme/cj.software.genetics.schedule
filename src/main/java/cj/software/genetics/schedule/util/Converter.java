@@ -4,8 +4,10 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,21 @@ public class Converter {
                 result.put(task, coordinate);
             }
         }
+        return result;
+    }
+
+    public List<Task> toTaskList(Solution solution) {
+        List<Task> result = new ArrayList<>();
+        for (Worker worker : solution.getWorkers()) {
+            List<Task> workerTasks = worker.getTasks();
+            result.addAll(workerTasks);
+        }
+        result.sort((task1, task2) -> {
+            CompareToBuilder builder = new CompareToBuilder()
+                    .append(task1.getIdentifier(), task2.getIdentifier());
+            int result1 = builder.build();
+            return result1;
+        });
         return result;
     }
 }
