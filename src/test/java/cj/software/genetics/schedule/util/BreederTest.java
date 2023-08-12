@@ -95,14 +95,9 @@ class BreederTest {
     }
 
     @Test
-    void geneExchange1() {
+    void geneExchange() {
         // create objects
-        int numTasks = 5;
-        List<Task> tasks = new ArrayList<>(numTasks);
-        for (int iTask = 0; iTask < numTasks; iTask++) {
-            Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(10 + 10 * iTask).build();
-            tasks.add(task);
-        }
+        List<Task> tasks = createTasks(5);
         Solution parent1 = createSolution1(tasks);
         Solution parent2 = createSolution2(tasks);
         Map<Task, Coordinate> converted1 = createConverted1(tasks);
@@ -126,5 +121,89 @@ class BreederTest {
         verify(converter).toTaskList(parent1);
         verify(randomService, times(2)).nextRandom(5);
         assertThat(offspring).as("offspring").usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    private List<Task> createTasks(int numTasks) {
+        List<Task> result = new ArrayList<>(numTasks);
+        for (int iTask = 0; iTask < numTasks; iTask++) {
+            Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(10 + 10 * iTask).build();
+            result.add(task);
+        }
+        return result;
+    }
+
+    @Test
+    void withOccupiedPosition() {
+        // create objects
+        List<Task> tasks = createTasks(3);
+        Solution parent1 = createOccSolution1(tasks);
+        Solution parent2 = createOccSolution2(tasks);
+        Map<Task, Coordinate> converted1 = createOccConverted1(tasks);
+        Map<Task, Coordinate> converted2 = createOccConverted2(tasks);
+        Solution expected = createOccExpected(tasks);
+        int numWorkers = 2;
+        int numSlots = 100;
+
+        // configure mocks
+        when(converter.toMapTaskCoordinate(parent1)).thenReturn(converted1);
+        when(converter.toMapTaskCoordinate(parent2)).thenReturn(converted2);
+        when(randomService.nextRandom(3)).thenReturn(0).thenReturn(2);
+        when(converter.toTaskList(parent1)).thenReturn(tasks);
+
+        // invoke
+        Solution offspring = breeder.mate(parent1, parent2, numWorkers, numSlots);
+
+        // checks
+        verify(converter).toMapTaskCoordinate(parent1);
+        verify(converter).toMapTaskCoordinate(parent2);
+        verify(converter).toTaskList(parent1);
+        verify(randomService, times(2)).nextRandom(3);
+        assertThat(offspring).as("offspring").usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    private Solution createOccSolution1(List<Task> tasks) {
+        Worker worker0 = new WorkerBuilder().build();
+        Worker worker1 = new WorkerBuilder().build();
+        worker0.setTaskAt(0, tasks.get(0));
+        worker1.setTaskAt(1, tasks.get(1));
+        worker0.setTaskAt(2, tasks.get(2));
+        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        return result;
+    }
+
+    private Map<Task, Coordinate> createOccConverted1(List<Task> tasks) {
+        Map<Task, Coordinate> result = Map.of(
+                tasks.get(0), Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build(),
+                tasks.get(1), Coordinate.builder().withWorkerIndex(1).withSlotIndex(1).build(),
+                tasks.get(2), Coordinate.builder().withWorkerIndex(0).withSlotIndex(2).build());
+        return result;
+    }
+
+    private Solution createOccSolution2(List<Task> tasks) {
+        Worker worker0 = new WorkerBuilder().build();
+        Worker worker1 = new WorkerBuilder().build();
+        worker1.setTaskAt(3, tasks.get(0));
+        worker0.setTaskAt(1, tasks.get(1));
+        worker0.setTaskAt(0, tasks.get(2));
+        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        return result;
+    }
+
+    private Map<Task, Coordinate> createOccConverted2(List<Task> tasks) {
+        Map<Task, Coordinate> result = Map.of(
+                tasks.get(0), Coordinate.builder().withWorkerIndex(1).withSlotIndex(3).build(),
+                tasks.get(1), Coordinate.builder().withWorkerIndex(0).withSlotIndex(1).build(),
+                tasks.get(2), Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build());
+        return result;
+    }
+
+    private Solution createOccExpected(List<Task> tasks) {
+        Worker worker0 = new WorkerBuilder().build();
+        Worker worker1 = new WorkerBuilder().build();
+        worker0.setTaskAt(0, tasks.get(0));
+        worker1.setTaskAt(1, tasks.get(1));
+        worker0.setTaskAt(1, tasks.get(2));
+        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        return result;
     }
 }

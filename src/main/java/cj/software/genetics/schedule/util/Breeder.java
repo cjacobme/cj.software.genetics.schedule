@@ -4,6 +4,8 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ public class Breeder {
 
     @Autowired
     private RandomService randomService;
+
+    private final Logger logger = LogManager.getFormatterLogger();
 
     public Solution mate(Solution parent1, Solution parent2, int numWorkers, int numSlots) {
         Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1);
@@ -42,7 +46,16 @@ public class Breeder {
             Task task = tasks.get(iTask);
             Coordinate coordinate = converted.get(task);
             int workerIndex = coordinate.getWorkerIndex();
+            Worker worker = workers.get(workerIndex);
             int slotIndex = coordinate.getSlotIndex();
+            Task existing = worker.getTaskAt(slotIndex);
+            while (existing != null) {
+                logger.info("Slot %d of Worker %d already occupied, try next one...",
+                        slotIndex,
+                        workerIndex);
+                slotIndex++;
+                existing = worker.getTaskAt(slotIndex);
+            }
             workers.get(workerIndex).setTaskAt(slotIndex, task);
         }
     }
