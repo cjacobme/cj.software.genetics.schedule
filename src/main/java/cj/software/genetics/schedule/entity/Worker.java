@@ -67,6 +67,10 @@ public class Worker implements Serializable {
         return result;
     }
 
+    public void deleteTaskAt(int position) {
+        tasks[position] = null;
+    }
+
     public static class Builder {
         protected Worker instance;
 

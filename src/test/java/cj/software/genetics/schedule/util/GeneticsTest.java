@@ -206,4 +206,30 @@ class GeneticsTest {
         Solution result = Solution.builder().withWorkers(worker0, worker1).build();
         return result;
     }
+
+    @Test
+    void mutate() {
+        List<Task> tasks = createTasks(3);
+        Solution solution = createOccSolution2(tasks);
+        Map<Task, Coordinate> converted = createOccConverted2(tasks);
+        Solution expected = createMutated(tasks);
+
+        when(converter.toMapTaskCoordinate(solution)).thenReturn(converted);
+        when(converter.toTaskList(solution)).thenReturn(tasks);
+        when(randomService.nextRandom(3)).thenReturn(0).thenReturn(1);
+
+        genetics.mutate(solution);
+
+        assertThat(solution).as("mutated").usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    private Solution createMutated(List<Task> tasks) {
+        Worker worker0 = new WorkerBuilder().build();
+        Worker worker1 = new WorkerBuilder().build();
+        worker0.setTaskAt(1, tasks.get(0));
+        worker1.setTaskAt(3, tasks.get(1));
+        worker0.setTaskAt(0, tasks.get(2));
+        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        return result;
+    }
 }
