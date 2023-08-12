@@ -4,7 +4,9 @@ import javax.validation.constraints.Min;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * a Worker has a series of {@link Task} objects which it consumes one after the other. If the problem to be solved
@@ -49,6 +51,24 @@ public class Worker implements Serializable {
 
     public Task getTaskAt(int position) {
         return tasks[position];
+    }
+
+    public Map<Task, Integer> getTasksWithSlots() {
+        Map<Task, Integer> result = new HashMap<>();
+        if (tasks != null) {
+            int length = tasks.length;
+            for (int i = 0; i < length; i++) {
+                Task task = tasks[i];
+                if (task != null) {
+                    result.put(task, i);
+                }
+            }
+        }
+        return result;
+    }
+
+    public void deleteTaskAt(int position) {
+        tasks[position] = null;
     }
 
     public static class Builder {

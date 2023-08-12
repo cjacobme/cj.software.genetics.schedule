@@ -10,6 +10,7 @@ import javax.validation.ValidatorFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,5 +138,21 @@ class WorkerTest {
         List<Task> tasks = instance.getTasks();
 
         assertThat(tasks).as("tasks list").isEqualTo(List.of(task65, task1, task13));
+    }
+
+    @Test
+    void returnMap() {
+        Worker instance = new WorkerBuilder().build();
+        Task task1 = new TaskBuilder().withIdentifier(1).build();
+        Task task13 = new TaskBuilder().withIdentifier(13).build();
+        Task task65 = new TaskBuilder().withIdentifier(65).build();
+        instance.setTaskAt(15, task65);
+        instance.setTaskAt(20, task1);
+        instance.setTaskAt(44, task13);
+        Map<Task, Integer> slotIndexes = instance.getTasksWithSlots();
+        assertThat(slotIndexes).as("slot indexes").isEqualTo(Map.of(
+                task1, 20,
+                task13, 44,
+                task65, 15));
     }
 }

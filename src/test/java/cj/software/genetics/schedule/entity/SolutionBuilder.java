@@ -5,7 +5,7 @@ import java.util.List;
 
 public class SolutionBuilder extends Solution.Builder {
 
-    private static List<Task> createTasks() {
+    public static List<Task> createTasks() {
         List<Task> result = new ArrayList<>();
         for (int iTask = 0; iTask < 6; iTask++) {
             Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(iTask * 10).build();
