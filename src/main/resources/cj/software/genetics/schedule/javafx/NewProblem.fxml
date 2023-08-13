@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<DialogPane prefWidth="500" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cj.software.genetics.schedule.javafx.NewProblemController">
+    <content>
+        <GridPane hgap="5" vgap="5">
+            <Label text="Number of Workers"/>
+            <Spinner fx:id="spNumWorkers" GridPane.columnIndex="1"/>
+            <Label text="Number of Slots per Worker" GridPane.rowIndex="1"/>
+            <Spinner fx:id="spNumSlots" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <columnConstraints>
+                <ColumnConstraints/>
+                <ColumnConstraints/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints/>
+                <RowConstraints/>
+            </rowConstraints>
+        </GridPane>
+    </content>
+
+    <ButtonType buttonData="CANCEL_CLOSE" text="Cancel"/>
+    <ButtonType buttonData="OK_DONE" text="OK"/>
+</DialogPane>
