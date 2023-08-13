@@ -13,6 +13,8 @@ public class Solution implements Serializable {
 
     private final List<Worker> workers = new ArrayList<>();
 
+    private double fitnessValue;
+
     private Solution() {
     }
 
@@ -26,6 +28,14 @@ public class Solution implements Serializable {
 
     public void addWorker(Worker worker) {
         workers.add(worker);
+    }
+
+    public double getFitnessValue() {
+        return fitnessValue;
+    }
+
+    public void setFitnessValue(double fitnessValue) {
+        this.fitnessValue = fitnessValue;
     }
 
     public static class Builder {
