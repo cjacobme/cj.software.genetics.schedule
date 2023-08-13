@@ -1,8 +1,10 @@
 package cj.software.genetics.schedule.util;
 
+import cj.software.genetics.schedule.entity.BreedingStepEvent;
 import cj.software.genetics.schedule.entity.Solution;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ public class Breeder {
 
     @Autowired
     private Genetics genetics;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     public List<Solution> step(
             List<Solution> solutions,
@@ -38,6 +43,22 @@ public class Breeder {
             Solution parent2 = arbitraryParent(population, size, tournamentSize);
             Solution offspring = genetics.mate(parent1, parent2, numWorkers, numSlots);
             result.add(offspring);
+        }
+        return result;
+    }
+
+    public List<Solution> multipleSteps(
+            int numSteps,
+            List<Solution> solutions,
+            int elitismCount,
+            int tournamentSize,
+            int numWorkers,
+            int numSlots) {
+        List<Solution> result = solutions;
+        for (int step = 0; step < numSteps; step++) {
+            result = step(solutions, elitismCount, tournamentSize, numWorkers, numSlots);
+            BreedingStepEvent event = new BreedingStepEvent(step, result);
+            publisher.publishEvent(event);
         }
         return result;
     }
