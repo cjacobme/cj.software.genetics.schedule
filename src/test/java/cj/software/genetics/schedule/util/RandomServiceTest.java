@@ -26,4 +26,16 @@ class RandomServiceTest {
         int randomValue = randomService.nextRandom(100);
         assertThat(randomValue).as("%d", randomValue).isNotNegative().isLessThan(100);
     }
+
+    @Test
+    void shuffledIndices10() {
+        int[] indices = randomService.shuffledUpTo(10);
+        assertThat(indices).as("indices").containsExactlyInAnyOrder(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+    }
+
+    @Test
+    void shuffledIndices4() {
+        int[] indices = randomService.shuffledUpTo(4);
+        assertThat(indices).as("indices").containsExactlyInAnyOrder(0, 1, 2, 3);
+    }
 }
