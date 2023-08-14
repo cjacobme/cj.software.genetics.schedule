@@ -45,12 +45,12 @@ public class SolutionService {
         return result;
     }
 
-    public double calcFitnessValue(Solution solution) {
+    public double calcDuration(Solution solution) {
         double result = 0.0;
         List<Worker> workers = solution.getWorkers();
         for (Worker worker : workers) {
-            double workerFitness = workerService.calcFitnessValue(worker);
-            result = Math.max(result, workerFitness);
+            double workerDuration = workerService.calcDuration(worker);
+            result = Math.max(result, workerDuration);
         }
         return result;
     }

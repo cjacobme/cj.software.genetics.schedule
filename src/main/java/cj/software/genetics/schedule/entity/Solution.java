@@ -16,7 +16,9 @@ public class Solution implements Serializable {
 
     private final List<Worker> workers = new ArrayList<>();
 
-    private double fitnessValue;
+    private double fitnessValue = Double.MAX_VALUE;
+
+    private double durationInSeconds = 0.0;
 
     private int cycleCounter;
 
@@ -49,8 +51,17 @@ public class Solution implements Serializable {
         return fitnessValue;
     }
 
-    public void setFitnessValue(double fitnessValue) {
-        this.fitnessValue = fitnessValue;
+    public double getDurationInSeconds() {
+        return durationInSeconds;
+    }
+
+    public void setDurationInSeconds(double durationInSeconds) {
+        this.durationInSeconds = durationInSeconds;
+        if (durationInSeconds != 0.0) {
+            fitnessValue = 1.0 / durationInSeconds;
+        } else {
+            fitnessValue = Double.MAX_VALUE;
+        }
     }
 
     @Override

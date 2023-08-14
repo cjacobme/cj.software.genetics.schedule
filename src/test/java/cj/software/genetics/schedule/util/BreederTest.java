@@ -42,17 +42,17 @@ class BreederTest {
         assertThat(service).as("@Service").isNotNull();
     }
 
-    private Solution mockSolution(double fitnessValue) {
+    private Solution mockSolution(double duration) {
         Solution result = new SolutionBuilder().build();
-        result.setFitnessValue(fitnessValue);
-        when(solutionService.calcFitnessValue(result)).thenReturn(fitnessValue);
+        result.setDurationInSeconds(duration);
+        when(solutionService.calcDuration(result)).thenReturn(duration);
         return result;
     }
 
-    private List<Solution> createPopulation(double... fitnessValues) {
+    private List<Solution> createPopulation(double... durations) {
         List<Solution> result = new ArrayList<>();
-        for (double fitnessValue : fitnessValues) {
-            Solution solution = mockSolution(fitnessValue);
+        for (double duration : durations) {
+            Solution solution = mockSolution(duration);
             result.add(solution);
         }
         return result;
@@ -64,8 +64,8 @@ class BreederTest {
      */
     @Test
     void singleStep() {
-        List<Solution> population = createPopulation(2.0, 10.0, 2.1, 2.4, 2.7);
-        List<Solution> offsprings = createPopulation(1.0, 1.1, 1.2, 1.3);
+        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
+        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -105,8 +105,8 @@ class BreederTest {
     @Test
     void multipleSteps() {
         listener.resetCounter();
-        List<Solution> population = createPopulation(2.0, 10.0, 2.1, 2.4, 2.7);
-        List<Solution> offsprings = createPopulation(1.0, 1.1, 1.2, 1.3);
+        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
+        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},

@@ -67,8 +67,8 @@ public class Breeder {
 
     void calculateAndSort(List<Solution> population) {
         for (Solution solution : population) {
-            double fitnessValue = solutionService.calcFitnessValue(solution);
-            solution.setFitnessValue(fitnessValue);
+            double duration = solutionService.calcDuration(solution);
+            solution.setDurationInSeconds(duration);
         }
         sort(population);
     }

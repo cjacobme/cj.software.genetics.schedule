@@ -156,24 +156,24 @@ class SolutionServiceTest {
     }
 
     @Test
-    void fitnessValue47dot11() {
+    void duration47dot11() {
         Solution solution = new SolutionBuilder().build();
 
-        when(workerService.calcFitnessValue(any(Worker.class))).thenReturn(0.1, 47.11);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(0.1, 47.11);
 
-        double fitnessValue = solutionService.calcFitnessValue(solution);
+        double duration = solutionService.calcDuration(solution);
 
-        assertThat(fitnessValue).isEqualTo(47.11, within(0.001));
+        assertThat(duration).isEqualTo(47.11, within(0.001));
     }
 
     @Test
-    void fitnessValue42() {
+    void duration42() {
         Solution solution = new SolutionBuilder().build();
 
-        when(workerService.calcFitnessValue(any(Worker.class))).thenReturn(42.0, 0.0);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(42.0, 0.0);
 
-        double fitnessValue = solutionService.calcFitnessValue(solution);
+        double duration = solutionService.calcDuration(solution);
 
-        assertThat(fitnessValue).isEqualTo(42.0, within(0.001));
+        assertThat(duration).isEqualTo(42.0, within(0.001));
     }
 }
