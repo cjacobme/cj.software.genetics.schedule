@@ -21,7 +21,7 @@ public class SolutionService {
     @Autowired
     private WorkerService workerService;
 
-    public Solution createInitialSoluation(int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
+    public Solution createInitialSoluation(int indexInCycle, int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
         List<Worker> allWorkers = new ArrayList<>();
         for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
             Worker worker = Worker.builder()
@@ -41,7 +41,7 @@ public class SolutionService {
             }
             worker.setTaskAt(selectedSlot, task);
         }
-        Solution result = Solution.builder().withWorkers(allWorkers).build();
+        Solution result = Solution.builder(0, indexInCycle).withWorkers(allWorkers).build();
         return result;
     }
 

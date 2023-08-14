@@ -29,7 +29,7 @@ class SolutionTest {
             SecurityException,
             IllegalArgumentException,
             IllegalAccessException {
-        Solution.Builder builder = Solution.builder();
+        Solution.Builder builder = Solution.builder(0, 0);
         assertThat(builder).as("builder").isNotNull();
 
         Field field = builder.getClass().getDeclaredField("instance");
@@ -54,12 +54,14 @@ class SolutionTest {
         Worker worker2 = mock(Worker.class);
         Worker worker3 = mock(Worker.class);
 
-        Solution instance = Solution.builder()
+        Solution instance = Solution.builder(10, 12)
                 .withWorkers(worker1, worker2, worker3)
                 .build();
 
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(instance.getCycleCounter()).as("cycle counter").isEqualTo(10);
+        softy.assertThat(instance.getIndexInCycle()).as("index in cycle").isEqualTo(12);
         softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker1, worker2, worker3));
         softy.assertAll();
         Worker worker4 = mock(Worker.class);
@@ -74,11 +76,13 @@ class SolutionTest {
         Worker worker3 = mock(Worker.class);
         List<Worker> workers = List.of(worker2, worker3, worker1);
 
-        Solution instance = Solution.builder()
+        Solution instance = Solution.builder(3, 4)
                 .withWorkers(workers)
                 .build();
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(instance.getCycleCounter()).as("cycle counter").isEqualTo(3);
+        softy.assertThat(instance.getIndexInCycle()).as("index in cycle").isEqualTo(4);
         softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker2, worker3, worker1));
         softy.assertAll();
     }
@@ -91,5 +95,12 @@ class SolutionTest {
             Set<ConstraintViolation<Solution>> violations = validator.validate(instance);
             assertThat(violations).as("constraint violations").isEmpty();
         }
+    }
+
+    @Test
+    void stringPresentation() {
+        Solution instance = new SolutionBuilder().build();
+        String asString = instance.toString();
+        assertThat(asString).as("String presentation").isEqualTo("Solution[47,11]");
     }
 }

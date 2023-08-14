@@ -69,7 +69,7 @@ class ConverterTest {
                 iWorker = 0;
             }
         }
-        Solution solution = Solution.builder().withWorkers(workers).build();
+        Solution solution = Solution.builder(0, 1).withWorkers(workers).build();
         Map<Task, Coordinate> expected = Map.of(
                 tasks[0], Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build(),
                 tasks[1], Coordinate.builder().withWorkerIndex(1).withSlotIndex(1).build(),

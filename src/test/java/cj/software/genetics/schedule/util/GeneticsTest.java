@@ -44,7 +44,7 @@ class GeneticsTest {
         worker2.setTaskAt(3, tasks.get(2));
         worker2.setTaskAt(1, tasks.get(3));
         worker1.setTaskAt(2, tasks.get(4));
-        Solution result = Solution.builder().withWorkers(worker0, worker1, worker2).build();
+        Solution result = Solution.builder(10, 11).withWorkers(worker0, worker1, worker2).build();
         return result;
     }
 
@@ -67,7 +67,7 @@ class GeneticsTest {
         worker0.setTaskAt(4, tasks.get(2));
         worker2.setTaskAt(2, tasks.get(3));
         worker1.setTaskAt(0, tasks.get(4));
-        Solution result = Solution.builder().withWorkers(worker0, worker1, worker2).build();
+        Solution result = Solution.builder(12, 13).withWorkers(worker0, worker1, worker2).build();
         return result;
     }
 
@@ -80,7 +80,7 @@ class GeneticsTest {
         worker2.setTaskAt(3, tasks.get(2));
         worker2.setTaskAt(1, tasks.get(3));
         worker1.setTaskAt(0, tasks.get(4));
-        Solution result = Solution.builder().withWorkers(worker0, worker1, worker2).build();
+        Solution result = Solution.builder(16, 17).withWorkers(worker0, worker1, worker2).build();
         return result;
     }
 
@@ -113,7 +113,7 @@ class GeneticsTest {
         when(converter.toTaskList(parent1)).thenReturn(tasks);
 
         // invoke
-        Solution offspring = genetics.mate(parent1, parent2, numWorkers, numSlots);
+        Solution offspring = genetics.mate(16, 17, parent1, parent2, numWorkers, numSlots);
 
         // checks
         verify(converter).toMapTaskCoordinate(parent1);
@@ -151,7 +151,7 @@ class GeneticsTest {
         when(converter.toTaskList(parent1)).thenReturn(tasks);
 
         // invoke
-        Solution offspring = genetics.mate(parent1, parent2, numWorkers, numSlots);
+        Solution offspring = genetics.mate(18, 19, parent1, parent2, numWorkers, numSlots);
 
         // checks
         verify(converter).toMapTaskCoordinate(parent1);
@@ -167,7 +167,7 @@ class GeneticsTest {
         worker0.setTaskAt(0, tasks.get(0));
         worker1.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(2, tasks.get(2));
-        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(20, 21).withWorkers(worker0, worker1).build();
         return result;
     }
 
@@ -185,7 +185,7 @@ class GeneticsTest {
         worker1.setTaskAt(3, tasks.get(0));
         worker0.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(0, tasks.get(2));
-        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(22, 23).withWorkers(worker0, worker1).build();
         return result;
     }
 
@@ -203,7 +203,7 @@ class GeneticsTest {
         worker0.setTaskAt(0, tasks.get(0));
         worker1.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(1, tasks.get(2));
-        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(18, 19).withWorkers(worker0, worker1).build();
         return result;
     }
 
@@ -229,7 +229,7 @@ class GeneticsTest {
         worker0.setTaskAt(1, tasks.get(0));
         worker1.setTaskAt(3, tasks.get(1));
         worker0.setTaskAt(0, tasks.get(2));
-        Solution result = Solution.builder().withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(22, 23).withWorkers(worker0, worker1).build();
         return result;
     }
 }

@@ -45,7 +45,7 @@ class SolutionServiceTest {
         when(randomService.nextRandom(3)).thenReturn(0, 0, 1);
 
         // invoke
-        Solution solution = solutionService.createInitialSoluation(numWorkers, numSlots, tasks);
+        Solution solution = solutionService.createInitialSoluation(1, numWorkers, numSlots, tasks);
 
         // checks
         assertThat(solution).as("solutions").isNotNull();
@@ -84,7 +84,7 @@ class SolutionServiceTest {
         when(randomService.nextRandom(4)).thenReturn(3, 2, 1, 0);
 
         // invoke
-        Solution solution = solutionService.createInitialSoluation(3, 4, tasks);
+        Solution solution = solutionService.createInitialSoluation(5, 3, 4, tasks);
 
         // checks
         List<Worker> workers = solution.getWorkers();
@@ -101,6 +101,8 @@ class SolutionServiceTest {
         List<Task> tasksOf1 = worker1.getTasks();
         List<Task> tasksOf2 = worker2.getTasks();
         softy = new SoftAssertions();
+        softy.assertThat(solution.getCycleCounter()).as("cycle counter").isZero();
+        softy.assertThat(solution.getIndexInCycle()).as("index in cycle").isEqualTo(5);
         softy.assertThat(worker0.getMaxNumTasks()).as("max num tasks[0]").isEqualTo(4);
         softy.assertThat(worker1.getMaxNumTasks()).as("max num tasks[1]").isEqualTo(4);
         softy.assertThat(worker1.getMaxNumTasks()).as("max num tasks[2]").isEqualTo(4);
@@ -128,7 +130,7 @@ class SolutionServiceTest {
         when(randomService.nextRandom(3)).thenReturn(0, 0, 0, 2);
 
         // invoke
-        Solution solution = solutionService.createInitialSoluation(numWorkers, numSlots, tasks);
+        Solution solution = solutionService.createInitialSoluation(12, numWorkers, numSlots, tasks);
 
         // checks
         assertThat(solution).as("solutions").isNotNull();

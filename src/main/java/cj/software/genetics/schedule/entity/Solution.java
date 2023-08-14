@@ -1,5 +1,8 @@
 package cj.software.genetics.schedule.entity;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,15 +18,27 @@ public class Solution implements Serializable {
 
     private double fitnessValue;
 
+    private int cycleCounter;
+
+    private int indexInCycle;
+
     private Solution() {
+    }
+
+    public int getCycleCounter() {
+        return cycleCounter;
+    }
+
+    public int getIndexInCycle() {
+        return indexInCycle;
     }
 
     public List<Worker> getWorkers() {
         return Collections.unmodifiableList(workers);
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public static Builder builder(int cycleCounter, int indexInCycle) {
+        return new Builder(cycleCounter, indexInCycle);
     }
 
     public void addWorker(Worker worker) {
@@ -38,11 +53,22 @@ public class Solution implements Serializable {
         this.fitnessValue = fitnessValue;
     }
 
+    @Override
+    public String toString() {
+        ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append(cycleCounter)
+                .append(indexInCycle);
+        String result = builder.build();
+        return result;
+    }
+
     public static class Builder {
         protected Solution instance;
 
-        protected Builder() {
+        protected Builder(int cycleCounter, int indexInCycle) {
             instance = new Solution();
+            instance.cycleCounter = cycleCounter;
+            instance.indexInCycle = indexInCycle;
         }
 
         public Solution build() {

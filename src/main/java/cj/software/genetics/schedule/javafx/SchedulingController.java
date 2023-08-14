@@ -1,7 +1,6 @@
 package cj.software.genetics.schedule.javafx;
 
 import cj.software.genetics.schedule.entity.ProblemSetup;
-import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.SolutionService;
@@ -46,21 +45,6 @@ public class SchedulingController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         solutionControl = new SolutionControl();
         scrollPane.setContent(solutionControl);
-    }
-
-    @FXML
-    public void createSolution() {
-        List<Task> tasks = createTasks();
-        Solution solution = solutionService.createInitialSoluation(4, 50, tasks);
-        solutionControl.setSolution(solution);
-    }
-
-    private List<Task> createTasks() {
-        List<Task> result = new ArrayList<>();
-        result.addAll(createTasks(10, 20, 0));
-        result.addAll(createTasks(20, 5, 10));
-        result.addAll(createTasks(2, 100, 30));
-        return result;
     }
 
     private List<Task> createTasks(int count, int duration, int startingIndex) {
