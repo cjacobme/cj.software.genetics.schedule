@@ -8,6 +8,9 @@ public class ProblemSetup implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @Min(5)
+    private int numSolutions;
+
     @Min(2)
     private int numWorkers;
 
@@ -23,6 +26,10 @@ public class ProblemSetup implements Serializable {
     private int numTasks100;
 
     private ProblemSetup() {
+    }
+
+    public int getNumSolutions() {
+        return numSolutions;
     }
 
     public int getNumWorkers() {
@@ -93,6 +100,11 @@ public class ProblemSetup implements Serializable {
 
         public Builder withNumTasks100(int numTasks100) {
             instance.numTasks100 = numTasks100;
+            return this;
+        }
+
+        public Builder withNumSolutions(int numSolutions) {
+            instance.numSolutions = numSolutions;
             return this;
         }
     }

@@ -43,6 +43,7 @@ class ProblemSetupTest {
         Object instanceAfter = field.get(builder);
         assertThat(instanceAfter).as("instance in builder after build").isNull();
         SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(instance.getNumSolutions()).as("number of solutions").isZero();
         softy.assertThat(instance.getNumWorkers()).as("number of workers").isZero();
         softy.assertThat(instance.getNumSlots()).as("number of slots").isZero();
         softy.assertThat(instance.getNumTasks10()).as("number of tasks 10 s").isZero();
@@ -54,6 +55,7 @@ class ProblemSetupTest {
 
     @Test
     void constructFilled() {
+        int numSolutions = -1;
         int numWorkers = 1;
         int numSlots = 2;
         int numTasks10 = 3;
@@ -61,6 +63,7 @@ class ProblemSetupTest {
         int numTasks50 = 5;
         int numTasks100 = 6;
         ProblemSetup instance = ProblemSetup.builder()
+                .withNumSolutions(numSolutions)
                 .withNumWorkers(numWorkers)
                 .withNumSlots(numSlots)
                 .withNumTasks10(numTasks10)
@@ -70,6 +73,7 @@ class ProblemSetupTest {
                 .build();
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(instance.getNumSolutions()).isEqualTo(numSolutions);
         softy.assertThat(instance.getNumWorkers()).isEqualTo(numWorkers);
         softy.assertThat(instance.getNumSlots()).isEqualTo(numSlots);
         softy.assertThat(instance.getNumTasks10()).isEqualTo(numTasks10);

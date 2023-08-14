@@ -6,10 +6,12 @@
             fx:controller="cj.software.genetics.schedule.javafx.NewProblemController">
     <content>
         <GridPane hgap="5" vgap="5">
-            <Label text="Number of Workers"/>
-            <Spinner fx:id="spNumWorkers" GridPane.columnIndex="1"/>
-            <Label text="Number of Slots per Worker" GridPane.rowIndex="1"/>
-            <Spinner fx:id="spNumSlots" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label text="Number of Solutions"/>
+            <Spinner fx:id="spNumSolutions" editable="true" GridPane.columnIndex="1"/>
+            <Label text="Number of Workers / Solution" GridPane.rowIndex="1"/>
+            <Spinner fx:id="spNumWorkers" editable="true" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label text="Number of Slots per Worker" GridPane.rowIndex="2"/>
+            <Spinner fx:id="spNumSlots" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
             <columnConstraints>
                 <ColumnConstraints/>
                 <ColumnConstraints/>

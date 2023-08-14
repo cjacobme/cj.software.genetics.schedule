@@ -28,11 +28,17 @@ public class NewProblemDialog extends Dialog<ProblemSetup> {
                 ProblemSetup result;
                 ButtonBar.ButtonData buttonData = buttonType.getButtonData();
                 if (buttonData.equals(ButtonBar.ButtonData.OK_DONE)) {
+                    int numSolutinos = newProblemController.getNumSolutions();
                     int numWorkers = newProblemController.getNumWorkers();
                     int numSlots = newProblemController.getNumSlots();
                     result = ProblemSetup.builder()
+                            .withNumSolutions(numSolutinos)
                             .withNumWorkers(numWorkers)
                             .withNumSlots(numSlots)
+                            .withNumTasks10(20) // TODO get value from UI
+                            .withNumTasks20(8)
+                            .withNumTasks50(8)
+                            .withNumTasks100(3)
                             .build();
                 } else {
                     result = null;

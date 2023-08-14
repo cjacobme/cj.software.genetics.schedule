@@ -4,6 +4,7 @@ import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.SolutionService;
+import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,7 +40,8 @@ public class SchedulingController implements Initializable {
     @Autowired
     private SolutionService solutionService;
 
-    private ProblemSetup problemSetup;
+    @Autowired
+    private TaskService taskService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -47,13 +49,21 @@ public class SchedulingController implements Initializable {
         scrollPane.setContent(solutionControl);
     }
 
-    private List<Task> createTasks(int count, int duration, int startingIndex) {
-        int index = startingIndex;
-        List<Task> result = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
-            Task task = Task.builder().withIdentifier(index++).withDurationSeconds(duration).build();
-            result.add(task);
-        }
+    private List<Task> createAllTasks(ProblemSetup problemSetup) {
+        int num10 = problemSetup.getNumTasks10();
+        int num20 = problemSetup.getNumTasks20();
+        int num50 = problemSetup.getNumTasks50();
+        int num100 = problemSetup.getNumTasks100();
+        int total = num10 + num20 + num50 + num100;
+        List<Task> result = new ArrayList<>(total);
+        int startIndex = 0;
+        result.addAll(taskService.createTasks(startIndex, 10, num10));
+        startIndex += num10;
+        result.addAll(taskService.createTasks(startIndex, 20, num20));
+        startIndex += num20;
+        result.addAll(taskService.createTasks(startIndex, 50, num50));
+        startIndex += num50;
+        result.addAll(taskService.createTasks(startIndex, 100, num100));
         return result;
     }
 
@@ -64,7 +74,9 @@ public class SchedulingController implements Initializable {
         Optional<ProblemSetup> optProblemSetup = newProblemDialog.showAndWait();
         if (optProblemSetup.isPresent()) {
             logger.info("a new problem was defined");
-            problemSetup = optProblemSetup.get();
+            ProblemSetup problemSetup = optProblemSetup.get();
+            List<Task> allTasks = createAllTasks(problemSetup);
+            //TODO: create initial population from SolutionService
         } else {
             logger.info("dialog was cancelled");
         }
