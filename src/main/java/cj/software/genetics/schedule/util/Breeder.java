@@ -14,9 +14,6 @@ import java.util.List;
 public class Breeder {
 
     @Autowired
-    private SolutionService solutionService;
-
-    @Autowired
     private RandomService randomService;
 
     @Autowired
@@ -33,7 +30,7 @@ public class Breeder {
             int numWorkers,
             int numSlots) {
         List<Solution> population = new ArrayList<>(solutions);
-        calculateAndSort(population);
+        sort(population);
         int size = population.size();
         List<Solution> result = new ArrayList<>(size);
         for (int i = 0; i < elitismCount; i++) {
@@ -63,14 +60,6 @@ public class Breeder {
             publisher.publishEvent(event);
         }
         return result;
-    }
-
-    void calculateAndSort(List<Solution> population) {
-        for (Solution solution : population) {
-            double duration = solutionService.calcDuration(solution);
-            solution.setDurationInSeconds(duration);
-        }
-        sort(population);
     }
 
     void sort(List<Solution> population) {

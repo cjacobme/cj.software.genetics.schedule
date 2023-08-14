@@ -22,6 +22,9 @@ public class Genetics {
     @Autowired
     private RandomService randomService;
 
+    @Autowired
+    private SolutionService solutionService;
+
     private final Logger logger = LogManager.getFormatterLogger();
 
     public Solution mate(int cycleCounter, int indexInCycle, Solution parent1, Solution parent2, int numWorkers, int numSlots) {
@@ -38,6 +41,8 @@ public class Genetics {
         dispatch(tasks, workers, converted2, upper, numTasks);
         dispatch(tasks, workers, converted2, 0, lower);
         Solution result = Solution.builder(cycleCounter, indexInCycle).withWorkers(workers).build();
+        double duration = solutionService.calcDuration(result);
+        result.setDurationInSeconds(duration);
         return result;
     }
 

@@ -31,9 +31,6 @@ class BreederTest {
     private RandomService randomService;
 
     @MockBean
-    private SolutionService solutionService;
-
-    @MockBean
     private Genetics genetics;
 
     @Test
@@ -45,7 +42,6 @@ class BreederTest {
     private Solution mockSolution(double duration) {
         Solution result = new SolutionBuilder().build();
         result.setDurationInSeconds(duration);
-        when(solutionService.calcDuration(result)).thenReturn(duration);
         return result;
     }
 
