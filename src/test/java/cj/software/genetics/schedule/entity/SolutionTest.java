@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.mock;
 
 class SolutionTest {
@@ -102,5 +103,15 @@ class SolutionTest {
         Solution instance = new SolutionBuilder().build();
         String asString = instance.toString();
         assertThat(asString).as("String presentation").isEqualTo("Solution[47,11]");
+    }
+
+    @Test
+    void duration() {
+        Solution instance = new SolutionBuilder().build();
+        instance.setDurationInSeconds(10.0);
+        SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(instance.getDurationInSeconds()).as("duration").isEqualTo(10.0, within(0.0001));
+        softy.assertThat(instance.getFitnessValue()).as("fitness value").isEqualTo(0.1, within(0.0001));
+        softy.assertAll();
     }
 }
