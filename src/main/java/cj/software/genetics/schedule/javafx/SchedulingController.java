@@ -7,9 +7,15 @@ import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.logging.log4j.LogManager;
@@ -30,13 +36,8 @@ public class SchedulingController implements Initializable {
 
     private final Logger logger = LogManager.getFormatterLogger();
 
-    private SolutionControl solutionControl;
-
     @Autowired
     private ConfigurableApplicationContext applicationContext;
-
-    @FXML
-    private ScrollPane scrollPane;
 
     @Autowired
     private SolutionService solutionService;
@@ -44,10 +45,32 @@ public class SchedulingController implements Initializable {
     @Autowired
     private TaskService taskService;
 
+    @FXML
+    private ScrollPane scrollPane;
+
+    @FXML
+    private TableView<Solution> tblSolutions;
+
+    @FXML
+    private TableColumn<Solution, Integer> tcolCycle;
+
+    @FXML
+    private TableColumn<Solution, String> tcolDuration;
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        solutionControl = new SolutionControl();
+        SolutionControl solutionControl = new SolutionControl();
         scrollPane.setContent(solutionControl);
+
+        tcolCycle.setCellValueFactory(new PropertyValueFactory<>("cycleCounter"));
+        tcolDuration.setCellValueFactory(cellData -> {
+            double distanceSum = cellData.getValue().getDurationInSeconds();
+            String formatted = String.format("%7.2f", distanceSum);
+            return new SimpleStringProperty(formatted);
+        });
+        tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
+                solutionControl.setSolution(newValue));
     }
 
     private List<Task> createAllTasks(ProblemSetup problemSetup) {
@@ -82,6 +105,11 @@ public class SchedulingController implements Initializable {
                     problemSetup.getNumWorkers(),
                     problemSetup.getNumSlots(),
                     allTasks);
+            ObservableList<Solution> tableData = FXCollections.observableList(allSolutions);
+            tblSolutions.setItems(tableData);
+            if (!allSolutions.isEmpty()) {
+                tblSolutions.getSelectionModel().select(0);
+            }
         } else {
             logger.info("dialog was cancelled");
         }
