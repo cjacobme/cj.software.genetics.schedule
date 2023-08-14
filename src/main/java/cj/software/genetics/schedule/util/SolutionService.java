@@ -3,12 +3,14 @@ package cj.software.genetics.schedule.util;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -54,6 +56,24 @@ public class SolutionService {
             double workerDuration = workerService.calcDuration(worker);
             result = Math.max(result, workerDuration);
         }
+        return result;
+    }
+
+    public List<Solution> createInitialPopulation(int numSolutions, int numWorkers, int numSlots, List<Task> tasks) {
+        List<Solution> result = new ArrayList<>(numSolutions);
+        for (int i = 0; i < numSlots; i++) {
+            Solution solution = createInitialSolution(i, numWorkers, numSlots, tasks);
+            result.add(solution);
+        }
+        result.sort(new Comparator<Solution>() {
+            @Override
+            public int compare(Solution o1, Solution o2) {
+                CompareToBuilder builder = new CompareToBuilder()
+                        .append(o1.getDurationInSeconds(), o2.getDurationInSeconds());
+                int result = builder.build();
+                return result;
+            }
+        });
         return result;
     }
 }

@@ -1,6 +1,7 @@
 package cj.software.genetics.schedule.javafx;
 
 import cj.software.genetics.schedule.entity.ProblemSetup;
+import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.SolutionService;
@@ -76,7 +77,11 @@ public class SchedulingController implements Initializable {
             logger.info("a new problem was defined");
             ProblemSetup problemSetup = optProblemSetup.get();
             List<Task> allTasks = createAllTasks(problemSetup);
-            //TODO: create initial population from SolutionService
+            List<Solution> allSolutions = solutionService.createInitialPopulation(
+                    problemSetup.getNumSolutions(),
+                    problemSetup.getNumWorkers(),
+                    problemSetup.getNumSlots(),
+                    allTasks);
         } else {
             logger.info("dialog was cancelled");
         }
