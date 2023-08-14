@@ -31,14 +31,18 @@ public class NewProblemDialog extends Dialog<ProblemSetup> {
                     int numSolutinos = newProblemController.getNumSolutions();
                     int numWorkers = newProblemController.getNumWorkers();
                     int numSlots = newProblemController.getNumSlots();
+                    int num10 = newProblemController.getNumTasks10();
+                    int num20 = newProblemController.getNumTasks20();
+                    int num50 = newProblemController.getNumTasks50();
+                    int num100 = newProblemController.getNumTasks100();
                     result = ProblemSetup.builder()
                             .withNumSolutions(numSolutinos)
                             .withNumWorkers(numWorkers)
                             .withNumSlots(numSlots)
-                            .withNumTasks10(20) // TODO get value from UI
-                            .withNumTasks20(8)
-                            .withNumTasks50(8)
-                            .withNumTasks100(3)
+                            .withNumTasks10(num10)
+                            .withNumTasks20(num20)
+                            .withNumTasks50(num50)
+                            .withNumTasks100(num100)
                             .build();
                 } else {
                     result = null;
