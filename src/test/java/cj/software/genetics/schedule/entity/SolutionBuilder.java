@@ -33,6 +33,7 @@ public class SolutionBuilder extends Solution.Builder {
     }
 
     public SolutionBuilder() {
-        super.withWorkers(createWorkers());
+        super(47, 11);
+        this.withWorkers(createWorkers());
     }
 }

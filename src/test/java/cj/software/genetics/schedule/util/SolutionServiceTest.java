@@ -43,9 +43,10 @@ class SolutionServiceTest {
         // configure mocks
         when(randomService.nextRandom(2)).thenReturn(0, 1, 0);
         when(randomService.nextRandom(3)).thenReturn(0, 0, 1);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(3.0, 2.0);
 
         // invoke
-        Solution solution = solutionService.createInitialSoluation(numWorkers, numSlots, tasks);
+        Solution solution = solutionService.createInitialSolution(1, numWorkers, numSlots, tasks);
 
         // checks
         assertThat(solution).as("solutions").isNotNull();
@@ -64,10 +65,12 @@ class SolutionServiceTest {
         softy.assertThat(worker1.getMaxNumTasks()).as("max num tasks[1]").isEqualTo(numSlots);
         softy.assertThat(tasksOf0).as("tasks of worker 0").isEqualTo(List.of(task1, task3));
         softy.assertThat(tasksOf1).as("tasks of worker 1").isEqualTo(List.of(task2));
+        softy.assertThat(solution.getDurationInSeconds()).as("duration in seconds").isEqualTo(3.0);
         softy.assertAll();
 
         verify(randomService, times(3)).nextRandom(2);
         verify(randomService, times(3)).nextRandom(3);
+        verify(workerService, times(2)).calcDuration(any(Worker.class));
     }
 
     @Test
@@ -84,7 +87,7 @@ class SolutionServiceTest {
         when(randomService.nextRandom(4)).thenReturn(3, 2, 1, 0);
 
         // invoke
-        Solution solution = solutionService.createInitialSoluation(3, 4, tasks);
+        Solution solution = solutionService.createInitialSolution(5, 3, 4, tasks);
 
         // checks
         List<Worker> workers = solution.getWorkers();
@@ -101,6 +104,8 @@ class SolutionServiceTest {
         List<Task> tasksOf1 = worker1.getTasks();
         List<Task> tasksOf2 = worker2.getTasks();
         softy = new SoftAssertions();
+        softy.assertThat(solution.getCycleCounter()).as("cycle counter").isZero();
+        softy.assertThat(solution.getIndexInCycle()).as("index in cycle").isEqualTo(5);
         softy.assertThat(worker0.getMaxNumTasks()).as("max num tasks[0]").isEqualTo(4);
         softy.assertThat(worker1.getMaxNumTasks()).as("max num tasks[1]").isEqualTo(4);
         softy.assertThat(worker1.getMaxNumTasks()).as("max num tasks[2]").isEqualTo(4);
@@ -128,7 +133,7 @@ class SolutionServiceTest {
         when(randomService.nextRandom(3)).thenReturn(0, 0, 0, 2);
 
         // invoke
-        Solution solution = solutionService.createInitialSoluation(numWorkers, numSlots, tasks);
+        Solution solution = solutionService.createInitialSolution(12, numWorkers, numSlots, tasks);
 
         // checks
         assertThat(solution).as("solutions").isNotNull();
@@ -154,24 +159,24 @@ class SolutionServiceTest {
     }
 
     @Test
-    void fitnessValue47dot11() {
+    void duration47dot11() {
         Solution solution = new SolutionBuilder().build();
 
-        when(workerService.calcFitnessValue(any(Worker.class))).thenReturn(0.1, 47.11);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(0.1, 47.11);
 
-        double fitnessValue = solutionService.calcFitnessValue(solution);
+        double duration = solutionService.calcDuration(solution);
 
-        assertThat(fitnessValue).isEqualTo(47.11, within(0.001));
+        assertThat(duration).isEqualTo(47.11, within(0.001));
     }
 
     @Test
-    void fitnessValue42() {
+    void duration42() {
         Solution solution = new SolutionBuilder().build();
 
-        when(workerService.calcFitnessValue(any(Worker.class))).thenReturn(42.0, 0.0);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(42.0, 0.0);
 
-        double fitnessValue = solutionService.calcFitnessValue(solution);
+        double duration = solutionService.calcDuration(solution);
 
-        assertThat(fitnessValue).isEqualTo(42.0, within(0.001));
+        assertThat(duration).isEqualTo(42.0, within(0.001));
     }
 }

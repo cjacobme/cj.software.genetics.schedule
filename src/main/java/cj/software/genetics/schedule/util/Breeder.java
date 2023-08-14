@@ -14,9 +14,6 @@ import java.util.List;
 public class Breeder {
 
     @Autowired
-    private SolutionService solutionService;
-
-    @Autowired
     private RandomService randomService;
 
     @Autowired
@@ -26,13 +23,14 @@ public class Breeder {
     private ApplicationEventPublisher publisher;
 
     public List<Solution> step(
+            int cycleCounter,
             List<Solution> solutions,
             int elitismCount,
             int tournamentSize,
             int numWorkers,
             int numSlots) {
         List<Solution> population = new ArrayList<>(solutions);
-        calculateAndSort(population);
+        sort(population);
         int size = population.size();
         List<Solution> result = new ArrayList<>(size);
         for (int i = 0; i < elitismCount; i++) {
@@ -41,13 +39,14 @@ public class Breeder {
         for (int i = elitismCount; i < size; i++) {
             Solution parent1 = population.get(i);
             Solution parent2 = arbitraryParent(population, size, tournamentSize);
-            Solution offspring = genetics.mate(parent1, parent2, numWorkers, numSlots);
+            Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2, numWorkers, numSlots);
             result.add(offspring);
         }
         return result;
     }
 
     public List<Solution> multipleSteps(
+            int cycleCounter,
             int numSteps,
             List<Solution> solutions,
             int elitismCount,
@@ -56,19 +55,11 @@ public class Breeder {
             int numSlots) {
         List<Solution> result = solutions;
         for (int step = 0; step < numSteps; step++) {
-            result = step(solutions, elitismCount, tournamentSize, numWorkers, numSlots);
+            result = step(step + cycleCounter, solutions, elitismCount, tournamentSize, numWorkers, numSlots);
             BreedingStepEvent event = new BreedingStepEvent(step, result);
             publisher.publishEvent(event);
         }
         return result;
-    }
-
-    void calculateAndSort(List<Solution> population) {
-        for (Solution solution : population) {
-            double fitnessValue = solutionService.calcFitnessValue(solution);
-            solution.setFitnessValue(fitnessValue);
-        }
-        sort(population);
     }
 
     void sort(List<Solution> population) {

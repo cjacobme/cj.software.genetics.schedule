@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
+            minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cj.software.genetics.schedule.javafx.SchedulingController">
+    <top>
+        <MenuBar BorderPane.alignment="CENTER">
+            <Menu mnemonicParsing="false" text="Problem">
+                <MenuItem mnemonicParsing="false" onAction="#newProblem" text="New..."/>
+                <SeparatorMenuItem mnemonicParsing="false"/>
+                <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Exit"/>
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <left>
+        <TableView fx:id="tblSolutions" maxHeight="1.7976931348623157E308" prefHeight="800.0"
+                   prefWidth="175.0">
+            <columns>
+                <TableColumn fx:id="tcolCycle" editable="false" prefWidth="75.0" sortable="false"
+                             text="Cycle"/>
+                <TableColumn fx:id="tcolDuration" editable="false" maxWidth="1.7976931348623157E308"
+                             prefWidth="90.0" sortable="false" text="Distance Sum"/>
+            </columns>
+        </TableView>
+    </left>
+
+    <center>
+        <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS"
+                    BorderPane.alignment="CENTER">
+        </ScrollPane>
+    </center>
+</BorderPane>

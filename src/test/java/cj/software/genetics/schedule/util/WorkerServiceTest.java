@@ -21,27 +21,27 @@ class WorkerServiceTest {
     @Test
     void noTasks() {
         Worker worker = buildWorker();
-        double fitnessValue = workerService.calcFitnessValue(worker);
-        assertThat(fitnessValue).isZero();
+        double duration = workerService.calcDuration(worker);
+        assertThat(duration).isZero();
     }
 
     @Test
-    void fitnessValue0() {
+    void duration20() {
         Task task0 = new TaskBuilder().build();
         Worker worker = buildWorker(task0);
-        double fitnessValue = workerService.calcFitnessValue(worker);
-        assertThat(fitnessValue).isEqualTo(0.05, withPrecision(0.0001));
+        double duration = workerService.calcDuration(worker);
+        assertThat(duration).isEqualTo(20.0, withPrecision(0.0001));
     }
 
     @Test
-    void fitnessValue1() {
+    void duration4() {
         Task task0 = new TaskBuilder().withDurationSeconds(1).build();
         Task task1 = new TaskBuilder().withDurationSeconds(1).build();
         Task task2 = new TaskBuilder().withDurationSeconds(1).build();
         Task task3 = new TaskBuilder().withDurationSeconds(1).build();
         Worker worker = buildWorker(task0, task1, task2, task3);
-        double fitnessValue = workerService.calcFitnessValue(worker);
-        assertThat(fitnessValue).isEqualTo(0.25, withPrecision(0.0001));
+        double duration = workerService.calcDuration(worker);
+        assertThat(duration).isEqualTo(4.0, withPrecision(0.0001));
     }
 
     private Worker buildWorker(Task... tasks) {

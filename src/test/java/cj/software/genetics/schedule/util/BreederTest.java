@@ -31,9 +31,6 @@ class BreederTest {
     private RandomService randomService;
 
     @MockBean
-    private SolutionService solutionService;
-
-    @MockBean
     private Genetics genetics;
 
     @Test
@@ -42,17 +39,16 @@ class BreederTest {
         assertThat(service).as("@Service").isNotNull();
     }
 
-    private Solution mockSolution(double fitnessValue) {
+    private Solution mockSolution(double duration) {
         Solution result = new SolutionBuilder().build();
-        result.setFitnessValue(fitnessValue);
-        when(solutionService.calcFitnessValue(result)).thenReturn(fitnessValue);
+        result.setDurationInSeconds(duration);
         return result;
     }
 
-    private List<Solution> createPopulation(double... fitnessValues) {
+    private List<Solution> createPopulation(double... durations) {
         List<Solution> result = new ArrayList<>();
-        for (double fitnessValue : fitnessValues) {
-            Solution solution = mockSolution(fitnessValue);
+        for (double duration : durations) {
+            Solution solution = mockSolution(duration);
             result.add(solution);
         }
         return result;
@@ -64,8 +60,8 @@ class BreederTest {
      */
     @Test
     void singleStep() {
-        List<Solution> population = createPopulation(2.0, 10.0, 2.1, 2.4, 2.7);
-        List<Solution> offsprings = createPopulation(1.0, 1.1, 1.2, 1.3);
+        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
+        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -76,21 +72,22 @@ class BreederTest {
         int tournamentSize = 2;
         int numWorkers = 3;
         int numSlots = 100;
+        int cycleCounter = 15;
 
         when(randomService.shuffledUpTo(5)).thenReturn(shuffles[0], shuffles[1], shuffles[2], shuffles[3]);
-        when(genetics.mate(population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
-        when(genetics.mate(population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
-        when(genetics.mate(population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
-        when(genetics.mate(population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
+        when(genetics.mate(cycleCounter, 0, population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
+        when(genetics.mate(cycleCounter, 1, population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
+        when(genetics.mate(cycleCounter, 2, population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
+        when(genetics.mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
 
-        List<Solution> nextGeneration = breeder.step(population, elitismCount, tournamentSize, numWorkers, numSlots);
+        List<Solution> nextGeneration = breeder.step(cycleCounter, population, elitismCount, tournamentSize, numWorkers, numSlots);
 
-        verify(genetics).mate(population.get(4), population.get(1), numWorkers, numSlots);
-        verify(genetics).mate(population.get(3), population.get(2), numWorkers, numSlots);
-        verify(genetics).mate(population.get(2), population.get(1), numWorkers, numSlots);
-        verify(genetics).mate(population.get(0), population.get(3), numWorkers, numSlots);
+        verify(genetics).mate(cycleCounter, 0, population.get(4), population.get(1), numWorkers, numSlots);
+        verify(genetics).mate(cycleCounter, 1, population.get(3), population.get(2), numWorkers, numSlots);
+        verify(genetics).mate(cycleCounter, 2, population.get(2), population.get(1), numWorkers, numSlots);
+        verify(genetics).mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots);
         verify(randomService, times(4)).shuffledUpTo(5);
-        verify(genetics, times(4)).mate(any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
+        verify(genetics, times(4)).mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
         assertThat(nextGeneration).hasSize(5);
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(nextGeneration.get(0)).isSameAs(population.get(1));
@@ -104,8 +101,8 @@ class BreederTest {
     @Test
     void multipleSteps() {
         listener.resetCounter();
-        List<Solution> population = createPopulation(2.0, 10.0, 2.1, 2.4, 2.7);
-        List<Solution> offsprings = createPopulation(1.0, 1.1, 1.2, 1.3);
+        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
+        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -117,14 +114,16 @@ class BreederTest {
         int numWorkers = 3;
         int numSlots = 100;
         int numSteps = 7;
+        int cycleCounter = 3;
 
         when(randomService.shuffledUpTo(5)).thenReturn(shuffles[0], shuffles[1], shuffles[2], shuffles[3]);
-        when(genetics.mate(population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
-        when(genetics.mate(population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
-        when(genetics.mate(population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
-        when(genetics.mate(population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
+        when(genetics.mate(cycleCounter, 0, population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
+        when(genetics.mate(cycleCounter, 1, population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
+        when(genetics.mate(cycleCounter, 2, population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
+        when(genetics.mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
 
         List<Solution> nextGeneration = breeder.multipleSteps(
+                cycleCounter,
                 numSteps,
                 population,
                 elitismCount,
