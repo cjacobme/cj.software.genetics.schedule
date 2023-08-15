@@ -9,6 +9,8 @@ import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -66,6 +68,9 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @FXML
     private Spinner<Integer> spNumCycles;
 
+    @FXML
+    private Spinner<Integer> spScale;
+
     private ProblemSetup problemSetup;
 
     private List<Solution> population;
@@ -80,6 +85,21 @@ public class SchedulingController implements Initializable, ApplicationListener<
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
         spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 100));
+        spScale.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 15));
+        spScale.valueProperty().addListener(new ChangeListener<Integer>() {
+            @Override
+            public void changed(ObservableValue<? extends Integer> observableValue, Integer oldValue, Integer newValue) {
+                solutionControl.setScale(newValue);
+                solutionControl.setSolution(null);
+                if (population != null) {
+                    int selectedIndex = tblSolutions.getSelectionModel().getSelectedIndex();
+                    if (selectedIndex >= 0) {
+                        Solution solution = population.get(selectedIndex);
+                        solutionControl.setSolution(solution);
+                    }
+                }
+            }
+        });
     }
 
     private List<Task> createAllTasks(ProblemSetup problemSetup) {
