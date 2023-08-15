@@ -135,7 +135,7 @@ class BreederTest {
                 numWorkers,
                 numSlots);
         assertThat(nextGeneration).isNotNull();
-        assertThat(listener.getCounter()).isEqualTo(6);
+        assertThat(listener.getCounter()).isEqualTo(10);
         verify(randomService, times(28)).shuffledUpTo(5);
     }
 }
