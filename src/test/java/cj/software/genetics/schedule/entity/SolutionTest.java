@@ -108,9 +108,9 @@ class SolutionTest {
     @Test
     void duration() {
         Solution instance = new SolutionBuilder().build();
-        instance.setDurationInSeconds(10.0);
+        instance.setDurationInSeconds(10);
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(instance.getDurationInSeconds()).as("duration").isEqualTo(10.0, within(0.0001));
+        softy.assertThat(instance.getDurationInSeconds()).as("duration").isEqualTo(10);
         softy.assertThat(instance.getFitnessValue()).as("fitness value").isEqualTo(0.1, within(0.0001));
         softy.assertAll();
     }

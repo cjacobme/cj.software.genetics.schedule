@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -44,16 +43,16 @@ public class SolutionService {
             worker.setTaskAt(selectedSlot, task);
         }
         Solution result = Solution.builder(0, indexInCycle).withWorkers(allWorkers).build();
-        double durationInSeconds = calcDuration(result);
+        int durationInSeconds = calcDuration(result);
         result.setDurationInSeconds(durationInSeconds);
         return result;
     }
 
-    public double calcDuration(Solution solution) {
-        double result = 0.0;
+    public int calcDuration(Solution solution) {
+        int result = 0;
         List<Worker> workers = solution.getWorkers();
         for (Worker worker : workers) {
-            double workerDuration = workerService.calcDuration(worker);
+            int workerDuration = workerService.calcDuration(worker);
             result = Math.max(result, workerDuration);
         }
         return result;
@@ -70,14 +69,11 @@ public class SolutionService {
     }
 
     public void sortDescendingDuration(List<Solution> solutions) {
-        solutions.sort(new Comparator<Solution>() {
-            @Override
-            public int compare(Solution o1, Solution o2) {
-                CompareToBuilder builder = new CompareToBuilder()
-                        .append(o1.getDurationInSeconds(), o2.getDurationInSeconds());
-                int result = builder.build();
-                return result;
-            }
+        solutions.sort((o1, o2) -> {
+            CompareToBuilder builder = new CompareToBuilder()
+                    .append(o1.getDurationInSeconds(), o2.getDurationInSeconds());
+            int result = builder.build();
+            return result;
         });
     }
 }

@@ -41,7 +41,7 @@ public class Genetics {
         dispatch(tasks, workers, converted2, upper, numTasks);
         dispatch(tasks, workers, converted2, 0, lower);
         Solution result = Solution.builder(cycleCounter, indexInCycle).withWorkers(workers).build();
-        double duration = solutionService.calcDuration(result);
+        int duration = solutionService.calcDuration(result);
         result.setDurationInSeconds(duration);
         return result;
     }

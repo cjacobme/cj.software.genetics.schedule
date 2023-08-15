@@ -42,15 +42,15 @@ class BreederTest {
         assertThat(service).as("@Service").isNotNull();
     }
 
-    private Solution mockSolution(double duration) {
+    private Solution mockSolution(int duration) {
         Solution result = new SolutionBuilder().build();
         result.setDurationInSeconds(duration);
         return result;
     }
 
-    private List<Solution> createPopulation(double... durations) {
+    private List<Solution> createPopulation(int... durations) {
         List<Solution> result = new ArrayList<>();
-        for (double duration : durations) {
+        for (int duration : durations) {
             Solution solution = mockSolution(duration);
             result.add(solution);
         }
@@ -63,8 +63,8 @@ class BreederTest {
      */
     @Test
     void singleStep() {
-        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
-        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
+        List<Solution> population = createPopulation(50, 1, 47, 42, 37);
+        List<Solution> offsprings = createPopulation(10, 9, 8, 7);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -105,8 +105,8 @@ class BreederTest {
     @Test
     void multipleSteps() {
         listener.resetCounter();
-        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
-        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
+        List<Solution> population = createPopulation(50, 1, 47, 42, 37);
+        List<Solution> offsprings = createPopulation(10, 9, 8, 7);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},

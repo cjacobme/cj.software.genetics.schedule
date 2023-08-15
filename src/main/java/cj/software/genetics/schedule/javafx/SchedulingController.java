@@ -8,7 +8,6 @@ import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -75,11 +74,7 @@ public class SchedulingController implements Initializable {
         scrollPane.setContent(solutionControl);
 
         tcolCycle.setCellValueFactory(new PropertyValueFactory<>("cycleCounter"));
-        tcolDuration.setCellValueFactory(cellData -> {
-            double distanceSum = cellData.getValue().getDurationInSeconds();
-            String formatted = String.format("%7.2f", distanceSum);
-            return new SimpleStringProperty(formatted);
-        });
+        tcolDuration.setCellValueFactory(new PropertyValueFactory<>("durationInSeconds"));
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
     }
