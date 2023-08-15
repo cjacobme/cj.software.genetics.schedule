@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -46,18 +45,12 @@ public class Breeder {
             Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2, numWorkers, numSlots);
             result.add(offspring);
         }
-        result.sort(new Comparator<Solution>() {
-            @Override
-            public int compare(Solution o1, Solution o2) {
-                return 0;
-            }
-        });
         solutionService.sortDescendingDuration(result);
         return result;
     }
 
     public List<Solution> multipleSteps(
-            int cycleCounter,
+            int initialCycleCounter,
             int numSteps,
             List<Solution> solutions,
             int elitismCount,
@@ -65,10 +58,12 @@ public class Breeder {
             int numWorkers,
             int numSlots) {
         List<Solution> result = solutions;
+        int cycleCounter = initialCycleCounter + 1;
         for (int step = 0; step < numSteps; step++) {
-            result = step(step + cycleCounter, solutions, elitismCount, tournamentSize, numWorkers, numSlots);
-            BreedingStepEvent event = new BreedingStepEvent(step, result);
+            result = step(cycleCounter, solutions, elitismCount, tournamentSize, numWorkers, numSlots);
+            BreedingStepEvent event = new BreedingStepEvent(cycleCounter, result);
             publisher.publishEvent(event);
+            cycleCounter++;
         }
         return result;
     }

@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.javafx;
 
+import cj.software.genetics.schedule.entity.BreedingStepEvent;
 import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
@@ -12,16 +13,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,7 @@ import java.util.ResourceBundle;
 
 @Component
 @FxmlView("Scheduling.fxml")
-public class SchedulingController implements Initializable {
+public class SchedulingController implements Initializable, ApplicationListener<BreedingStepEvent> {
 
     private final Logger logger = LogManager.getFormatterLogger();
 
@@ -64,6 +63,9 @@ public class SchedulingController implements Initializable {
     @FXML
     private TextField tfCycleNo;
 
+    @FXML
+    private Spinner<Integer> spNumCycles;
+
     private ProblemSetup problemSetup;
 
     private List<Solution> population;
@@ -77,6 +79,7 @@ public class SchedulingController implements Initializable {
         tcolDuration.setCellValueFactory(new PropertyValueFactory<>("durationInSeconds"));
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
+        spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 100));
     }
 
     private List<Task> createAllTasks(ProblemSetup problemSetup) {
@@ -129,6 +132,11 @@ public class SchedulingController implements Initializable {
         tfCycleNo.setText(formatted);
     }
 
+    private void setPopulation(List<Solution> solutions, int cycleCounter) {
+        problemSetup.setCycleCounter(cycleCounter);
+        Platform.runLater(() -> setPopulation(solutions));
+    }
+
     @FXML
     public void exitApplication() {
         logger.info("exiting now...");
@@ -145,5 +153,32 @@ public class SchedulingController implements Initializable {
         List<Solution> newPopulation =
                 breeder.step(cycleCounter, population, elitismCount, tournamentSize, numWorkers, numSlots);
         setPopulation(newPopulation);
+    }
+
+    @FXML
+    public void multipleSteps() {
+        int initialCycleCounter = problemSetup.getCycleCounter();
+        int numSteps = spNumCycles.getValue();
+        int elitismCount = problemSetup.getElitismCount();
+        int tournamentSize = problemSetup.getTournamentSize();
+        int numWorkers = problemSetup.getNumWorkers();
+        int numSlots = problemSetup.getNumSlots();
+        Thread thread = new Thread(() -> breeder.multipleSteps(
+                initialCycleCounter,
+                numSteps,
+                SchedulingController.this.population,
+                elitismCount,
+                tournamentSize,
+                numWorkers,
+                numSlots), "multiple steps");
+        thread.start();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onApplicationEvent(BreedingStepEvent event) {
+        int cycleCounter = event.getCounter();
+        List<Solution> solutions = (List) event.getSource();
+        setPopulation(solutions, cycleCounter);
     }
 }

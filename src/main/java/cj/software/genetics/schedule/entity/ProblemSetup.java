@@ -77,6 +77,19 @@ public class ProblemSetup implements Serializable {
         return tournamentSize;
     }
 
+    public int incCycleCounter() {
+        int result = ++cycleCounter;
+        return result;
+    }
+
+    public void setCycleCounter(int cycleCounter) {
+        this.cycleCounter = cycleCounter;
+    }
+
+    public int getCycleCounter() {
+        return cycleCounter;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -138,14 +151,5 @@ public class ProblemSetup implements Serializable {
             instance.tournamentSize = tournamenSize;
             return this;
         }
-    }
-
-    public int incCycleCounter() {
-        int result = ++cycleCounter;
-        return result;
-    }
-
-    public int getCycleCounter() {
-        return cycleCounter;
     }
 }

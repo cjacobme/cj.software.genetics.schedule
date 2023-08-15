@@ -21,15 +21,21 @@
                 <children>
                     <Label text="1 Cycle"/>
                     <Button alignment="CENTER" mnemonicParsing="false" onAction="#singleStep" text="Step"
-                            GridPane.columnIndex="1"/>
-                    <Label text="Cycle #" GridPane.rowIndex="2"/>
-                    <TextField fx:id="tfCycleNo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                            GridPane.columnIndex="2"/>
+                    <Label text="Cycle #" GridPane.rowIndex="3"/>
+                    <TextField fx:id="tfCycleNo" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Label text="# of cycles" GridPane.rowIndex="1"/>
+                    <Spinner fx:id="spNumCycles" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    <Button mnemonicParsing="false" onAction="#multipleSteps" text="Run" GridPane.columnIndex="2"
+                            GridPane.rowIndex="1"/>
                 </children>
                 <columnConstraints>
                     <ColumnConstraints/>
                     <ColumnConstraints/>
+                    <ColumnConstraints/>
                 </columnConstraints>
                 <rowConstraints>
+                    <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
                     <RowConstraints/>
