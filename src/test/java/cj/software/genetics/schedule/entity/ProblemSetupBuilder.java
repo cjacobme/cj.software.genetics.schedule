@@ -8,6 +8,8 @@ public class ProblemSetupBuilder extends ProblemSetup.Builder {
                 .withNumTasks10(20)
                 .withNumTasks20(5)
                 .withNumTasks50(5)
-                .withNumTasks100(2);
+                .withNumTasks100(2)
+                .withElitismCount(2)
+                .withTournamentSize(5);
     }
 }

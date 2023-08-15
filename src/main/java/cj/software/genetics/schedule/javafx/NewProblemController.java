@@ -35,6 +35,12 @@ public class NewProblemController implements Initializable {
     @FXML
     private Spinner<Integer> spNum100;
 
+    @FXML
+    private Spinner<Integer> spElitismCount;
+
+    @FXML
+    private Spinner<Integer> spTournamentSize;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         spNumSolutions.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 2000, 100));
@@ -44,6 +50,8 @@ public class NewProblemController implements Initializable {
         spNum20.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 40));
         spNum50.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 30));
         spNum100.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 20));
+        spElitismCount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 20, 3));
+        spTournamentSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 20, 5));
     }
 
     public int getNumSolutions() {
@@ -72,5 +80,13 @@ public class NewProblemController implements Initializable {
 
     public int getNumTasks100() {
         return spNum100.getValue();
+    }
+
+    public int getElitismCount() {
+        return spElitismCount.getValue();
+    }
+
+    public int getTournamentSize() {
+        return spTournamentSize.getValue();
     }
 }

@@ -12,7 +12,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -57,9 +60,6 @@ public class SchedulingController implements Initializable {
 
     @FXML
     private TableColumn<Solution, String> tcolDuration;
-
-    @FXML
-    private Spinner<Integer> spNumCycles;
 
     @FXML
     private TextField tfCycleNo;
@@ -138,8 +138,8 @@ public class SchedulingController implements Initializable {
     @FXML
     public void singleStep() {
         int cycleCounter = problemSetup.incCycleCounter();
-        int elitismCount = 3;   //TODO from UI and Problem setup
-        int tournamentSize = 5; //TODO from UI and Problem setup
+        int elitismCount = problemSetup.getElitismCount();
+        int tournamentSize = problemSetup.getTournamentSize();
         int numWorkers = problemSetup.getNumWorkers();
         int numSlots = problemSetup.getNumSlots();
         List<Solution> newPopulation =
