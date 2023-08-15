@@ -9,8 +9,6 @@ import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -69,7 +67,10 @@ public class SchedulingController implements Initializable, ApplicationListener<
     private Spinner<Integer> spNumCycles;
 
     @FXML
-    private Spinner<Integer> spScale;
+    private Slider spScale;
+
+    @FXML
+    private Label lbScale;
 
     private ProblemSetup problemSetup;
 
@@ -85,10 +86,12 @@ public class SchedulingController implements Initializable, ApplicationListener<
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
         spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 100));
-        spScale.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 30, 15));
-        spScale.valueProperty().addListener(new ChangeListener<Integer>() {
-            @Override
-            public void changed(ObservableValue<? extends Integer> observableValue, Integer oldValue, Integer newValue) {
+        int scaleValue = spScale.valueProperty().intValue();
+        lbScale.setText(String.format("%d", scaleValue));
+        spScale.valueProperty().addListener((observableValue, numbOldValue, numbNewValue) -> {
+            if (numbNewValue != null) {
+                int newValue = numbNewValue.intValue();
+                lbScale.setText(String.format("%d", newValue));
                 solutionControl.setScale(newValue);
                 solutionControl.setSolution(null);
                 if (population != null) {

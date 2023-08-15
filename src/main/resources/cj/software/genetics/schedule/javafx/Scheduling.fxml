@@ -29,7 +29,8 @@
                     <Label text="Cycle #" GridPane.rowIndex="2"/>
                     <TextField fx:id="tfCycleNo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                     <Label text="Scale" GridPane.rowIndex="3"/>
-                    <Spinner fx:id="spScale" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Slider fx:id="spScale" min="1.0" value="15.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                    <Label fx:id="lbScale" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
                 </children>
                 <columnConstraints>
                     <ColumnConstraints/>
