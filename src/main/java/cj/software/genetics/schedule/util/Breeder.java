@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -21,6 +22,9 @@ public class Breeder {
 
     @Autowired
     private ApplicationEventPublisher publisher;
+
+    @Autowired
+    private SolutionService solutionService;
 
     public List<Solution> step(
             int cycleCounter,
@@ -42,6 +46,13 @@ public class Breeder {
             Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2, numWorkers, numSlots);
             result.add(offspring);
         }
+        result.sort(new Comparator<Solution>() {
+            @Override
+            public int compare(Solution o1, Solution o2) {
+                return 0;
+            }
+        });
+        solutionService.sortDescendingDuration(result);
         return result;
     }
 

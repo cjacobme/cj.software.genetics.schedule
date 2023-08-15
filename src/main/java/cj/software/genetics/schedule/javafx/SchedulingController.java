@@ -4,6 +4,7 @@ import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
+import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
@@ -12,9 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -45,6 +44,9 @@ public class SchedulingController implements Initializable {
     @Autowired
     private TaskService taskService;
 
+    @Autowired
+    private Breeder breeder;
+
     @FXML
     private ScrollPane scrollPane;
 
@@ -57,6 +59,15 @@ public class SchedulingController implements Initializable {
     @FXML
     private TableColumn<Solution, String> tcolDuration;
 
+    @FXML
+    private Spinner<Integer> spNumCycles;
+
+    @FXML
+    private TextField tfCycleNo;
+
+    private ProblemSetup problemSetup;
+
+    private List<Solution> population;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -98,26 +109,46 @@ public class SchedulingController implements Initializable {
         Optional<ProblemSetup> optProblemSetup = newProblemDialog.showAndWait();
         if (optProblemSetup.isPresent()) {
             logger.info("a new problem was defined");
-            ProblemSetup problemSetup = optProblemSetup.get();
+            problemSetup = optProblemSetup.get();
             List<Task> allTasks = createAllTasks(problemSetup);
             List<Solution> allSolutions = solutionService.createInitialPopulation(
                     problemSetup.getNumSolutions(),
                     problemSetup.getNumWorkers(),
                     problemSetup.getNumSlots(),
                     allTasks);
-            ObservableList<Solution> tableData = FXCollections.observableList(allSolutions);
-            tblSolutions.setItems(tableData);
-            if (!allSolutions.isEmpty()) {
-                tblSolutions.getSelectionModel().select(0);
-            }
+            setPopulation(allSolutions);
         } else {
             logger.info("dialog was cancelled");
         }
+    }
+
+    private void setPopulation(List<Solution> solutions) {
+        population = solutions;
+        ObservableList<Solution> tableData = FXCollections.observableList(solutions);
+        tblSolutions.setItems(tableData);
+        if (!solutions.isEmpty()) {
+            tblSolutions.getSelectionModel().select(0);
+        }
+        int cycleCounter = problemSetup.getCycleCounter();
+        String formatted = String.format("%d", cycleCounter);
+        tfCycleNo.setText(formatted);
     }
 
     @FXML
     public void exitApplication() {
         logger.info("exiting now...");
         Platform.exit();
+    }
+
+    @FXML
+    public void singleStep() {
+        int cycleCounter = problemSetup.incCycleCounter();
+        int elitismCount = 3;   //TODO from UI and Problem setup
+        int tournamentSize = 5; //TODO from UI and Problem setup
+        int numWorkers = problemSetup.getNumWorkers();
+        int numSlots = problemSetup.getNumSlots();
+        List<Solution> newPopulation =
+                breeder.step(cycleCounter, population, elitismCount, tournamentSize, numWorkers, numSlots);
+        setPopulation(newPopulation);
     }
 }

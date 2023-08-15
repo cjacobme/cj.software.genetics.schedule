@@ -25,6 +25,8 @@ public class ProblemSetup implements Serializable {
 
     private int numTasks100;
 
+    private int cycleCounter;
+
     private ProblemSetup() {
     }
 
@@ -107,5 +109,14 @@ public class ProblemSetup implements Serializable {
             instance.numSolutions = numSolutions;
             return this;
         }
+    }
+
+    public int incCycleCounter() {
+        int result = ++cycleCounter;
+        return result;
+    }
+
+    public int getCycleCounter() {
+        return cycleCounter;
     }
 }

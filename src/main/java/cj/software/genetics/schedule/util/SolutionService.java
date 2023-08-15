@@ -65,7 +65,12 @@ public class SolutionService {
             Solution solution = createInitialSolution(i, numWorkers, numSlots, tasks);
             result.add(solution);
         }
-        result.sort(new Comparator<Solution>() {
+        sortDescendingDuration(result);
+        return result;
+    }
+
+    public void sortDescendingDuration(List<Solution> solutions) {
+        solutions.sort(new Comparator<Solution>() {
             @Override
             public int compare(Solution o1, Solution o2) {
                 CompareToBuilder builder = new CompareToBuilder()
@@ -74,6 +79,5 @@ public class SolutionService {
                 return result;
             }
         });
-        return result;
     }
 }
