@@ -137,7 +137,7 @@ public class SchedulingController implements Initializable, ApplicationListener<
                     problemSetup.getNumWorkers(),
                     problemSetup.getNumSlots(),
                     allTasks);
-            setPopulation(allSolutions, 0);
+            setPopulation(allSolutions, problemSetup.getCurrentValue());
         } else {
             logger.info("dialog was cancelled");
         }
