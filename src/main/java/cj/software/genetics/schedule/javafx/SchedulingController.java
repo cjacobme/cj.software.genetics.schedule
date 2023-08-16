@@ -85,7 +85,7 @@ public class SchedulingController implements Initializable, ApplicationListener<
         tcolDuration.setCellValueFactory(new PropertyValueFactory<>("durationInSeconds"));
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
-        spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 100));
+        spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 30));
         int scaleValue = spScale.valueProperty().intValue();
         lbScale.setText(String.format("%d", scaleValue));
         spScale.valueProperty().addListener((observableValue, numbOldValue, numbNewValue) -> {
