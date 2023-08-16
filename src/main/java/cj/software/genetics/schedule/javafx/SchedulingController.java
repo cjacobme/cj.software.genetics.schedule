@@ -137,27 +137,21 @@ public class SchedulingController implements Initializable, ApplicationListener<
                     problemSetup.getNumWorkers(),
                     problemSetup.getNumSlots(),
                     allTasks);
-            setPopulation(allSolutions);
+            setPopulation(allSolutions, 0);
         } else {
             logger.info("dialog was cancelled");
         }
     }
 
-    private void setPopulation(List<Solution> solutions) {
+    private void setPopulation(List<Solution> solutions, int cycleCounter) {
         population = solutions;
         ObservableList<Solution> tableData = FXCollections.observableList(solutions);
         tblSolutions.setItems(tableData);
         if (!solutions.isEmpty()) {
             tblSolutions.getSelectionModel().select(0);
         }
-        int cycleCounter = problemSetup.getCycleCounter();
         String formatted = String.format("%d", cycleCounter);
         tfCycleNo.setText(formatted);
-    }
-
-    private void setPopulation(List<Solution> solutions, int cycleCounter) {
-        problemSetup.setCycleCounter(cycleCounter);
-        Platform.runLater(() -> setPopulation(solutions));
     }
 
     @FXML
@@ -175,19 +169,18 @@ public class SchedulingController implements Initializable, ApplicationListener<
         int numSlots = problemSetup.getNumSlots();
         List<Solution> newPopulation =
                 breeder.step(cycleCounter, population, elitismCount, tournamentSize, numWorkers, numSlots);
-        setPopulation(newPopulation);
+        setPopulation(newPopulation, cycleCounter);
     }
 
     @FXML
     public void multipleSteps() {
-        int initialCycleCounter = problemSetup.getCycleCounter();
         int numSteps = spNumCycles.getValue();
         int elitismCount = problemSetup.getElitismCount();
         int tournamentSize = problemSetup.getTournamentSize();
         int numWorkers = problemSetup.getNumWorkers();
         int numSlots = problemSetup.getNumSlots();
         Thread thread = new Thread(() -> breeder.multipleSteps(
-                initialCycleCounter,
+                problemSetup,
                 numSteps,
                 SchedulingController.this.population,
                 elitismCount,
@@ -200,8 +193,10 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @Override
     @SuppressWarnings("unchecked")
     public void onApplicationEvent(BreedingStepEvent event) {
-        int cycleCounter = event.getCounter();
-        List<Solution> solutions = (List) event.getSource();
-        setPopulation(solutions, cycleCounter);
+        Platform.runLater(() -> {
+            int cycleCounter = event.getCounter();
+            List<Solution> solutions = (List) event.getSource();
+            setPopulation(solutions, cycleCounter);
+        });
     }
 }

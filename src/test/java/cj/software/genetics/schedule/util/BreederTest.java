@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.util;
 
+import cj.software.genetics.schedule.entity.CycleCounter;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.SolutionBuilder;
 import org.assertj.core.api.SoftAssertions;
@@ -102,8 +103,24 @@ class BreederTest {
         softy.assertAll();
     }
 
+    private static class MyCounter implements CycleCounter {
+        private int currentValue = 3;
+
+        @Override
+        public int getCurrentValue() {
+            return currentValue;
+        }
+
+        @Override
+        public int incCycleCounter() {
+            currentValue++;
+            return currentValue;
+        }
+    }
+
     @Test
     void multipleSteps() {
+        CycleCounter cycleCounter = new MyCounter();
         listener.resetCounter();
         List<Solution> population = createPopulation(50, 1, 47, 42, 37);
         List<Solution> offsprings = createPopulation(10, 9, 8, 7);
@@ -118,13 +135,12 @@ class BreederTest {
         int numWorkers = 3;
         int numSlots = 100;
         int numSteps = 7;
-        int cycleCounter = 3;
 
         when(randomService.shuffledUpTo(5)).thenReturn(shuffles[0], shuffles[1], shuffles[2], shuffles[3]);
-        when(genetics.mate(cycleCounter, 0, population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
-        when(genetics.mate(cycleCounter, 1, population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
-        when(genetics.mate(cycleCounter, 2, population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
-        when(genetics.mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
+        when(genetics.mate(3, 0, population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
+        when(genetics.mate(3, 1, population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
+        when(genetics.mate(3, 2, population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
+        when(genetics.mate(3, 3, population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
 
         List<Solution> nextGeneration = breeder.multipleSteps(
                 cycleCounter,
@@ -135,6 +151,7 @@ class BreederTest {
                 numWorkers,
                 numSlots);
         assertThat(nextGeneration).isNotNull();
+        assertThat(cycleCounter.getCurrentValue()).isEqualTo(10);
         assertThat(listener.getCounter()).isEqualTo(10);
         verify(randomService, times(28)).shuffledUpTo(5);
     }

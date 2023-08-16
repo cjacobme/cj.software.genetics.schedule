@@ -1,6 +1,7 @@
 package cj.software.genetics.schedule.util;
 
 import cj.software.genetics.schedule.entity.BreedingStepEvent;
+import cj.software.genetics.schedule.entity.CycleCounter;
 import cj.software.genetics.schedule.entity.Solution;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class Breeder {
     }
 
     public List<Solution> multipleSteps(
-            int initialCycleCounter,
+            CycleCounter cycleCounter,
             int numSteps,
             List<Solution> solutions,
             int elitismCount,
@@ -58,12 +59,11 @@ public class Breeder {
             int numWorkers,
             int numSlots) {
         List<Solution> result = solutions;
-        int cycleCounter = initialCycleCounter + 1;
         for (int step = 0; step < numSteps; step++) {
-            result = step(cycleCounter, solutions, elitismCount, tournamentSize, numWorkers, numSlots);
-            BreedingStepEvent event = new BreedingStepEvent(cycleCounter, result);
+            int cycleVlaue = cycleCounter.incCycleCounter();
+            result = step(cycleVlaue, solutions, elitismCount, tournamentSize, numWorkers, numSlots);
+            BreedingStepEvent event = new BreedingStepEvent(cycleVlaue, result);
             publisher.publishEvent(event);
-            cycleCounter++;
         }
         return result;
     }

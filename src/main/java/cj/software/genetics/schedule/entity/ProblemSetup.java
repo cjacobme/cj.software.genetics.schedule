@@ -4,7 +4,7 @@ import javax.validation.constraints.Min;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class ProblemSetup implements Serializable {
+public class ProblemSetup implements Serializable, CycleCounter {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -82,11 +82,7 @@ public class ProblemSetup implements Serializable {
         return result;
     }
 
-    public void setCycleCounter(int cycleCounter) {
-        this.cycleCounter = cycleCounter;
-    }
-
-    public int getCycleCounter() {
+    public int getCurrentValue() {
         return cycleCounter;
     }
 
