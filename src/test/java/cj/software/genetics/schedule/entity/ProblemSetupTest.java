@@ -50,6 +50,8 @@ class ProblemSetupTest {
         softy.assertThat(instance.getNumTasks20()).as("number of tasks 20 s").isZero();
         softy.assertThat(instance.getNumTasks50()).as("number of tasks 50 s").isZero();
         softy.assertThat(instance.getNumTasks100()).as("number of tasks 100 s").isZero();
+        softy.assertThat(instance.getElitismCount()).as("elitism count").isZero();
+        softy.assertThat(instance.getTournamentSize()).as("tournament size").isZero();
         softy.assertAll();
     }
 
@@ -62,6 +64,8 @@ class ProblemSetupTest {
         int numTasks20 = 4;
         int numTasks50 = 5;
         int numTasks100 = 6;
+        int elitismCount = 7;
+        int tournamenSize = 8;
         ProblemSetup instance = ProblemSetup.builder()
                 .withNumSolutions(numSolutions)
                 .withNumWorkers(numWorkers)
@@ -70,6 +74,8 @@ class ProblemSetupTest {
                 .withNumTasks20(numTasks20)
                 .withNumTasks50(numTasks50)
                 .withNumTasks100(numTasks100)
+                .withElitismCount(elitismCount)
+                .withTournamentSize(tournamenSize)
                 .build();
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
@@ -80,6 +86,8 @@ class ProblemSetupTest {
         softy.assertThat(instance.getNumTasks20()).isEqualTo(numTasks20);
         softy.assertThat(instance.getNumTasks50()).isEqualTo(numTasks50);
         softy.assertThat(instance.getNumTasks100()).isEqualTo(numTasks100);
+        softy.assertThat(instance.getElitismCount()).isEqualTo(elitismCount);
+        softy.assertThat(instance.getTournamentSize()).isEqualTo(tournamenSize);
         softy.assertAll();
     }
 

@@ -1,26 +1,26 @@
 package cj.software.genetics.schedule.javafx;
 
+import cj.software.genetics.schedule.entity.BreedingStepEvent;
 import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
+import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -32,7 +32,7 @@ import java.util.ResourceBundle;
 
 @Component
 @FxmlView("Scheduling.fxml")
-public class SchedulingController implements Initializable {
+public class SchedulingController implements Initializable, ApplicationListener<BreedingStepEvent> {
 
     private final Logger logger = LogManager.getFormatterLogger();
 
@@ -44,6 +44,9 @@ public class SchedulingController implements Initializable {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private Breeder breeder;
 
     @FXML
     private ScrollPane scrollPane;
@@ -57,6 +60,21 @@ public class SchedulingController implements Initializable {
     @FXML
     private TableColumn<Solution, String> tcolDuration;
 
+    @FXML
+    private TextField tfCycleNo;
+
+    @FXML
+    private Spinner<Integer> spNumCycles;
+
+    @FXML
+    private Slider spScale;
+
+    @FXML
+    private Label lbScale;
+
+    private ProblemSetup problemSetup;
+
+    private List<Solution> population;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -64,13 +82,27 @@ public class SchedulingController implements Initializable {
         scrollPane.setContent(solutionControl);
 
         tcolCycle.setCellValueFactory(new PropertyValueFactory<>("cycleCounter"));
-        tcolDuration.setCellValueFactory(cellData -> {
-            double distanceSum = cellData.getValue().getDurationInSeconds();
-            String formatted = String.format("%7.2f", distanceSum);
-            return new SimpleStringProperty(formatted);
-        });
+        tcolDuration.setCellValueFactory(new PropertyValueFactory<>("durationInSeconds"));
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
+        spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 30));
+        int scaleValue = spScale.valueProperty().intValue();
+        lbScale.setText(String.format("%d", scaleValue));
+        spScale.valueProperty().addListener((observableValue, numbOldValue, numbNewValue) -> {
+            if (numbNewValue != null) {
+                int newValue = numbNewValue.intValue();
+                lbScale.setText(String.format("%d", newValue));
+                solutionControl.setScale(newValue);
+                solutionControl.setSolution(null);
+                if (population != null) {
+                    int selectedIndex = tblSolutions.getSelectionModel().getSelectedIndex();
+                    if (selectedIndex >= 0) {
+                        Solution solution = population.get(selectedIndex);
+                        solutionControl.setSolution(solution);
+                    }
+                }
+            }
+        });
     }
 
     private List<Task> createAllTasks(ProblemSetup problemSetup) {
@@ -98,26 +130,73 @@ public class SchedulingController implements Initializable {
         Optional<ProblemSetup> optProblemSetup = newProblemDialog.showAndWait();
         if (optProblemSetup.isPresent()) {
             logger.info("a new problem was defined");
-            ProblemSetup problemSetup = optProblemSetup.get();
+            problemSetup = optProblemSetup.get();
             List<Task> allTasks = createAllTasks(problemSetup);
             List<Solution> allSolutions = solutionService.createInitialPopulation(
                     problemSetup.getNumSolutions(),
                     problemSetup.getNumWorkers(),
                     problemSetup.getNumSlots(),
                     allTasks);
-            ObservableList<Solution> tableData = FXCollections.observableList(allSolutions);
-            tblSolutions.setItems(tableData);
-            if (!allSolutions.isEmpty()) {
-                tblSolutions.getSelectionModel().select(0);
-            }
+            setPopulation(allSolutions, problemSetup.getCurrentValue());
         } else {
             logger.info("dialog was cancelled");
         }
+    }
+
+    private void setPopulation(List<Solution> solutions, int cycleCounter) {
+        population = solutions;
+        ObservableList<Solution> tableData = FXCollections.observableList(solutions);
+        tblSolutions.setItems(tableData);
+        if (!solutions.isEmpty()) {
+            tblSolutions.getSelectionModel().select(0);
+        }
+        String formatted = String.format("%d", cycleCounter);
+        tfCycleNo.setText(formatted);
     }
 
     @FXML
     public void exitApplication() {
         logger.info("exiting now...");
         Platform.exit();
+    }
+
+    @FXML
+    public void singleStep() {
+        int cycleCounter = problemSetup.incCycleCounter();
+        int elitismCount = problemSetup.getElitismCount();
+        int tournamentSize = problemSetup.getTournamentSize();
+        int numWorkers = problemSetup.getNumWorkers();
+        int numSlots = problemSetup.getNumSlots();
+        List<Solution> newPopulation =
+                breeder.step(cycleCounter, population, elitismCount, tournamentSize, numWorkers, numSlots);
+        setPopulation(newPopulation, cycleCounter);
+    }
+
+    @FXML
+    public void multipleSteps() {
+        int numSteps = spNumCycles.getValue();
+        int elitismCount = problemSetup.getElitismCount();
+        int tournamentSize = problemSetup.getTournamentSize();
+        int numWorkers = problemSetup.getNumWorkers();
+        int numSlots = problemSetup.getNumSlots();
+        Thread thread = new Thread(() -> breeder.multipleSteps(
+                problemSetup,
+                numSteps,
+                SchedulingController.this.population,
+                elitismCount,
+                tournamentSize,
+                numWorkers,
+                numSlots), "multiple steps");
+        thread.start();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onApplicationEvent(BreedingStepEvent event) {
+        Platform.runLater(() -> {
+            int cycleCounter = event.getCounter();
+            List<Solution> solutions = (List) event.getSource();
+            setPopulation(solutions, cycleCounter);
+        });
     }
 }

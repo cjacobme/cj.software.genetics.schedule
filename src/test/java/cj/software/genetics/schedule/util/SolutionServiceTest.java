@@ -15,7 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -43,7 +42,7 @@ class SolutionServiceTest {
         // configure mocks
         when(randomService.nextRandom(2)).thenReturn(0, 1, 0);
         when(randomService.nextRandom(3)).thenReturn(0, 0, 1);
-        when(workerService.calcDuration(any(Worker.class))).thenReturn(3.0, 2.0);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(3, 2);
 
         // invoke
         Solution solution = solutionService.createInitialSolution(1, numWorkers, numSlots, tasks);
@@ -65,7 +64,7 @@ class SolutionServiceTest {
         softy.assertThat(worker1.getMaxNumTasks()).as("max num tasks[1]").isEqualTo(numSlots);
         softy.assertThat(tasksOf0).as("tasks of worker 0").isEqualTo(List.of(task1, task3));
         softy.assertThat(tasksOf1).as("tasks of worker 1").isEqualTo(List.of(task2));
-        softy.assertThat(solution.getDurationInSeconds()).as("duration in seconds").isEqualTo(3.0);
+        softy.assertThat(solution.getDurationInSeconds()).as("duration in seconds").isEqualTo(3);
         softy.assertAll();
 
         verify(randomService, times(3)).nextRandom(2);
@@ -159,24 +158,24 @@ class SolutionServiceTest {
     }
 
     @Test
-    void duration47dot11() {
+    void duration4711() {
         Solution solution = new SolutionBuilder().build();
 
-        when(workerService.calcDuration(any(Worker.class))).thenReturn(0.1, 47.11);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(0, 4711);
 
-        double duration = solutionService.calcDuration(solution);
+        int duration = solutionService.calcDuration(solution);
 
-        assertThat(duration).isEqualTo(47.11, within(0.001));
+        assertThat(duration).isEqualTo(4711);
     }
 
     @Test
     void duration42() {
         Solution solution = new SolutionBuilder().build();
 
-        when(workerService.calcDuration(any(Worker.class))).thenReturn(42.0, 0.0);
+        when(workerService.calcDuration(any(Worker.class))).thenReturn(42, 0);
 
-        double duration = solutionService.calcDuration(solution);
+        int duration = solutionService.calcDuration(solution);
 
-        assertThat(duration).isEqualTo(42.0, within(0.001));
+        assertThat(duration).isEqualTo(42);
     }
 }

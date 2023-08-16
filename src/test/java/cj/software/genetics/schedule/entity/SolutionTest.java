@@ -54,9 +54,11 @@ class SolutionTest {
         Worker worker1 = mock(Worker.class);
         Worker worker2 = mock(Worker.class);
         Worker worker3 = mock(Worker.class);
+        int durationInSeconds = 20;
 
         Solution instance = Solution.builder(10, 12)
                 .withWorkers(worker1, worker2, worker3)
+                .withDurationInSeconds(durationInSeconds)
                 .build();
 
         assertThat(instance).as("built instance").isNotNull();
@@ -64,6 +66,8 @@ class SolutionTest {
         softy.assertThat(instance.getCycleCounter()).as("cycle counter").isEqualTo(10);
         softy.assertThat(instance.getIndexInCycle()).as("index in cycle").isEqualTo(12);
         softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker1, worker2, worker3));
+        softy.assertThat(instance.getDurationInSeconds()).as("duration in seconds").isEqualTo(durationInSeconds);
+        softy.assertThat(instance.getFitnessValue()).as("fitness value").isEqualTo(0.05);
         softy.assertAll();
         Worker worker4 = mock(Worker.class);
         instance.addWorker(worker4);
@@ -108,9 +112,9 @@ class SolutionTest {
     @Test
     void duration() {
         Solution instance = new SolutionBuilder().build();
-        instance.setDurationInSeconds(10.0);
+        instance.setDurationInSeconds(10);
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(instance.getDurationInSeconds()).as("duration").isEqualTo(10.0, within(0.0001));
+        softy.assertThat(instance.getDurationInSeconds()).as("duration").isEqualTo(10);
         softy.assertThat(instance.getFitnessValue()).as("fitness value").isEqualTo(0.1, within(0.0001));
         softy.assertAll();
     }

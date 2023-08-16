@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.*?>
 <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity"
-            minWidth="-Infinity" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            minWidth="-Infinity" prefWidth="1100.0" xmlns="http://javafx.com/javafx/17.0.2-ea"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="cj.software.genetics.schedule.javafx.SchedulingController">
     <top>
         <MenuBar BorderPane.alignment="CENTER">
@@ -16,20 +18,56 @@
     </top>
 
     <left>
-        <TableView fx:id="tblSolutions" maxHeight="1.7976931348623157E308" prefHeight="800.0"
-                   prefWidth="175.0">
-            <columns>
-                <TableColumn fx:id="tcolCycle" editable="false" prefWidth="75.0" sortable="false"
-                             text="Cycle"/>
-                <TableColumn fx:id="tcolDuration" editable="false" maxWidth="1.7976931348623157E308"
-                             prefWidth="90.0" sortable="false" text="Distance Sum"/>
-            </columns>
-        </TableView>
+        <VBox spacing="5.0">
+            <GridPane hgap="5.0" vgap="5.0">
+                <Label text="1 Cycle"/>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#singleStep" text="Step"
+                        GridPane.columnIndex="2"/>
+                <Label text="# of cycles" GridPane.rowIndex="1"/>
+                <Spinner fx:id="spNumCycles" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Button mnemonicParsing="false" onAction="#multipleSteps" text="Run" GridPane.columnIndex="2"
+                        GridPane.rowIndex="1"/>
+                <Label text="Cycle #" GridPane.rowIndex="2"/>
+                <TextField fx:id="tfCycleNo" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <columnConstraints>
+                    <ColumnConstraints/>
+                    <ColumnConstraints/>
+                    <ColumnConstraints/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                    <RowConstraints/>
+                </rowConstraints>
+            </GridPane>
+            <TableView fx:id="tblSolutions" maxHeight="1.7976931348623157E308" prefHeight="800.0" prefWidth="175.0">
+                <columns>
+                    <TableColumn fx:id="tcolCycle" editable="false" prefWidth="75.0" sortable="false" text="Cycle"/>
+                    <TableColumn fx:id="tcolDuration" editable="false" maxWidth="1.7976931348623157E308"
+                                 prefWidth="90.0" sortable="false" text="Distance Sum"/>
+                </columns>
+            </TableView>
+        </VBox>
     </left>
 
     <center>
-        <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" prefHeight="200.0" prefWidth="200.0" vbarPolicy="ALWAYS"
-                    BorderPane.alignment="CENTER">
-        </ScrollPane>
+        <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+            <center>
+                <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" prefHeight="200.0" prefWidth="200.0"
+                            vbarPolicy="ALWAYS" BorderPane.alignment="CENTER">
+                </ScrollPane>
+            </center>
+            <bottom>
+                <HBox BorderPane.alignment="BOTTOM_LEFT">
+                    <Label fx:id="lbScale" text="scale"/>
+                    <Slider fx:id="spScale" max="15.0" maxHeight="1.7976931348623157E308" min="1.0" value="5.0"
+                            HBox.hgrow="ALWAYS"/>
+                </HBox>
+            </bottom>
+        </BorderPane>
     </center>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
 </BorderPane>

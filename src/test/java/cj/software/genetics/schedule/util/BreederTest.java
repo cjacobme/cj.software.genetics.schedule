@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.util;
 
+import cj.software.genetics.schedule.entity.CycleCounter;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.SolutionBuilder;
 import org.assertj.core.api.SoftAssertions;
@@ -33,21 +34,24 @@ class BreederTest {
     @MockBean
     private Genetics genetics;
 
+    @MockBean
+    private SolutionService solutionService;
+
     @Test
     void metadata() {
         Service service = Breeder.class.getAnnotation(Service.class);
         assertThat(service).as("@Service").isNotNull();
     }
 
-    private Solution mockSolution(double duration) {
+    private Solution mockSolution(int duration) {
         Solution result = new SolutionBuilder().build();
         result.setDurationInSeconds(duration);
         return result;
     }
 
-    private List<Solution> createPopulation(double... durations) {
+    private List<Solution> createPopulation(int... durations) {
         List<Solution> result = new ArrayList<>();
-        for (double duration : durations) {
+        for (int duration : durations) {
             Solution solution = mockSolution(duration);
             result.add(solution);
         }
@@ -60,8 +64,8 @@ class BreederTest {
      */
     @Test
     void singleStep() {
-        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
-        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
+        List<Solution> population = createPopulation(50, 1, 47, 42, 37);
+        List<Solution> offsprings = createPopulation(10, 9, 8, 7);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -88,6 +92,7 @@ class BreederTest {
         verify(genetics).mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots);
         verify(randomService, times(4)).shuffledUpTo(5);
         verify(genetics, times(4)).mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
+        verify(solutionService).sortDescendingDuration(anyList());
         assertThat(nextGeneration).hasSize(5);
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(nextGeneration.get(0)).isSameAs(population.get(1));
@@ -98,11 +103,26 @@ class BreederTest {
         softy.assertAll();
     }
 
+    private static class MyCounter implements CycleCounter {
+        private int currentValue = 3;
+
+        @Override
+        public int getCurrentValue() {
+            return currentValue;
+        }
+
+        @Override
+        public int incCycleCounter() {
+            currentValue++;
+            return currentValue;
+        }
+    }
+
     @Test
     void multipleSteps() {
+        CycleCounter cycleCounter = new MyCounter();
         listener.resetCounter();
-        List<Solution> population = createPopulation(0.5, 0.01, 0.4762, 0.4167, 0.37037);
-        List<Solution> offsprings = createPopulation(1.0, 0.9091, 0.8333, 0.7692);
+        List<Solution> population = createPopulation(50, 1, 47, 42, 37);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -114,13 +134,10 @@ class BreederTest {
         int numWorkers = 3;
         int numSlots = 100;
         int numSteps = 7;
-        int cycleCounter = 3;
 
         when(randomService.shuffledUpTo(5)).thenReturn(shuffles[0], shuffles[1], shuffles[2], shuffles[3]);
-        when(genetics.mate(cycleCounter, 0, population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
-        when(genetics.mate(cycleCounter, 1, population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
-        when(genetics.mate(cycleCounter, 2, population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
-        when(genetics.mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
+        when(genetics.mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots)))
+                .thenReturn(new SolutionBuilder().withDurationInSeconds(20).build());
 
         List<Solution> nextGeneration = breeder.multipleSteps(
                 cycleCounter,
@@ -131,7 +148,11 @@ class BreederTest {
                 numWorkers,
                 numSlots);
         assertThat(nextGeneration).isNotNull();
-        assertThat(listener.getCounter()).isEqualTo(6);
+        SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(cycleCounter.getCurrentValue()).isEqualTo(10);
+        softy.assertThat(listener.getCounter()).isEqualTo(10);
+        softy.assertAll();
         verify(randomService, times(28)).shuffledUpTo(5);
+        verify(genetics, times(28)).mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
     }
 }

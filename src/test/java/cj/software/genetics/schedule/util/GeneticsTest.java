@@ -84,7 +84,7 @@ class GeneticsTest {
         worker2.setTaskAt(1, tasks.get(3));
         worker1.setTaskAt(0, tasks.get(4));
         Solution result = Solution.builder(16, 17).withWorkers(worker0, worker1, worker2).build();
-        result.setDurationInSeconds(2.0);
+        result.setDurationInSeconds(2);
         return result;
     }
 
@@ -115,7 +115,7 @@ class GeneticsTest {
         when(converter.toMapTaskCoordinate(parent2)).thenReturn(converted2);
         when(randomService.nextRandom(5)).thenReturn(3).thenReturn(1);
         when(converter.toTaskList(parent1)).thenReturn(tasks);
-        when(solutionService.calcDuration(any(Solution.class))).thenReturn(2.0);
+        when(solutionService.calcDuration(any(Solution.class))).thenReturn(2);
 
         // invoke
         Solution offspring = genetics.mate(16, 17, parent1, parent2, numWorkers, numSlots);

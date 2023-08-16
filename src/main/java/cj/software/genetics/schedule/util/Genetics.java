@@ -41,7 +41,7 @@ public class Genetics {
         dispatch(tasks, workers, converted2, upper, numTasks);
         dispatch(tasks, workers, converted2, 0, lower);
         Solution result = Solution.builder(cycleCounter, indexInCycle).withWorkers(workers).build();
-        double duration = solutionService.calcDuration(result);
+        int duration = solutionService.calcDuration(result);
         result.setDurationInSeconds(duration);
         return result;
     }
@@ -54,11 +54,16 @@ public class Genetics {
             Worker worker = workers.get(workerIndex);
             int slotIndex = coordinate.getSlotIndex();
             Task existing = worker.getTaskAt(slotIndex);
+            int max = worker.getMaxNumTasks();
             while (existing != null) {
                 logger.info("Slot %d of Worker %d already occupied, try next one...",
                         slotIndex,
                         workerIndex);
                 slotIndex++;
+                if (slotIndex >= max) {
+                    logger.info("reached end at %d, now start with 0...", max);
+                    slotIndex = 0;
+                }
                 existing = worker.getTaskAt(slotIndex);
             }
             workers.get(workerIndex).setTaskAt(slotIndex, task);

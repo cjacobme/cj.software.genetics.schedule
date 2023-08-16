@@ -35,6 +35,8 @@ public class NewProblemDialog extends Dialog<ProblemSetup> {
                     int num20 = newProblemController.getNumTasks20();
                     int num50 = newProblemController.getNumTasks50();
                     int num100 = newProblemController.getNumTasks100();
+                    int elitismCount = newProblemController.getElitismCount();
+                    int tournamentSize = newProblemController.getTournamentSize();
                     result = ProblemSetup.builder()
                             .withNumSolutions(numSolutinos)
                             .withNumWorkers(numWorkers)
@@ -43,6 +45,8 @@ public class NewProblemDialog extends Dialog<ProblemSetup> {
                             .withNumTasks20(num20)
                             .withNumTasks50(num50)
                             .withNumTasks100(num100)
+                            .withElitismCount(elitismCount)
+                            .withTournamentSize(tournamentSize)
                             .build();
                 } else {
                     result = null;

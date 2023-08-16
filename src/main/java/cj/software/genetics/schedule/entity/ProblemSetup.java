@@ -4,7 +4,7 @@ import javax.validation.constraints.Min;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class ProblemSetup implements Serializable {
+public class ProblemSetup implements Serializable, CycleCounter {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -17,13 +17,26 @@ public class ProblemSetup implements Serializable {
     @Min(10)
     private int numSlots;
 
+    @Min(0)
     private int numTasks10;
 
+    @Min(0)
     private int numTasks20;
 
+    @Min(0)
     private int numTasks50;
 
+    @Min(0)
     private int numTasks100;
+
+    @Min(0)
+    private int cycleCounter;
+
+    @Min(0)
+    private int elitismCount;
+
+    @Min(2)
+    private int tournamentSize;
 
     private ProblemSetup() {
     }
@@ -54,6 +67,23 @@ public class ProblemSetup implements Serializable {
 
     public int getNumTasks100() {
         return numTasks100;
+    }
+
+    public int getElitismCount() {
+        return elitismCount;
+    }
+
+    public int getTournamentSize() {
+        return tournamentSize;
+    }
+
+    public int incCycleCounter() {
+        int result = ++cycleCounter;
+        return result;
+    }
+
+    public int getCurrentValue() {
+        return cycleCounter;
     }
 
     public static Builder builder() {
@@ -105,6 +135,16 @@ public class ProblemSetup implements Serializable {
 
         public Builder withNumSolutions(int numSolutions) {
             instance.numSolutions = numSolutions;
+            return this;
+        }
+
+        public Builder withElitismCount(int elitismCount) {
+            instance.elitismCount = elitismCount;
+            return this;
+        }
+
+        public Builder withTournamentSize(int tournamenSize) {
+            instance.tournamentSize = tournamenSize;
             return this;
         }
     }

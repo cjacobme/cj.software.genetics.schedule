@@ -27,10 +27,21 @@ public class SolutionControl extends Pane {
 
     private Solution solution;
 
+    private int scale = 15;
+
     public SolutionControl() {
         getChildren().add(canvas);
         canvas.widthProperty().addListener(observable -> draw());
         canvas.heightProperty().addListener(observable -> draw());
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public void setScale(int scale) {
+        this.scale = scale;
+        draw();
     }
 
     private void draw() {
@@ -95,7 +106,7 @@ public class SolutionControl extends Pane {
             int duration = task.getDurationSeconds();
             String text = String.format("#%d (%d)", identifier, duration);
             Button button = new Button(text);
-            double width = duration * 15.0;
+            double width = duration * (double) scale;
             button.setLayoutX(posx);
             button.setLayoutY(posy);
             button.setMinWidth(width);

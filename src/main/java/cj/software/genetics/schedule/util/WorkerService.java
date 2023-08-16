@@ -9,8 +9,8 @@ import java.util.List;
 @Service
 public class WorkerService {
     @SuppressWarnings("squid:S3518")    // zero division is not possible
-    public double calcDuration(Worker worker) {
-        double result = 0.0;
+    public int calcDuration(Worker worker) {
+        int result = 0;
         List<Task> tasks = worker.getTasks();
         if (tasks != null && !tasks.isEmpty()) {
             for (Task task : tasks) {
