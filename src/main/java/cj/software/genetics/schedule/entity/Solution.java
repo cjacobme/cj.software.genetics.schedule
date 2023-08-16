@@ -88,6 +88,11 @@ public class Solution implements Serializable {
             return result;
         }
 
+        public Builder withDurationInSeconds(int duration) {
+            instance.setDurationInSeconds(duration);
+            return this;
+        }
+
         public Builder withWorkers(Worker... workers) {
             instance.workers.clear();
             if (workers != null) {

@@ -123,7 +123,6 @@ class BreederTest {
         CycleCounter cycleCounter = new MyCounter();
         listener.resetCounter();
         List<Solution> population = createPopulation(50, 1, 47, 42, 37);
-        List<Solution> offsprings = createPopulation(10, 9, 8, 7);
         int[][] shuffles = new int[][]{
                 {0, 1, 2, 3, 4},
                 {4, 3, 2, 1, 0},
@@ -137,10 +136,8 @@ class BreederTest {
         int numSteps = 7;
 
         when(randomService.shuffledUpTo(5)).thenReturn(shuffles[0], shuffles[1], shuffles[2], shuffles[3]);
-        when(genetics.mate(3, 0, population.get(4), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(0));
-        when(genetics.mate(3, 1, population.get(3), population.get(2), numWorkers, numSlots)).thenReturn(offsprings.get(1));
-        when(genetics.mate(3, 2, population.get(2), population.get(1), numWorkers, numSlots)).thenReturn(offsprings.get(2));
-        when(genetics.mate(3, 3, population.get(0), population.get(3), numWorkers, numSlots)).thenReturn(offsprings.get(3));
+        when(genetics.mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots)))
+                .thenReturn(new SolutionBuilder().withDurationInSeconds(20).build());
 
         List<Solution> nextGeneration = breeder.multipleSteps(
                 cycleCounter,
@@ -151,8 +148,11 @@ class BreederTest {
                 numWorkers,
                 numSlots);
         assertThat(nextGeneration).isNotNull();
-        assertThat(cycleCounter.getCurrentValue()).isEqualTo(10);
-        assertThat(listener.getCounter()).isEqualTo(10);
+        SoftAssertions softy = new SoftAssertions();
+        softy.assertThat(cycleCounter.getCurrentValue()).isEqualTo(10);
+        softy.assertThat(listener.getCounter()).isEqualTo(10);
+        softy.assertAll();
         verify(randomService, times(28)).shuffledUpTo(5);
+        verify(genetics, times(28)).mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
     }
 }

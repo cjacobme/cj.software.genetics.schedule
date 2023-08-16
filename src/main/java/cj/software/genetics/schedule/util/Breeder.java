@@ -61,7 +61,7 @@ public class Breeder {
         List<Solution> result = solutions;
         for (int step = 0; step < numSteps; step++) {
             int cycleVlaue = cycleCounter.incCycleCounter();
-            result = step(cycleVlaue, solutions, elitismCount, tournamentSize, numWorkers, numSlots);
+            result = step(cycleVlaue, result, elitismCount, tournamentSize, numWorkers, numSlots);
             BreedingStepEvent event = new BreedingStepEvent(cycleVlaue, result);
             publisher.publishEvent(event);
         }
