@@ -45,7 +45,7 @@
                 <columns>
                     <TableColumn fx:id="tcolCycle" editable="false" prefWidth="75.0" sortable="false" text="Cycle"/>
                     <TableColumn fx:id="tcolDuration" editable="false" maxWidth="1.7976931348623157E308"
-                                 prefWidth="90.0" sortable="false" text="Distance Sum"/>
+                                 prefWidth="90.0" sortable="false" text="Duration / s"/>
                 </columns>
             </TableView>
         </VBox>
