@@ -71,6 +71,19 @@ public class Worker implements Serializable {
         tasks[position] = null;
     }
 
+    public int compress() {
+        List<Task> localTasks = this.getTasks();
+        int counter = 0;
+        for (Task localTask : localTasks) {
+            tasks[counter] = localTask;
+            counter++;
+        }
+        for (int i = counter; i < tasks.length; i++) {
+            tasks[i] = null;
+        }
+        return counter;
+    }
+
     public static class Builder {
         protected Worker instance;
 
