@@ -15,11 +15,22 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SolutionControl extends Pane {
     private static final int LINE_GAP = 3;
     private static final double WORKER_LABEL_WIDTH = 50.0;
     private static final int ROW_HEIGHT = 35;
+    private static final Map<Integer, String> BACKGROUND_COLORS = Map.of(
+            0, "#ff0000;",  // red
+            1, "#ffff00",   // yellow
+            2, "#008000"    // green
+    );
+    private static final Map<Integer, String> FOREGROUND_COLORS = Map.of(
+            0, "#000000",   // black
+            1, "#000000",   // black
+            2, "#ffff00"    // yelllow
+    );
 
     private final Canvas canvas = new Canvas();
 
@@ -107,11 +118,16 @@ public class SolutionControl extends Pane {
             String text = String.format("#%d (%d)", identifier, duration);
             Button button = new Button(text);
             double width = duration * (double) scale;
+            int priority = task.getPriority();
+            String background = BACKGROUND_COLORS.get(priority);
+            String foreground = FOREGROUND_COLORS.get(priority);
+            String style = String.format("-fx-background-color:%s;-fx-text-fill:%s;", background, foreground);
             button.setLayoutX(posx);
             button.setLayoutY(posy);
             button.setMinWidth(width);
             button.setMaxWidth(width);
             button.setPrefWidth(width);
+            button.setStyle(style);
             children.add(button);
             myChildren.add(button);
             posx += width;
