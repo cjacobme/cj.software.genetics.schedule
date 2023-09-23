@@ -47,6 +47,7 @@ class WorkerTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getTasks()).as("tasks").isEmpty();
         softy.assertThat(instance.getMaxNumTasks()).as("max num tasks").isZero();
+        softy.assertThat(instance.getStartIndex()).as("start index").isZero();
         softy.assertAll();
     }
 
@@ -166,6 +167,7 @@ class WorkerTest {
         instance.setTaskAt(44, task13);
 
         int compressResult = instance.compress();
+        int startIndex = instance.getStartIndex();
 
         Map<Task, Integer> slotIndexes = instance.getTasksWithSlots();
         SoftAssertions softy = new SoftAssertions();
@@ -174,6 +176,7 @@ class WorkerTest {
                 task1, 1,
                 task13, 2));
         softy.assertThat(compressResult).as("compress result").isEqualTo(3);
+        softy.assertThat(startIndex).as("start index").isEqualTo(3);
         softy.assertAll();
 
         Task task4 = Task.builder().withIdentifier(4).build();
@@ -182,6 +185,7 @@ class WorkerTest {
         instance.setTaskAt(20, task33);
 
         compressResult = instance.compress();
+        startIndex = instance.getStartIndex();
 
         slotIndexes = instance.getTasksWithSlots();
         softy = new SoftAssertions();
@@ -192,6 +196,7 @@ class WorkerTest {
                 task4, 3,
                 task33, 4));
         softy.assertThat(compressResult).as("compress result").isEqualTo(5);
+        softy.assertThat(startIndex).as("start index").isEqualTo(5);
         softy.assertAll();
     }
 }
