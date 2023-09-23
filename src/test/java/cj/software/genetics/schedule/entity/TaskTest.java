@@ -45,6 +45,7 @@ class TaskTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getIdentifier()).as("identifier").isZero();
         softy.assertThat(instance.getDurationSeconds()).as("duration in seconds").isZero();
+        softy.assertThat(instance.getPriority()).as("priority").isZero();
         softy.assertAll();
     }
 
@@ -52,14 +53,17 @@ class TaskTest {
     void constructFilled() {
         int identifier = 4711;
         int durationSeconds = 15;
+        int priority = 1;
         Task instance = Task.builder()
                 .withIdentifier(identifier)
                 .withDurationSeconds(durationSeconds)
+                .withPriority(priority)
                 .build();
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getIdentifier()).as("identifier").isEqualTo(identifier);
         softy.assertThat(instance.getDurationSeconds()).as("duration in seconds").isEqualTo(durationSeconds);
+        softy.assertThat(instance.getPriority()).as("priority").isEqualTo(priority);
         softy.assertAll();
     }
 
