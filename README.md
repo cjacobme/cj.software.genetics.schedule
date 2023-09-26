@@ -4,84 +4,56 @@ solve scheduling problem with a genetic algorithm
 
 The idea behind the priority-wise breeding procedure is:
 
-1. For each worker: create a copy that only holds the prio 0 tasks.
-2. Mate them. The result is newly populated workers with only prio 0 tasks.
-3. compress the workers. All prio 0 tasks are saved directly one after the other
-   in the internal array. Additionally, a start index is determined which begins
-   directly behind the last task.
+1. First breed for all tasks with priority 0.
+2. Then compress them: after the breeding, the tasks are scattered through the array.
+   After the compress, they occupy the first subsequent elements of the array without any
+   gaps between them. For the following priorities, these first positions are not available
+3. Then repeat that with the next priorities.
 
-**TODO: slots with gaps.**
+**Priority 0 after breeding in one worker**
 
-Old values:
+| slot | task-id | prio |
+|-----:|--------:|-----:|
+|   15 |      47 |    0 |
+|   22 |      17 |    0 |
+|   49 |      49 |    0 |
+|   67 |      24 |    0 |
 
-| slot | id | prio |
-|-----:|---:|-----:|
-|    0 |  0 |    0 |
-|    1 | 15 |    1 |
-|    2 |  1 |    2 |
-|    3 | 47 |    0 |
-|    4 | 16 |    2 |
-|    5 | 17 |    1 |
+**Priority 0 after compress**
 
-Step 1: only prio 0
+| slot | task-id | prio |
+|-----:|--------:|-----:|
+|    0 |      47 |    0 |
+|    1 |      17 |    0 |
+|    2 |      49 |    0 |
+|    3 |      24 |    0 |
 
-| slot | id | prio |
-|-----:|---:|-----:|
-|    0 |  0 |    0 |
-|    1 |    |      |
-|    2 |    |      |
-|    3 | 47 |    0 |
-|    4 |    |      |
-|    5 |    |      |
+From now on, slots 0 to 3 are not available anymore
 
-Step 2: mate prio 0
+**Prioriy 1 after breeding**
 
-| slot | id | prio |
-|-----:|---:|-----:|
-|    0 |    |      |
-|    1 | 47 |    0 |
-|    2 |    |      |
-|    3 |    |      |
-|    4 |  0 |    0 |
-|    5 |    |      |
+| slot | task-id | prio |
+|-----:|--------:|-----:|
+|    0 |      47 |    0 |
+|    1 |      17 |    0 |
+|    2 |      49 |    0 |
+|    3 |      24 |    0 |
+|   13 |      25 |    1 |
+|   66 |      88 |    1 |
+|   99 |      75 |    1 |
 
-Step 3: compress prio 0
+**Priority 1 after compress**
 
-| slot | id | prio |
-|-----:|---:|-----:|
-|    0 | 47 |    0 |
-|    1 |  0 |    0 |
-|    2 |    |      |
-|    3 |    |      |
-|    4 |    |      |
-|    5 |    |      |
+| slot | task-id | prio |
+|-----:|--------:|-----:|
+|    0 |      47 |    0 |
+|    1 |      17 |    0 |
+|    2 |      49 |    0 |
+|    3 |      24 |    0 |
+|    4 |      25 |    1 |
+|    5 |      88 |    1 |
+|    6 |      75 |    1 |
 
-Step 4: copy prio 1 with shift from prio 0 occupation
+From now on, slots 0 to 6 are not available anymore.
 
-In the old data, prio 1 tasks are located at slots 1 and 5. Slot 1 is already
-occupied by a prio 0 task. So the prio 1 task will be copied to the next available
-position.
-
-| slot | id | prio |
-|-----:|---:|-----:|
-|    0 | 47 |    0 |
-|    1 |  0 |    0 |
-|    2 | 15 |    1 |
-|    3 |    |      |
-|    4 |    |      |
-|    5 | 17 |    1 |
-
-Step 5: mate them. During that, the prio 0 tasks remain at their position. These
-slots are not available
-
-| slot | id | prio |
-|-----:|---:|-----:|
-|    0 | 47 |    0 |
-|    1 |  0 |    0 |
-|    2 | 15 |    1 |
-|    3 |    |      |
-|    4 |    |      |
-|    5 | 17 |    1 |
-
-
-
+Priority 2 is treated like priority 1.
