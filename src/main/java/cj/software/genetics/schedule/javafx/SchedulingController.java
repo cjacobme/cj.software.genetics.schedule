@@ -85,7 +85,7 @@ public class SchedulingController implements Initializable, ApplicationListener<
         tcolDuration.setCellValueFactory(new PropertyValueFactory<>("durationInSeconds"));
         tblSolutions.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) ->
                 solutionControl.setSolution(newValue));
-        spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 30));
+        spNumCycles.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1000, 30));
         int scaleValue = spScale.valueProperty().intValue();
         lbScale.setText(String.format("%d", scaleValue));
         spScale.valueProperty().addListener((observableValue, numbOldValue, numbNewValue) -> {
@@ -110,7 +110,8 @@ public class SchedulingController implements Initializable, ApplicationListener<
         int num20 = problemSetup.getNumTasks20();
         int num50 = problemSetup.getNumTasks50();
         int num100 = problemSetup.getNumTasks100();
-        int total = num10 + num20 + num50 + num100;
+        int num1000 = problemSetup.getNumTasks1000();
+        int total = num10 + num20 + num50 + num100 + num1000;
         List<Task> result = new ArrayList<>(total);
         int startIndex = 0;
         result.addAll(taskService.createTasks(startIndex, 10, num10));
@@ -120,6 +121,8 @@ public class SchedulingController implements Initializable, ApplicationListener<
         result.addAll(taskService.createTasks(startIndex, 50, num50));
         startIndex += num50;
         result.addAll(taskService.createTasks(startIndex, 100, num100));
+        startIndex += num100;
+        result.addAll(taskService.createTasks(startIndex, 1000, num1000));
         return result;
     }
 
