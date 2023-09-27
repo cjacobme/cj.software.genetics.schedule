@@ -36,6 +36,9 @@ public class NewProblemController implements Initializable {
     private Spinner<Integer> spNum100;
 
     @FXML
+    private Spinner<Integer> spNum1000;
+
+    @FXML
     private Spinner<Integer> spElitismCount;
 
     @FXML
@@ -45,11 +48,12 @@ public class NewProblemController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         spNumSolutions.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(5, 2000, 100));
         spNumWorkers.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 20, 4));
-        spNumSlots.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 10000, 100));
+        spNumSlots.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 1000, 100));
         spNum10.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 50));
         spNum20.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 40));
         spNum50.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 30));
         spNum100.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 20));
+        spNum1000.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 1));
         spElitismCount.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 20, 3));
         spTournamentSize.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2, 20, 5));
     }
@@ -80,6 +84,10 @@ public class NewProblemController implements Initializable {
 
     public int getNumTasks100() {
         return spNum100.getValue();
+    }
+
+    public int getNumTasks1000() {
+        return spNum1000.getValue();
     }
 
     public int getElitismCount() {
