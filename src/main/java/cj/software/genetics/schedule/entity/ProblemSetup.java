@@ -30,6 +30,9 @@ public class ProblemSetup implements Serializable, CycleCounter {
     private int numTasks100;
 
     @Min(0)
+    private int numTasks1000;
+
+    @Min(0)
     private int cycleCounter;
 
     @Min(0)
@@ -67,6 +70,10 @@ public class ProblemSetup implements Serializable, CycleCounter {
 
     public int getNumTasks100() {
         return numTasks100;
+    }
+
+    public int getNumTasks1000() {
+        return numTasks1000;
     }
 
     public int getElitismCount() {
@@ -130,6 +137,11 @@ public class ProblemSetup implements Serializable, CycleCounter {
 
         public Builder withNumTasks100(int numTasks100) {
             instance.numTasks100 = numTasks100;
+            return this;
+        }
+
+        public Builder withNumTasks1000(int numTasks1000) {
+            instance.numTasks1000 = numTasks1000;
             return this;
         }
 
