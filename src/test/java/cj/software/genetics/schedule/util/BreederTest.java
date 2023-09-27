@@ -92,7 +92,7 @@ class BreederTest {
         verify(genetics).mate(cycleCounter, 3, population.get(0), population.get(3), numWorkers, numSlots);
         verify(randomService, times(4)).shuffledUpTo(5);
         verify(genetics, times(4)).mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
-        verify(solutionService).sortDescendingDuration(anyList());
+        verify(solutionService).sortDescendingFitnessValue(anyList());
         assertThat(nextGeneration).hasSize(5);
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(nextGeneration.get(0)).isSameAs(population.get(1));

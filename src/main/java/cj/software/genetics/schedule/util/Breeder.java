@@ -46,7 +46,7 @@ public class Breeder {
             Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2, numWorkers, numSlots);
             result.add(offspring);
         }
-        solutionService.sortDescendingDuration(result);
+        solutionService.sortDescendingFitnessValue(result);
         return result;
     }
 
