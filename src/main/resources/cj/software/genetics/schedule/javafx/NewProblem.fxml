@@ -20,15 +20,18 @@
             <Spinner fx:id="spNum50" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
             <Label text="Number of Tasks with 100 s" GridPane.rowIndex="6"/>
             <Spinner fx:id="spNum100" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-            <Label text="Elitism count" GridPane.rowIndex="7"/>
-            <Spinner fx:id="spElitismCount" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-            <Label text="Tournament size" GridPane.rowIndex="9"/>
-            <Spinner fx:id="spTournamentSize" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
+            <Label text="Elitism count" GridPane.rowIndex="8"/>
+            <Spinner fx:id="spElitismCount" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+            <Label text="Tournament size" GridPane.rowIndex="10"/>
+            <Spinner fx:id="spTournamentSize" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="10"/>
+            <Label text="Number of Tasks with 1000 s" GridPane.rowIndex="7"/>
+            <Spinner fx:id="spNum1000" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
             <columnConstraints>
                 <ColumnConstraints/>
                 <ColumnConstraints/>
             </columnConstraints>
             <rowConstraints>
+                <RowConstraints/>
                 <RowConstraints/>
                 <RowConstraints/>
                 <RowConstraints/>

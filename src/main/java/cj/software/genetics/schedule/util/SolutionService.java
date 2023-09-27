@@ -64,14 +64,14 @@ public class SolutionService {
             Solution solution = createInitialSolution(i, numWorkers, numSlots, tasks);
             result.add(solution);
         }
-        sortDescendingDuration(result);
+        sortDescendingFitnessValue(result);
         return result;
     }
 
-    public void sortDescendingDuration(List<Solution> solutions) {
+    public void sortDescendingFitnessValue(List<Solution> solutions) {
         solutions.sort((o1, o2) -> {
             CompareToBuilder builder = new CompareToBuilder()
-                    .append(o1.getDurationInSeconds(), o2.getDurationInSeconds());
+                    .append(o2.getFitnessValue(), o1.getFitnessValue());
             int result = builder.build();
             return result;
         });
