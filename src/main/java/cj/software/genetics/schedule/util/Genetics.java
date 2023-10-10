@@ -99,31 +99,25 @@ public class Genetics {
     }
 
     public void mutate(Solution solution) {
-        throw new UnsupportedOperationException("not yet implemented");
-        //TODO: per Zufall eine Prio auswählen, und mit dieser innerhalb der Workers austauschen
-
-        /*
-        List<Task> tasks = converter.toTaskList(solution);
+        int priority = randomService.nextRandom(3);
+        List<Task> tasks = converter.toTaskList(solution, priority);
         int size = tasks.size();
         int index0 = randomService.nextRandom(size);
         Task task0 = tasks.get(index0);
         int index1 = randomService.nextRandom(size);
         Task task1 = tasks.get(index1);
-        Map<Task, Coordinate> converted = converter.toMapTaskCoordinate(solution);
+        Map<Task, Coordinate> converted = converter.toMapTaskCoordinate(solution, priority);
         Coordinate coordinate0 = converted.get(task0);
         Coordinate coordinate1 = converted.get(task1);
         int workerindex0 = coordinate0.getWorkerIndex();
         int slotindex0 = coordinate0.getSlotIndex();
         int workerindex1 = coordinate1.getWorkerIndex();
         int slotindex1 = coordinate1.getSlotIndex();
-        List<Worker> workers = solution.getWorkers();
-        Worker worker0 = workers.get(workerindex0);
+        Worker worker0 = solution.getWorkerAt(priority, workerindex0);
         worker0.deleteTaskAt(slotindex0);
         worker0.setTaskAt(slotindex0, task1);
-        Worker worker1 = workers.get(workerindex1);
+        Worker worker1 = solution.getWorkerAt(priority, workerindex1);
         worker1.deleteTaskAt(slotindex1);
         worker1.setTaskAt(slotindex1, task0);
-
-         */
     }
 }

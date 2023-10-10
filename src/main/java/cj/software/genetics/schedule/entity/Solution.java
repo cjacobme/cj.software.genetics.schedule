@@ -72,6 +72,12 @@ public class Solution implements Serializable {
         return result;
     }
 
+    public Worker getWorkerAt(int priority, int workerindex) {
+        WorkerChain workerChain = this.workerChains.get(workerindex);
+        Worker result = workerChain.getWorkerForPriority(priority);
+        return result;
+    }
+
     public static class Builder {
         protected Solution instance;
 
