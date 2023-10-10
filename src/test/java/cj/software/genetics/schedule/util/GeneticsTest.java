@@ -1,6 +1,10 @@
 package cj.software.genetics.schedule.util;
 
-import cj.software.genetics.schedule.entity.*;
+import cj.software.genetics.schedule.entity.Coordinate;
+import cj.software.genetics.schedule.entity.Solution;
+import cj.software.genetics.schedule.entity.Task;
+import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.WorkerChainBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +43,15 @@ class GeneticsTest {
     }
 
     private Solution createSolution1(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
-        Worker worker2 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
+        WorkerChain worker2 = new WorkerChainBuilder().build();
         worker0.setTaskAt(1, tasks.get(0));
         worker0.setTaskAt(0, tasks.get(1));
         worker2.setTaskAt(3, tasks.get(2));
         worker2.setTaskAt(1, tasks.get(3));
         worker1.setTaskAt(2, tasks.get(4));
-        Solution result = Solution.builder(10, 11).withWorkers(worker0, worker1, worker2).build();
+        Solution result = Solution.builder(10, 11).withWorkerChains(worker0, worker1, worker2).build();
         return result;
     }
 
@@ -62,28 +66,28 @@ class GeneticsTest {
     }
 
     private Solution createSolution2(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
-        Worker worker2 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
+        WorkerChain worker2 = new WorkerChainBuilder().build();
         worker1.setTaskAt(3, tasks.get(0));
         worker0.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(4, tasks.get(2));
         worker2.setTaskAt(2, tasks.get(3));
         worker1.setTaskAt(0, tasks.get(4));
-        Solution result = Solution.builder(12, 13).withWorkers(worker0, worker1, worker2).build();
+        Solution result = Solution.builder(12, 13).withWorkerChains(worker0, worker1, worker2).build();
         return result;
     }
 
     private Solution createExpected(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
-        Worker worker2 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
+        WorkerChain worker2 = new WorkerChainBuilder().build();
         worker1.setTaskAt(3, tasks.get(0));
         worker0.setTaskAt(0, tasks.get(1));
         worker2.setTaskAt(3, tasks.get(2));
         worker2.setTaskAt(1, tasks.get(3));
         worker1.setTaskAt(0, tasks.get(4));
-        Solution result = Solution.builder(16, 17).withWorkers(worker0, worker1, worker2).build();
+        Solution result = Solution.builder(16, 17).withWorkerChains(worker0, worker1, worker2).build();
         result.setDurationInSeconds(2);
         return result;
     }
@@ -167,12 +171,12 @@ class GeneticsTest {
     }
 
     private Solution createOccSolution1(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
         worker0.setTaskAt(0, tasks.get(0));
         worker1.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(2, tasks.get(2));
-        Solution result = Solution.builder(20, 21).withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(20, 21).withWorkerChains(worker0, worker1).build();
         return result;
     }
 
@@ -185,12 +189,12 @@ class GeneticsTest {
     }
 
     private Solution createOccSolution2(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
         worker1.setTaskAt(3, tasks.get(0));
         worker0.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(0, tasks.get(2));
-        Solution result = Solution.builder(22, 23).withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(22, 23).withWorkerChains(worker0, worker1).build();
         return result;
     }
 
@@ -203,12 +207,12 @@ class GeneticsTest {
     }
 
     private Solution createOccExpected(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
         worker0.setTaskAt(0, tasks.get(0));
         worker1.setTaskAt(1, tasks.get(1));
         worker0.setTaskAt(1, tasks.get(2));
-        Solution result = Solution.builder(18, 19).withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(18, 19).withWorkerChains(worker0, worker1).build();
         return result;
     }
 
@@ -229,12 +233,12 @@ class GeneticsTest {
     }
 
     private Solution createMutated(List<Task> tasks) {
-        Worker worker0 = new WorkerBuilder().build();
-        Worker worker1 = new WorkerBuilder().build();
+        WorkerChain worker0 = new WorkerChainBuilder().build();
+        WorkerChain worker1 = new WorkerChainBuilder().build();
         worker0.setTaskAt(1, tasks.get(0));
         worker1.setTaskAt(3, tasks.get(1));
         worker0.setTaskAt(0, tasks.get(2));
-        Solution result = Solution.builder(22, 23).withWorkers(worker0, worker1).build();
+        Solution result = Solution.builder(22, 23).withWorkerChains(worker0, worker1).build();
         return result;
     }
 }

@@ -7,14 +7,13 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Solution implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final List<Worker> workers = new ArrayList<>();
+    private final List<WorkerChain> workerChains = new ArrayList<>();
 
     private double fitnessValue = Double.MAX_VALUE;
 
@@ -35,16 +34,16 @@ public class Solution implements Serializable {
         return indexInCycle;
     }
 
-    public List<Worker> getWorkers() {
-        return Collections.unmodifiableList(workers);
+    public List<WorkerChain> getWorkerChains() {
+        return workerChains;
     }
 
     public static Builder builder(int cycleCounter, int indexInCycle) {
         return new Builder(cycleCounter, indexInCycle);
     }
 
-    public void addWorker(Worker worker) {
-        workers.add(worker);
+    public void addWorkerChain(WorkerChain workerChain) {
+        workerChains.add(workerChain);
     }
 
     public double getFitnessValue() {
@@ -93,17 +92,19 @@ public class Solution implements Serializable {
             return this;
         }
 
-        public Builder withWorkers(Worker... workers) {
-            instance.workers.clear();
-            if (workers != null) {
-                instance.workers.addAll(Arrays.asList(workers));
+        public Builder withWorkerChains(WorkerChain... workerChains) {
+            instance.workerChains.clear();
+            if (workerChains != null) {
+                instance.workerChains.addAll(Arrays.asList(workerChains));
             }
             return this;
         }
 
-        public Builder withWorkers(List<Worker> workers) {
-            instance.workers.clear();
-            instance.workers.addAll(workers);
+        public Builder withWorkerChains(List<WorkerChain> workerChains) {
+            instance.workerChains.clear();
+            if (workerChains != null) {
+                instance.workerChains.addAll(workerChains);
+            }
             return this;
         }
     }

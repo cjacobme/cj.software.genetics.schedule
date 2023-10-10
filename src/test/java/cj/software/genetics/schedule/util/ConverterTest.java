@@ -1,6 +1,11 @@
 package cj.software.genetics.schedule.util;
 
-import cj.software.genetics.schedule.entity.*;
+import cj.software.genetics.schedule.entity.Coordinate;
+import cj.software.genetics.schedule.entity.Solution;
+import cj.software.genetics.schedule.entity.SolutionBuilder;
+import cj.software.genetics.schedule.entity.Task;
+import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.WorkerChainBuilder;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,12 +59,12 @@ class ConverterTest {
         int numTasks = 10;
         Task[] tasks = new Task[numTasks];
         for (int iTask = 0; iTask < numTasks; iTask++) {
-            tasks[iTask] = Task.builder().withDurationSeconds(iTask * 10 + 10).withIdentifier(iTask).build();
+            tasks[iTask] = Task.builder().withDurationSeconds(iTask * 10 + 10).withIdentifier(iTask).withPriority(iTask % 3).build();
         }
         int numWorkers = 4;
-        Worker[] workers = new Worker[numWorkers];
+        WorkerChain[] workers = new WorkerChain[numWorkers];
         for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
-            workers[iWorker] = new WorkerBuilder().build();
+            workers[iWorker] = new WorkerChainBuilder().build();
         }
         int iWorker = 0;
         for (int iTask = 0; iTask < numTasks; iTask++) {
@@ -69,7 +74,7 @@ class ConverterTest {
                 iWorker = 0;
             }
         }
-        Solution solution = Solution.builder(0, 1).withWorkers(workers).build();
+        Solution solution = Solution.builder(0, 1).withWorkerChains(workers).build();
         Map<Task, Coordinate> expected = Map.of(
                 tasks[0], Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build(),
                 tasks[1], Coordinate.builder().withWorkerIndex(1).withSlotIndex(1).build(),

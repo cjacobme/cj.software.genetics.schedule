@@ -3,18 +3,17 @@ package cj.software.genetics.schedule.util;
 import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
-import cj.software.genetics.schedule.entity.Worker;
-import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class Converter {
     public Map<Task, Coordinate> toMapTaskCoordinate(Solution solution) {
+        throw new UnsupportedOperationException("not yet implemented");
+        //TODO: wahrscheinlich Prio zusätzlicher Methodenparameter
+        /*
         Map<Task, Coordinate> result = new HashMap<>();
         List<Worker> workers = solution.getWorkers();
         int numWorkers = workers.size();
@@ -29,9 +28,14 @@ public class Converter {
             }
         }
         return result;
+
+         */
     }
 
     public List<Task> toTaskList(Solution solution) {
+        throw new UnsupportedOperationException("not yet implemented");
+        //TODO: wahrscheinlich Prio zusätzlicher Methodenparameter
+        /*
         List<Task> result = new ArrayList<>();
         for (Worker worker : solution.getWorkers()) {
             List<Task> workerTasks = worker.getTasks();
@@ -44,5 +48,7 @@ public class Converter {
             return result1;
         });
         return result;
+
+         */
     }
 }

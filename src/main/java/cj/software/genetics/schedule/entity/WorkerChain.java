@@ -38,6 +38,11 @@ public class WorkerChain implements Serializable {
         return Collections.unmodifiableSortedMap(workers);
     }
 
+    public Worker getWorkerForPriority(int priority) {
+        Worker result = this.workers.get(priority);
+        return result;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
