@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,28 +30,39 @@ public class Genetics {
     private final Logger logger = LogManager.getFormatterLogger();
 
     public Solution mate(int cycleCounter, int indexInCycle, Solution parent1, Solution parent2, int numWorkers, int numSlots) {
-        throw new UnsupportedOperationException("not yet implemented");
-        //TODO: Schleife über alle Prios, je Prio dann die folgende Bearbeitung
-
-        /*
-        Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1);
-        Map<Task, Coordinate> converted2 = converter.toMapTaskCoordinate(parent2);
-        List<Worker> workers = createWorkerChains(numWorkers, numSlots);
-        List<Task> tasks = converter.toTaskList(parent1);
-        int numTasks = tasks.size();
-        int pos1 = randomService.nextRandom(numTasks);
-        int pos2 = randomService.nextRandom(numTasks);
-        int lower = Math.min(pos1, pos2);
-        int upper = Math.max(pos1, pos2);
-        dispatch(tasks, workers, converted1, lower, upper);
-        dispatch(tasks, workers, converted2, upper, numTasks);
-        dispatch(tasks, workers, converted2, 0, lower);
-        Solution result = Solution.builder(cycleCounter, indexInCycle).withWorkerChains(workers).build();
+        Map<Integer, List<Worker>> prioMap = new HashMap<>();
+        for (int iPrio = 0; iPrio < 3; iPrio++) {
+            Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1, iPrio);
+            Map<Task, Coordinate> converted2 = converter.toMapTaskCoordinate(parent2, iPrio);
+            List<Worker> workers = createWorkers(numWorkers, numSlots);
+            List<Task> tasks = converter.toTaskList(parent1, iPrio);
+            int numTasks = tasks.size();
+            int pos1 = randomService.nextRandom(numTasks);
+            int pos2 = randomService.nextRandom(numTasks);
+            int lower = Math.min(pos1, pos2);
+            int upper = Math.max(pos1, pos2);
+            dispatch(tasks, workers, converted1, lower, upper);
+            dispatch(tasks, workers, converted2, upper, numTasks);
+            dispatch(tasks, workers, converted2, 0, lower);
+            prioMap.put(iPrio, workers);
+        }
+        WorkerChain[] workerChains = new WorkerChain[numWorkers];
+        for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
+            workerChains[iWorker] = WorkerChain.builder()
+                    .withMaxNumTasks(numSlots)
+                    .build();
+            for (int iPrio = 0; iPrio < 3; iPrio++) {
+                List<Worker> prioWorkers = prioMap.get(iPrio);
+                Worker theWorker = prioWorkers.get(iWorker);
+                workerChains[iWorker].setWorkerAt(iPrio, theWorker);
+            }
+        }
+        Solution result = Solution.builder(cycleCounter, indexInCycle)
+                .withWorkerChains(workerChains)
+                .build();
         int duration = solutionService.calcDuration(result);
         result.setDurationInSeconds(duration);
         return result;
-
-         */
     }
 
     private void dispatch(List<Task> tasks, List<Worker> workers, Map<Task, Coordinate> converted, int lower, int upper) {
@@ -77,11 +89,11 @@ public class Genetics {
         }
     }
 
-    private List<WorkerChain> createWorkerChains(int numWorkerChains, int numSlots) {
-        List<WorkerChain> result = new ArrayList<>(numWorkerChains);
-        for (int iWorkerChain = 0; iWorkerChain < numWorkerChains; iWorkerChain++) {
-            WorkerChain workerChain = WorkerChain.builder().withMaxNumTasks(numSlots).build();
-            result.add(workerChain);
+    private List<Worker> createWorkers(int numWorkers, int numSlots) {
+        List<Worker> result = new ArrayList<>(numWorkers);
+        for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
+            Worker worker = Worker.builder().withMaxNumTasks(numSlots).build();
+            result.add(worker);
         }
         return result;
     }

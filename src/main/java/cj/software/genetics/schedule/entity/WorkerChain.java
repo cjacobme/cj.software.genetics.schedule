@@ -43,6 +43,10 @@ public class WorkerChain implements Serializable {
         return result;
     }
 
+    public void setWorkerAt(int priority, Worker worker) {
+        workers.put(priority, worker);
+    }
+
     public static Builder builder() {
         return new Builder();
     }

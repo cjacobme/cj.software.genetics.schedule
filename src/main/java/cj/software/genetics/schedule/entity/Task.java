@@ -63,7 +63,8 @@ public class Task implements Serializable {
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("identifier", identifier)
-                .append("duration", durationSeconds);
+                .append("duration", durationSeconds)
+                .append("prio", priority);
         String result = builder.build();
         return result;
     }
