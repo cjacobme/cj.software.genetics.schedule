@@ -44,6 +44,7 @@ public class Breeder {
             Solution parent1 = population.get(i);
             Solution parent2 = arbitraryParent(population, size, tournamentSize);
             Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2, numWorkers, numSlots);
+            genetics.mutate(offspring);
             result.add(offspring);
         }
         solutionService.sortDescendingFitnessValue(result);
