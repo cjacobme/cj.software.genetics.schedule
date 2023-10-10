@@ -3,7 +3,12 @@ package cj.software.genetics.schedule.entity;
 import javax.validation.constraints.Min;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 
 public class WorkerChain implements Serializable {
     @Serial
