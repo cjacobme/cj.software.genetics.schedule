@@ -47,7 +47,6 @@ class WorkerTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getTasks()).as("tasks").isEmpty();
         softy.assertThat(instance.getMaxNumTasks()).as("max num tasks").isZero();
-        softy.assertThat(instance.getStartIndex()).as("start index").isZero();
         softy.assertAll();
     }
 
@@ -154,49 +153,5 @@ class WorkerTest {
                 task1, 20,
                 task13, 44,
                 task65, 15));
-    }
-
-    @Test
-    void compress() {
-        Worker instance = new WorkerBuilder().build();
-        Task task1 = new TaskBuilder().withIdentifier(1).build();
-        Task task13 = new TaskBuilder().withIdentifier(13).build();
-        Task task65 = new TaskBuilder().withIdentifier(65).build();
-        instance.setTaskAt(15, task65);
-        instance.setTaskAt(20, task1);
-        instance.setTaskAt(44, task13);
-
-        int compressResult = instance.compress();
-        int startIndex = instance.getStartIndex();
-
-        Map<Task, Integer> slotIndexes = instance.getTasksWithSlots();
-        SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(slotIndexes).as("slot indexes").isEqualTo(Map.of(
-                task65, 0,
-                task1, 1,
-                task13, 2));
-        softy.assertThat(compressResult).as("compress result").isEqualTo(3);
-        softy.assertThat(startIndex).as("start index").isEqualTo(3);
-        softy.assertAll();
-
-        Task task4 = Task.builder().withIdentifier(4).build();
-        Task task33 = Task.builder().withIdentifier(33).build();
-        instance.setTaskAt(12, task4);
-        instance.setTaskAt(20, task33);
-
-        compressResult = instance.compress();
-        startIndex = instance.getStartIndex();
-
-        slotIndexes = instance.getTasksWithSlots();
-        softy = new SoftAssertions();
-        softy.assertThat(slotIndexes).as("slot indexes").isEqualTo(Map.of(
-                task65, 0,
-                task1, 1,
-                task13, 2,
-                task4, 3,
-                task33, 4));
-        softy.assertThat(compressResult).as("compress result").isEqualTo(5);
-        softy.assertThat(startIndex).as("start index").isEqualTo(5);
-        softy.assertAll();
     }
 }

@@ -11,3 +11,6 @@ been implemented up to here has to be done priority-wise:
   physically 12 workers, at least during the breeding process.
 - When the breeding process has finished the priority-wise breeding, it links
   the 3 workers together to one, of course starting with those of priority 0.
+
+A new instance `WorkerChain` is introduced. It basically contains a `SortedMap<Integer, Worker>`.
+The key of the sorted map is the priority. The UID displays the worker chain and not the workers themselves.

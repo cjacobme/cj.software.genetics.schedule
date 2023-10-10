@@ -21,9 +21,6 @@ public class Worker implements Serializable {
     @Min(1)
     private int maxNumTasks;
 
-    @Min(0)
-    private int startIndex;
-
     private Worker() {
     }
 
@@ -39,10 +36,6 @@ public class Worker implements Serializable {
 
     public int getMaxNumTasks() {
         return maxNumTasks;
-    }
-
-    public int getStartIndex() {
-        return startIndex;
     }
 
     public static Builder builder() {
@@ -76,20 +69,6 @@ public class Worker implements Serializable {
 
     public void deleteTaskAt(int position) {
         tasks[position] = null;
-    }
-
-    public int compress() {
-        List<Task> localTasks = this.getTasks();
-        int counter = 0;
-        for (Task localTask : localTasks) {
-            tasks[counter] = localTask;
-            counter++;
-        }
-        for (int i = counter; i < tasks.length; i++) {
-            tasks[i] = null;
-        }
-        this.startIndex = counter;
-        return counter;
     }
 
     public static class Builder {
