@@ -1,6 +1,9 @@
 package cj.software.genetics.schedule.entity.setup;
 
 import javafx.scene.paint.Color;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -12,7 +15,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class Priority implements Serializable {
+public class Priority implements Serializable, Comparable<Priority> {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -59,6 +62,36 @@ public class Priority implements Serializable {
 
     public Color getForegroundColor() {
         Color result = (foreground != null ? Color.valueOf(foreground) : null);
+        return result;
+    }
+
+    @Override
+    public int compareTo(Priority other) {
+        CompareToBuilder builder = new CompareToBuilder()
+                .append(this.value, other.value);
+        int result = builder.build();
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder builder = new HashCodeBuilder()
+                .append(value);
+        int result = builder.build();
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object otherObject) {
+        boolean result;
+
+        if (otherObject instanceof Priority other) {
+            EqualsBuilder builder = new EqualsBuilder()
+                    .append(this.value, other.value);
+            result = builder.build();
+        } else {
+            result = false;
+        }
         return result;
     }
 

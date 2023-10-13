@@ -10,7 +10,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -100,5 +102,59 @@ class PriorityTest {
         softy.assertThat(background).as("background").isEqualTo(Color.RED);
         softy.assertThat(foreground).as("foreground").isEqualTo(Color.BLACK);
         softy.assertAll();
+    }
+
+    @Test
+    void sort() {
+        Priority instance0 = new PriorityBuilder().build();
+        Priority instance10 = new PriorityBuilder().withValue(10).build();
+        Priority instance7 = new PriorityBuilder().withValue(7).build();
+        List<Priority> priorities = new ArrayList<>(List.of(instance0, instance10, instance7));
+
+        Collections.sort(priorities);
+
+        assertThat(priorities)
+                .extracting("value")
+                .containsExactly(0, 7, 10);
+    }
+
+    @Test
+    void equalObjects() {
+        Priority instance1 = new PriorityBuilder().build();
+        Priority instance2 = new PriorityBuilder().build();
+        assertThat(instance1).isEqualTo(instance2);
+    }
+
+    @Test
+    void equalHashes() {
+        Priority instance1 = new PriorityBuilder().build();
+        Priority instance2 = new PriorityBuilder().build();
+        int hash1 = instance1.hashCode();
+        int hash2 = instance2.hashCode();
+        assertThat(hash1).isEqualTo(hash2);
+    }
+
+    @Test
+    void unequalValue() {
+        Priority instance1 = new PriorityBuilder().build();
+        Priority instance2 = new PriorityBuilder().withValue(-4711).build();
+        assertThat(instance1).isNotEqualTo(instance2);
+    }
+
+    @Test
+    void unequalValueHashes() {
+        Priority instance1 = new PriorityBuilder().build();
+        Priority instance2 = new PriorityBuilder().withValue(-4711).build();
+        assertThat(instance1).isNotEqualTo(instance2);
+        int hash1 = instance1.hashCode();
+        int hash2 = instance2.hashCode();
+        assertThat(hash1).isNotEqualTo(hash2);
+    }
+
+    @Test
+    void differentObject() {
+        Priority instance1 = new PriorityBuilder().build();
+        Object instance2 = "hello world";
+        assertThat(instance1).isNotEqualTo(instance2);
     }
 }
