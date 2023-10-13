@@ -4,12 +4,14 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import cj.software.genetics.schedule.entity.WorkerChain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,19 +30,36 @@ public class Genetics {
     private final Logger logger = LogManager.getFormatterLogger();
 
     public Solution mate(int cycleCounter, int indexInCycle, Solution parent1, Solution parent2, int numWorkers, int numSlots) {
-        Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1);
-        Map<Task, Coordinate> converted2 = converter.toMapTaskCoordinate(parent2);
-        List<Worker> workers = createWorkers(numWorkers, numSlots);
-        List<Task> tasks = converter.toTaskList(parent1);
-        int numTasks = tasks.size();
-        int pos1 = randomService.nextRandom(numTasks);
-        int pos2 = randomService.nextRandom(numTasks);
-        int lower = Math.min(pos1, pos2);
-        int upper = Math.max(pos1, pos2);
-        dispatch(tasks, workers, converted1, lower, upper);
-        dispatch(tasks, workers, converted2, upper, numTasks);
-        dispatch(tasks, workers, converted2, 0, lower);
-        Solution result = Solution.builder(cycleCounter, indexInCycle).withWorkers(workers).build();
+        Map<Integer, List<Worker>> prioMap = new HashMap<>();
+        for (int iPrio = 0; iPrio < 3; iPrio++) {
+            Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1, iPrio);
+            Map<Task, Coordinate> converted2 = converter.toMapTaskCoordinate(parent2, iPrio);
+            List<Worker> workers = createWorkers(numWorkers, numSlots);
+            List<Task> tasks = converter.toTaskList(parent1, iPrio);
+            int numTasks = tasks.size();
+            int pos1 = randomService.nextRandom(numTasks);
+            int pos2 = randomService.nextRandom(numTasks);
+            int lower = Math.min(pos1, pos2);
+            int upper = Math.max(pos1, pos2);
+            dispatch(tasks, workers, converted1, lower, upper);
+            dispatch(tasks, workers, converted2, upper, numTasks);
+            dispatch(tasks, workers, converted2, 0, lower);
+            prioMap.put(iPrio, workers);
+        }
+        WorkerChain[] workerChains = new WorkerChain[numWorkers];
+        for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
+            workerChains[iWorker] = WorkerChain.builder()
+                    .withMaxNumTasks(numSlots)
+                    .build();
+            for (int iPrio = 0; iPrio < 3; iPrio++) {
+                List<Worker> prioWorkers = prioMap.get(iPrio);
+                Worker theWorker = prioWorkers.get(iWorker);
+                workerChains[iWorker].setWorkerAt(iPrio, theWorker);
+            }
+        }
+        Solution result = Solution.builder(cycleCounter, indexInCycle)
+                .withWorkerChains(workerChains)
+                .build();
         int duration = solutionService.calcDuration(result);
         result.setDurationInSeconds(duration);
         return result;
@@ -80,24 +99,24 @@ public class Genetics {
     }
 
     public void mutate(Solution solution) {
-        List<Task> tasks = converter.toTaskList(solution);
+        int priority = randomService.nextRandom(3);
+        List<Task> tasks = converter.toTaskList(solution, priority);
         int size = tasks.size();
         int index0 = randomService.nextRandom(size);
         Task task0 = tasks.get(index0);
         int index1 = randomService.nextRandom(size);
         Task task1 = tasks.get(index1);
-        Map<Task, Coordinate> converted = converter.toMapTaskCoordinate(solution);
+        Map<Task, Coordinate> converted = converter.toMapTaskCoordinate(solution, priority);
         Coordinate coordinate0 = converted.get(task0);
         Coordinate coordinate1 = converted.get(task1);
         int workerindex0 = coordinate0.getWorkerIndex();
         int slotindex0 = coordinate0.getSlotIndex();
         int workerindex1 = coordinate1.getWorkerIndex();
         int slotindex1 = coordinate1.getSlotIndex();
-        List<Worker> workers = solution.getWorkers();
-        Worker worker0 = workers.get(workerindex0);
+        Worker worker0 = solution.getWorkerAt(priority, workerindex0);
         worker0.deleteTaskAt(slotindex0);
         worker0.setTaskAt(slotindex0, task1);
-        Worker worker1 = workers.get(workerindex1);
+        Worker worker1 = solution.getWorkerAt(priority, workerindex1);
         worker1.deleteTaskAt(slotindex1);
         worker1.setTaskAt(slotindex1, task0);
     }

@@ -82,7 +82,6 @@ class WorkerTest {
 
         Task occupied = instance.getTaskAt(0);
         assertThat(occupied).isSameAs(task);
-
     }
 
     @Test

@@ -3,6 +3,7 @@ package cj.software.genetics.schedule.javafx.control;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import cj.software.genetics.schedule.entity.WorkerChain;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -15,11 +16,22 @@ import javafx.scene.paint.Paint;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SolutionControl extends Pane {
     private static final int LINE_GAP = 3;
     private static final double WORKER_LABEL_WIDTH = 50.0;
     private static final int ROW_HEIGHT = 35;
+    private static final Map<Integer, String> BACKGROUND_COLORS = Map.of(
+            0, "#ff0000;",  // red
+            1, "#ffff00",   // yellow
+            2, "#008000"    // green
+    );
+    private static final Map<Integer, String> FOREGROUND_COLORS = Map.of(
+            0, "#000000",   // black
+            1, "#000000",   // black
+            2, "#ffff00"    // yelllow
+    );
 
     private final Canvas canvas = new Canvas();
 
@@ -75,15 +87,15 @@ public class SolutionControl extends Pane {
     }
 
     private void drawSolution() {
-        double posy = 0;
+        double posY = 0;
         int index = 0;
         ObservableList<Node> children = super.getChildren();
-        List<Worker> workers = solution.getWorkers();
-        for (Worker worker : workers) {
+        List<WorkerChain> workerChains = solution.getWorkerChains();
+        for (WorkerChain workerChain : workerChains) {
             String text = String.format("Worker %d", index);
             Label label = new Label(text);
             label.setLayoutX(10);
-            label.setLayoutY(posy);
+            label.setLayoutY(posY);
             label.setMaxWidth(WORKER_LABEL_WIDTH);
             label.setMinWidth(WORKER_LABEL_WIDTH);
             label.setPrefWidth(WORKER_LABEL_WIDTH);
@@ -92,14 +104,18 @@ public class SolutionControl extends Pane {
             label.setPrefHeight(ROW_HEIGHT);
             children.add(label);
             myChildren.add(label);
-            drawWorker(worker, posy, children);
-            posy += ROW_HEIGHT + LINE_GAP;
+            double posX = WORKER_LABEL_WIDTH + 10;
+            for (int iPrio = 0; iPrio < 3; iPrio++) {
+                Worker worker = workerChain.getWorkerForPriority(iPrio);
+                posX = drawWorker(worker, posX, posY, children);
+            }
+            posY += ROW_HEIGHT + LINE_GAP;
             index++;
         }
     }
 
-    private void drawWorker(Worker worker, double posy, ObservableList<Node> children) {
-        double posx = WORKER_LABEL_WIDTH + 10;
+    private double drawWorker(Worker worker, double posX, double posY, ObservableList<Node> children) {
+        double result = posX;
         List<Task> tasks = worker.getTasks();
         for (Task task : tasks) {
             int identifier = task.getIdentifier();
@@ -107,14 +123,20 @@ public class SolutionControl extends Pane {
             String text = String.format("#%d (%d)", identifier, duration);
             Button button = new Button(text);
             double width = duration * (double) scale;
-            button.setLayoutX(posx);
-            button.setLayoutY(posy);
+            int priority = task.getPriority();
+            String background = BACKGROUND_COLORS.get(priority);
+            String foreground = FOREGROUND_COLORS.get(priority);
+            String style = String.format("-fx-background-color:%s;-fx-text-fill:%s;", background, foreground);
+            button.setLayoutX(result);
+            button.setLayoutY(posY);
             button.setMinWidth(width);
             button.setMaxWidth(width);
             button.setPrefWidth(width);
+            button.setStyle(style);
             children.add(button);
             myChildren.add(button);
-            posx += width;
+            result += width;
         }
+        return result;
     }
 }

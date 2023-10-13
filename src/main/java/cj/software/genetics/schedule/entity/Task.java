@@ -20,6 +20,9 @@ public class Task implements Serializable {
     @Min(1)
     private int durationSeconds;
 
+    @Min(1)
+    private int priority;
+
     private Task() {
     }
 
@@ -29,6 +32,10 @@ public class Task implements Serializable {
 
     public int getDurationSeconds() {
         return durationSeconds;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 
     @Override
@@ -56,7 +63,8 @@ public class Task implements Serializable {
     public String toString() {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("identifier", identifier)
-                .append("duration", durationSeconds);
+                .append("duration", durationSeconds)
+                .append("prio", priority);
         String result = builder.build();
         return result;
     }
@@ -85,6 +93,11 @@ public class Task implements Serializable {
 
         public Builder withDurationSeconds(int durationSeconds) {
             instance.durationSeconds = durationSeconds;
+            return this;
+        }
+
+        public Builder withPriority(int priority) {
+            instance.priority = priority;
             return this;
         }
     }
