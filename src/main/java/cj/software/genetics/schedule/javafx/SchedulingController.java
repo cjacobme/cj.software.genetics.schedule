@@ -13,7 +13,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
@@ -141,6 +148,18 @@ public class SchedulingController implements Initializable, ApplicationListener<
                     problemSetup.getNumSlots(),
                     allTasks);
             setPopulation(allSolutions, problemSetup.getCurrentValue());
+        } else {
+            logger.info("dialog was cancelled");
+        }
+    }
+
+    @FXML
+    public void newProblem2() {
+        Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+        EditProblemDialog editProblemDialog = new EditProblemDialog(applicationContext, owner);
+        Optional<ProblemSetup> optional = editProblemDialog.showAndWait();
+        if (optional.isPresent()) {
+            logger.warn("not yet implemented: data were entered");
         } else {
             logger.info("dialog was cancelled");
         }
