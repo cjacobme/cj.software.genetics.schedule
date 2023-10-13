@@ -8,7 +8,7 @@ public class SolutionBuilder extends Solution.Builder {
     public static List<Task> createTasks() {
         List<Task> result = new ArrayList<>();
         for (int iTask = 0; iTask < 6; iTask++) {
-            int prio = iTask / 2;
+            int prio = iTask % 3;
             Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(iTask * 10).withPriority(prio).build();
             result.add(task);
         }
