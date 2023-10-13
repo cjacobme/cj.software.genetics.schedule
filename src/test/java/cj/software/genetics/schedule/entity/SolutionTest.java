@@ -45,19 +45,19 @@ class SolutionTest {
         Object instanceAfter = field.get(builder);
         assertThat(instanceAfter).as("instance in builder after build").isNull();
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(instance.getWorkers()).as("workers").isEmpty();
+        softy.assertThat(instance.getWorkerChains()).as("workers").isEmpty();
         softy.assertAll();
     }
 
     @Test
     void constructFilled() {
-        Worker worker1 = mock(Worker.class);
-        Worker worker2 = mock(Worker.class);
-        Worker worker3 = mock(Worker.class);
+        WorkerChain worker1 = mock(WorkerChain.class);
+        WorkerChain worker2 = mock(WorkerChain.class);
+        WorkerChain worker3 = mock(WorkerChain.class);
         int durationInSeconds = 20;
 
         Solution instance = Solution.builder(10, 12)
-                .withWorkers(worker1, worker2, worker3)
+                .withWorkerChains(worker1, worker2, worker3)
                 .withDurationInSeconds(durationInSeconds)
                 .build();
 
@@ -65,30 +65,30 @@ class SolutionTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getCycleCounter()).as("cycle counter").isEqualTo(10);
         softy.assertThat(instance.getIndexInCycle()).as("index in cycle").isEqualTo(12);
-        softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker1, worker2, worker3));
+        softy.assertThat(instance.getWorkerChains()).as("workers").isEqualTo(List.of(worker1, worker2, worker3));
         softy.assertThat(instance.getDurationInSeconds()).as("duration in seconds").isEqualTo(durationInSeconds);
         softy.assertThat(instance.getFitnessValue()).as("fitness value").isEqualTo(0.05);
         softy.assertAll();
-        Worker worker4 = mock(Worker.class);
-        instance.addWorker(worker4);
-        assertThat(instance.getWorkers()).as("workers").hasSize(4).contains(worker4);
+        WorkerChain worker4 = mock(WorkerChain.class);
+        instance.addWorkerChain(worker4);
+        assertThat(instance.getWorkerChains()).as("workers").hasSize(4).contains(worker4);
     }
 
     @Test
     void constructFilledWithList() {
-        Worker worker1 = mock(Worker.class);
-        Worker worker2 = mock(Worker.class);
-        Worker worker3 = mock(Worker.class);
-        List<Worker> workers = List.of(worker2, worker3, worker1);
+        WorkerChain worker1 = mock(WorkerChain.class);
+        WorkerChain worker2 = mock(WorkerChain.class);
+        WorkerChain worker3 = mock(WorkerChain.class);
+        List<WorkerChain> workers = List.of(worker2, worker3, worker1);
 
         Solution instance = Solution.builder(3, 4)
-                .withWorkers(workers)
+                .withWorkerChains(workers)
                 .build();
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getCycleCounter()).as("cycle counter").isEqualTo(3);
         softy.assertThat(instance.getIndexInCycle()).as("index in cycle").isEqualTo(4);
-        softy.assertThat(instance.getWorkers()).as("workers").isEqualTo(List.of(worker2, worker3, worker1));
+        softy.assertThat(instance.getWorkerChains()).as("workers").isEqualTo(List.of(worker2, worker3, worker1));
         softy.assertAll();
     }
 

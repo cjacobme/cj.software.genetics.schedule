@@ -3,6 +3,7 @@ package cj.software.genetics.schedule.util;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import cj.software.genetics.schedule.entity.WorkerChain;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,19 +21,21 @@ public class SolutionService {
     private RandomService randomService;
 
     @Autowired
-    private WorkerService workerService;
+    private WorkerChainService workerChainService;
 
     public Solution createInitialSolution(int indexInCycle, int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
-        List<Worker> allWorkers = new ArrayList<>();
+        List<WorkerChain> allWorkersChains = new ArrayList<>();
         for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
-            Worker worker = Worker.builder()
+            WorkerChain workerChain = WorkerChain.builder()
                     .withMaxNumTasks(numSlotsPerWorker)
                     .build();
-            allWorkers.add(worker);
+            allWorkersChains.add(workerChain);
         }
         for (Task task : tasks) {
+            int priority = task.getPriority();
             int selectedWorker = randomService.nextRandom(numWorkers);
-            Worker worker = allWorkers.get(selectedWorker);
+            WorkerChain workerChain = allWorkersChains.get(selectedWorker);
+            Worker worker = workerChain.getWorkerForPriority(priority);
             int selectedSlot = randomService.nextRandom(numSlotsPerWorker);
             Task occupied = worker.getTaskAt(selectedSlot);
             while (occupied != null) {
@@ -42,7 +45,7 @@ public class SolutionService {
             }
             worker.setTaskAt(selectedSlot, task);
         }
-        Solution result = Solution.builder(0, indexInCycle).withWorkers(allWorkers).build();
+        Solution result = Solution.builder(0, indexInCycle).withWorkerChains(allWorkersChains).build();
         int durationInSeconds = calcDuration(result);
         result.setDurationInSeconds(durationInSeconds);
         return result;
@@ -50,9 +53,9 @@ public class SolutionService {
 
     public int calcDuration(Solution solution) {
         int result = 0;
-        List<Worker> workers = solution.getWorkers();
-        for (Worker worker : workers) {
-            int workerDuration = workerService.calcDuration(worker);
+        List<WorkerChain> workerChains = solution.getWorkerChains();
+        for (WorkerChain workerChain : workerChains) {
+            int workerDuration = workerChainService.calcDuration(workerChain);
             result = Math.max(result, workerDuration);
         }
         return result;

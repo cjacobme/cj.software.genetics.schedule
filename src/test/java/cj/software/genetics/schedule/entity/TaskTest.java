@@ -136,6 +136,6 @@ class TaskTest {
     void stringPresentation() {
         Task task = new TaskBuilder().build();
         String asString = task.toString();
-        assertThat(asString).as("String presentation").isEqualTo("Task[identifier=13,duration=20]");
+        assertThat(asString).as("String presentation").isEqualTo("Task[identifier=13,duration=20,prio=3]");
     }
 }

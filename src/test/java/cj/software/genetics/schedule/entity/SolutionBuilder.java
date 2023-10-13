@@ -8,21 +8,22 @@ public class SolutionBuilder extends Solution.Builder {
     public static List<Task> createTasks() {
         List<Task> result = new ArrayList<>();
         for (int iTask = 0; iTask < 6; iTask++) {
-            Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(iTask * 10).build();
+            int prio = iTask % 3;
+            Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(iTask * 10).withPriority(prio).build();
             result.add(task);
         }
         return result;
     }
 
-    private static List<Worker> createWorkers() {
-        List<Worker> result = new ArrayList<>();
+    private static List<WorkerChain> createWorkerChains() {
+        List<WorkerChain> result = new ArrayList<>();
         List<Task> tasks = createTasks();
         for (int iWorker = 0; iWorker < 2; iWorker++) {
-            Worker worker = Worker.builder().withMaxNumTasks(6).build();
+            WorkerChain worker = WorkerChain.builder().withMaxNumTasks(6).build();
             result.add(worker);
         }
-        Worker worker0 = result.get(0);
-        Worker worker1 = result.get(1);
+        WorkerChain worker0 = result.get(0);
+        WorkerChain worker1 = result.get(1);
         worker0.setTaskAt(0, tasks.get(0));
         worker0.setTaskAt(1, tasks.get(1));
         worker1.setTaskAt(3, tasks.get(2));
@@ -34,6 +35,6 @@ public class SolutionBuilder extends Solution.Builder {
 
     public SolutionBuilder() {
         super(47, 11);
-        this.withWorkers(createWorkers());
+        this.withWorkerChains(createWorkerChains());
     }
 }
