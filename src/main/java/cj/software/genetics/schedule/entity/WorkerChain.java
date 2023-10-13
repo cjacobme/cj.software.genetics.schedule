@@ -4,17 +4,15 @@ import javax.validation.constraints.Min;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 
 public class WorkerChain implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final SortedMap<Integer, Worker> workers = new TreeMap<>();
+    private final Worker[] workers = new Worker[3];
 
     @Min(1)
     private int maxNumTasks;
@@ -29,22 +27,22 @@ public class WorkerChain implements Serializable {
     private void setMaxNumTasks(int maxNumTasks) {
         this.maxNumTasks = maxNumTasks;
         for (int iPrio = 0; iPrio < 3; iPrio++) {
-            Worker worker = Worker.builder().withMaxNumTasks(maxNumTasks).build();
-            this.workers.put(iPrio, worker);
+            this.workers[iPrio] = Worker.builder().withMaxNumTasks(maxNumTasks).build();
         }
     }
 
-    public SortedMap<Integer, Worker> getWorkers() {
-        return Collections.unmodifiableSortedMap(workers);
+    public Worker[] getWorkers() {
+        Worker[] result = Arrays.copyOf(this.workers, 3);
+        return result;
     }
 
     public Worker getWorkerForPriority(int priority) {
-        Worker result = this.workers.get(priority);
+        Worker result = this.workers[priority];
         return result;
     }
 
     public void setWorkerAt(int priority, Worker worker) {
-        workers.put(priority, worker);
+        workers[priority] = worker;
     }
 
     public static Builder builder() {
@@ -53,12 +51,12 @@ public class WorkerChain implements Serializable {
 
     public void setTaskAt(int position, Task task) {
         int priority = task.getPriority();
-        Worker worker = workers.get(priority);
+        Worker worker = workers[priority];
         worker.setTaskAt(position, task);
     }
 
     public Task getTaskAt(int priority, int position) {
-        Worker worker = workers.get(priority);
+        Worker worker = workers[priority];
         Task result = worker.getTaskAt(position);
         return result;
     }
@@ -66,7 +64,7 @@ public class WorkerChain implements Serializable {
     public List<Task> getTasks() {
         List<Task> result = new ArrayList<>();
         for (int iPrio = 0; iPrio < 3; iPrio++) {
-            result.addAll(workers.get(iPrio).getTasks());
+            result.addAll(workers[iPrio].getTasks());
         }
         return result;
     }

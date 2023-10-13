@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,7 +44,7 @@ class WorkerChainTest {
         Object instanceAfter = field.get(builder);
         assertThat(instanceAfter).as("instance in builder after build").isNull();
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(instance.getWorkers()).as("workers").isEmpty();
+        softy.assertThat(instance.getWorkers()).as("workers").hasSize(3);
         softy.assertThat(instance.getMaxNumTasks()).as("max num tasks").isZero();
         softy.assertAll();
     }
@@ -58,11 +57,11 @@ class WorkerChainTest {
                 .build();
         assertThat(instance).as("built instance").isNotNull();
         assertThat(instance.getMaxNumTasks()).as("max num tasks").isEqualTo(maxNumTasks);
-        SortedMap<Integer, Worker> workers = instance.getWorkers();
+        Worker[] workers = instance.getWorkers();
         assertThat(workers).as("workers").hasSize(3);
         SoftAssertions softy = new SoftAssertions();
         for (int iPrio = 0; iPrio < 3; iPrio++) {
-            Worker worker = workers.get(iPrio);
+            Worker worker = workers[iPrio];
             int workerNumTasks = worker.getMaxNumTasks();
             softy.assertThat(workerNumTasks).as("num tasks in worker %d", iPrio).isEqualTo(maxNumTasks);
         }
@@ -86,11 +85,11 @@ class WorkerChainTest {
         Task task = new TaskBuilder().withPriority(priority).build();
         WorkerChain instance = new WorkerChainBuilder().build();
         instance.setTaskAt(position, task);
-        SortedMap<Integer, Worker> workers = instance.getWorkers();
+        Worker[] workers = instance.getWorkers();
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(workers.get(0).getTasks()).as("tasks prio 0").containsExactly(task);
-        softy.assertThat(workers.get(1).getTasks()).as("tasks prio 1").isEmpty();
-        softy.assertThat(workers.get(2).getTasks()).as("tasks prio 2").isEmpty();
+        softy.assertThat(workers[0].getTasks()).as("tasks prio 0").containsExactly(task);
+        softy.assertThat(workers[1].getTasks()).as("tasks prio 1").isEmpty();
+        softy.assertThat(workers[2].getTasks()).as("tasks prio 2").isEmpty();
         softy.assertAll();
 
         Task occupied = instance.getTaskAt(priority, position);
