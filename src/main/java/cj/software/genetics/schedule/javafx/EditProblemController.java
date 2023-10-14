@@ -5,6 +5,7 @@ import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
 import cj.software.genetics.schedule.javafx.control.ColorsTableCellFactory;
 import cj.software.genetics.schedule.javafx.control.TasksSubTableCellFactory;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,7 +24,7 @@ import java.util.ResourceBundle;
 public class EditProblemController implements Initializable {
 
     @FXML
-    private Button addNewPriority;
+    private Button btnAdd;
 
     @FXML
     private TableView<PriorityFx> tblPriorities;
@@ -37,11 +38,19 @@ public class EditProblemController implements Initializable {
     @FXML
     private TableColumn<PriorityFx, ObservableList<TasksFx>> tcolTasks;
 
+    @FXML
+    private Button btnDelete;
+
+    @FXML
+    private Button btnEdit;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tcolPriority.setCellValueFactory(new PropertyValueFactory<>("value"));
         tcolColor.setCellFactory(new ColorsTableCellFactory());
         tcolTasks.setCellFactory(new TasksSubTableCellFactory());
+        btnDelete.disableProperty().bind(Bindings.isEmpty(tblPriorities.getSelectionModel().getSelectedItems()));
+        btnEdit.disableProperty().bind(Bindings.isEmpty(tblPriorities.getSelectionModel().getSelectedItems()));
     }
 
     public void setData(ObservableList<PriorityFx> tableData) {

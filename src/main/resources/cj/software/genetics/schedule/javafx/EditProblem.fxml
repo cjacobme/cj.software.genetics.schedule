@@ -32,9 +32,9 @@
                             <bottom>
                                 <ButtonBar>
                                     <buttons>
-                                        <Button fx:id="addNewPriority" mnemonicParsing="false" text="Add"/>
-                                        <Button mnemonicParsing="false" text="Edit..."/>
-                                        <Button text="Delete..."/>
+                                        <Button fx:id="btnAdd" mnemonicParsing="false" text="Add"/>
+                                        <Button fx:id="btnEdit" mnemonicParsing="false" text="Edit..."/>
+                                        <Button fx:id="btnDelete" text="Delete..."/>
                                     </buttons>
                                 </ButtonBar>
                             </bottom>
