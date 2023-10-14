@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 public class PriorityBuilder extends Priority.Builder {
+
     public PriorityBuilder() {
         super
                 .withValue(0)
