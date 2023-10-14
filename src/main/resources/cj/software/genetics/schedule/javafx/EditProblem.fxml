@@ -18,37 +18,31 @@
             <center>
                 <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
                          BorderPane.alignment="CENTER">
-                    <tabs>
-                        <Tab text="Problem">
-                            <content>
-                                <BorderPane minHeight="0.0" minWidth="0.0">
-                                    <center>
-                                        <TableView fx:id="tblPriorities">
-                                            <columns>
-                                                <TableColumn prefWidth="75.0" text="Priority" fx:id="tcolPriority"/>
-                                                <TableColumn prefWidth="75.0" text="Colors" fx:id="tcolColor"/>
-                                                <TableColumn prefWidth="250.0" text="Tasks"/>
-                                            </columns>
-                                        </TableView>
-                                    </center>
-                                    <bottom>
-                                        <ButtonBar>
-                                            <buttons>
-                                                <Button fx:id="addNewPriority" mnemonicParsing="false" text="Add"/>
-                                                <Button mnemonicParsing="false" text="Edit..."/>
-                                                <Button text="Delete..."/>
-                                            </buttons>
-                                        </ButtonBar>
-                                    </bottom>
-                                </BorderPane>
-                            </content>
-                        </Tab>
-                        <Tab text="Solution">
-                            <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
-                            </content>
-                        </Tab>
-                    </tabs>
+                    <Tab text="Problem">
+                        <BorderPane minHeight="0.0" minWidth="0.0">
+                            <center>
+                                <TableView fx:id="tblPriorities">
+                                    <columns>
+                                        <TableColumn prefWidth="75.0" text="Priority" fx:id="tcolPriority"/>
+                                        <TableColumn prefWidth="75.0" text="Colors" fx:id="tcolColor"/>
+                                        <TableColumn prefWidth="250.0" text="Tasks" fx:id="tcolTasks"/>
+                                    </columns>
+                                </TableView>
+                            </center>
+                            <bottom>
+                                <ButtonBar>
+                                    <buttons>
+                                        <Button fx:id="addNewPriority" mnemonicParsing="false" text="Add"/>
+                                        <Button mnemonicParsing="false" text="Edit..."/>
+                                        <Button text="Delete..."/>
+                                    </buttons>
+                                </ButtonBar>
+                            </bottom>
+                        </BorderPane>
+                    </Tab>
+                    <Tab text="Solution">
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                    </Tab>
                 </TabPane>
             </center>
         </BorderPane>
