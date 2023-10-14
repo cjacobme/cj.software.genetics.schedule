@@ -1,6 +1,8 @@
 package cj.software.genetics.schedule.javafx;
 
+import cj.software.genetics.schedule.entity.setupfx.ColorPair;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
+import cj.software.genetics.schedule.javafx.control.ColorsTableCellFactory;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,9 +29,13 @@ public class EditProblemController implements Initializable {
     @FXML
     private TableColumn<PriorityFx, Integer> tcolPriority;
 
+    @FXML
+    private TableColumn<PriorityFx, ColorPair> tcolColor;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tcolPriority.setCellValueFactory(new PropertyValueFactory<>("value"));
+        tcolColor.setCellFactory(new ColorsTableCellFactory());
     }
 
     public void setData(ObservableList<PriorityFx> tableData) {

@@ -41,8 +41,8 @@ public class GeneticAlgorithmService {
                 )).build();
         Priority prio2 = Priority.builder()
                 .withValue(2)
-                .withBackground(Color.YELLOW)
-                .withForeground(Color.GREEN)
+                .withBackground(Color.GREEN)
+                .withForeground(Color.YELLOW)
                 .withTasks(List.of(
                         Tasks.builder().withNumberTasks(30).withDurationSeconds(15).build()
                 )).build();

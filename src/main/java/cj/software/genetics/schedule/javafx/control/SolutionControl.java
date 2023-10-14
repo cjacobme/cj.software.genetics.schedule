@@ -23,7 +23,7 @@ public class SolutionControl extends Pane {
     private static final double WORKER_LABEL_WIDTH = 50.0;
     private static final int ROW_HEIGHT = 35;
     private static final Map<Integer, String> BACKGROUND_COLORS = Map.of(
-            0, "#ff0000;",  // red
+            0, "#ff0000",  // red
             1, "#ffff00",   // yellow
             2, "#008000"    // green
     );

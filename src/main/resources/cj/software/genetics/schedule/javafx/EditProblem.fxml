@@ -26,7 +26,7 @@
                                         <TableView fx:id="tblPriorities">
                                             <columns>
                                                 <TableColumn prefWidth="75.0" text="Priority" fx:id="tcolPriority"/>
-                                                <TableColumn prefWidth="75.0" text="Colors"/>
+                                                <TableColumn prefWidth="75.0" text="Colors" fx:id="tcolColor"/>
                                                 <TableColumn prefWidth="250.0" text="Tasks"/>
                                             </columns>
                                         </TableView>
