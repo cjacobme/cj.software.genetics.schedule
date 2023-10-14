@@ -4,6 +4,7 @@ import cj.software.genetics.schedule.entity.BreedingStepEvent;
 import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
+import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.SolutionService;
@@ -157,7 +158,7 @@ public class SchedulingController implements Initializable, ApplicationListener<
     public void newProblem2() {
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
         EditProblemDialog editProblemDialog = new EditProblemDialog(applicationContext, owner);
-        Optional<ProblemSetup> optional = editProblemDialog.showAndWait();
+        Optional<GeneticAlgorithm> optional = editProblemDialog.showAndWait();
         if (optional.isPresent()) {
             logger.warn("not yet implemented: data were entered");
         } else {

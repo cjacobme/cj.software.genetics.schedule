@@ -1,6 +1,6 @@
 package cj.software.genetics.schedule.javafx;
 
-import cj.software.genetics.schedule.entity.ProblemSetup;
+import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -12,7 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Optional;
 
-public class EditProblemDialog extends Dialog<ProblemSetup> {
+public class EditProblemDialog extends Dialog<GeneticAlgorithm> {
     public EditProblemDialog(ConfigurableApplicationContext context, Window owner) {
         FxWeaver fxWeaver = context.getBean(FxWeaver.class);
         FxControllerAndView<EditProblemController, DialogPane> controllerAndView =
@@ -24,12 +24,12 @@ public class EditProblemDialog extends Dialog<ProblemSetup> {
             DialogPane dialogPane = optional.get();
             setDialogPane(dialogPane);
             setResultConverter(buttonType -> {
-                ProblemSetup result;
+                GeneticAlgorithm result;
                 ButtonBar.ButtonData buttonData = buttonType.getButtonData();
                 if (buttonData.isDefaultButton()) {
                     final EditProblemController controller = controllerAndView.getController();
                     //TODO obtain values from controller
-                    result = ProblemSetup.builder().build();
+                    result = GeneticAlgorithm.builder().build();
                 } else {
                     result = null;
                 }
