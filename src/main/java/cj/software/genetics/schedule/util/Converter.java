@@ -5,6 +5,10 @@ import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
 import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 @Service
 public class Converter {
@@ -47,6 +52,15 @@ public class Converter {
             int result1 = builder.build();
             return result1;
         });
+        return result;
+    }
+
+    public ObservableList<PriorityFx> toPriorityFx(SortedSet<Priority> source) {
+        ObservableList<PriorityFx> result = FXCollections.observableArrayList();
+        for (Priority priority : source) {
+            PriorityFx converted = new PriorityFx(priority);
+            result.add(converted);
+        }
         return result;
     }
 }

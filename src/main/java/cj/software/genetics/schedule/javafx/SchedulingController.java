@@ -5,8 +5,11 @@ import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
+import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.Breeder;
+import cj.software.genetics.schedule.util.Converter;
+import cj.software.genetics.schedule.util.GeneticAlgorithmService;
 import cj.software.genetics.schedule.util.SolutionService;
 import cj.software.genetics.schedule.util.TaskService;
 import javafx.application.Platform;
@@ -55,6 +58,12 @@ public class SchedulingController implements Initializable, ApplicationListener<
 
     @Autowired
     private Breeder breeder;
+
+    @Autowired
+    private GeneticAlgorithmService geneticAlgorithmService;
+
+    @Autowired
+    private Converter converter;
 
     @FXML
     private ScrollPane scrollPane;
@@ -157,7 +166,9 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @FXML
     public void newProblem2() {
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
-        EditProblemDialog editProblemDialog = new EditProblemDialog(applicationContext, owner);
+        GeneticAlgorithm geneticAlgorithm = geneticAlgorithmService.createDefault();
+        ObservableList<PriorityFx> priorityFxes = converter.toPriorityFx(geneticAlgorithm.getPriorities());
+        EditProblemDialog editProblemDialog = new EditProblemDialog(applicationContext, owner, priorityFxes);
         Optional<GeneticAlgorithm> optional = editProblemDialog.showAndWait();
         if (optional.isPresent()) {
             logger.warn("not yet implemented: data were entered");

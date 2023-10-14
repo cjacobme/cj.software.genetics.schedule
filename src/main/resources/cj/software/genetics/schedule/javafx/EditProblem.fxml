@@ -23,9 +23,9 @@
                             <content>
                                 <BorderPane minHeight="0.0" minWidth="0.0">
                                     <center>
-                                        <TableView>
+                                        <TableView fx:id="tblPriorities">
                                             <columns>
-                                                <TableColumn prefWidth="75.0" text="Priority"/>
+                                                <TableColumn prefWidth="75.0" text="Priority" fx:id="tcolPriority"/>
                                                 <TableColumn prefWidth="75.0" text="Colors"/>
                                                 <TableColumn prefWidth="250.0" text="Tasks"/>
                                             </columns>
