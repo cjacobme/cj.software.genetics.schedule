@@ -7,12 +7,30 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class PriorityFx {
     private final SimpleIntegerProperty value;
 
     private final SimpleObjectProperty<ColorPair> colors;
 
     private final ObservableList<TasksFx> tasksList;
+
+    public PriorityFx(PriorityFx source) {
+        this.value = new SimpleIntegerProperty(source.getValue());
+        ColorPair sourceColors = source.getColors();
+        ColorPair colorPair = new ColorPair(sourceColors.getForeground(), sourceColors.getBackground());
+        colors = new SimpleObjectProperty<>(colorPair);
+        tasksList = FXCollections.observableArrayList();
+        List<TasksFx> list = source.tasksList.stream().toList();
+        tasksList.addAll(list);
+    }
+
+    public PriorityFx(int value, ColorPair colorPair, ObservableList<TasksFx> tasksList) {
+        this.value = new SimpleIntegerProperty(value);
+        this.colors = new SimpleObjectProperty<>(colorPair);
+        this.tasksList = tasksList;
+    }
 
     public PriorityFx(Priority source) {
         this.value = new SimpleIntegerProperty(source.getValue());

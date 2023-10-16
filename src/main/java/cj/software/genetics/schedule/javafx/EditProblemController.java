@@ -22,6 +22,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Component
@@ -77,9 +78,15 @@ public class EditProblemController implements Initializable {
 
     @FXML
     public void editPriority() {
-        PriorityFx selectedValue = this.tblPriorities.getSelectionModel().getSelectedItem();
+        TableView.TableViewSelectionModel<PriorityFx> selectionModel = this.tblPriorities.getSelectionModel();
+        int index = selectionModel.getSelectedIndex();
+        PriorityFx selectedValue = selectionModel.getSelectedItem();
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
         EditPriorityDetailsDialog dialog = new EditPriorityDetailsDialog(applicationContext, owner, selectedValue);
-        dialog.showAndWait();
+        Optional<?> optional = dialog.showAndWait();
+        if (optional.isPresent()) {
+            PriorityFx editedValue = dialog.getResult();
+            this.tblPriorities.getItems().set(index, editedValue);
+        }
     }
 }

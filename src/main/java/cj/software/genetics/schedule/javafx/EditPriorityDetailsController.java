@@ -5,9 +5,12 @@ import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
 import cj.software.genetics.schedule.javafx.control.ColorService;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -19,12 +22,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Component
 @FxmlView("EditPriorityDetails.fxml")
 public class EditPriorityDetailsController implements Initializable {
-    private PriorityFx priorityFx;
+
+    private PriorityFx original;
 
     @FXML
     private TextField tfPriority;
@@ -61,7 +66,7 @@ public class EditPriorityDetailsController implements Initializable {
     }
 
     public void setData(PriorityFx priorityFx) {
-        this.priorityFx = priorityFx;
+        this.original = new PriorityFx(priorityFx);
         this.tfPriority.setText(String.format("%d", priorityFx.getValue()));
         ColorPair colorPair = priorityFx.getColors();
         if (colorPair != null) {
@@ -84,11 +89,34 @@ public class EditPriorityDetailsController implements Initializable {
 
     @FXML
     public void addTasksLine() {
-
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @FXML
     public void deleteTaskLine() {
+        TasksFx selected = this.tblTasks.getSelectionModel().getSelectedItem();
+        String question = String.format("Do you want to delete this setting? duration=%d, count=%d", selected.getDuration(), selected.getCount());
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, question, ButtonType.YES, ButtonType.NO);
+        Optional<?> optional = alert.showAndWait();
+        if (optional.isPresent()) {
+            ButtonType response = alert.getResult();
+            if (ButtonType.YES.equals(response)) {
+                tblTasks.getItems().remove(selected);
+            }
+        }
+    }
 
+    public PriorityFx getModifications() {
+        int index = Integer.parseInt(tfPriority.getText());
+        Color foreground = cpForeground.getValue();
+        Color background = cpBackground.getValue();
+        ColorPair colorPair = new ColorPair(foreground, background);
+        ObservableList<TasksFx> tasks = tblTasks.getItems();
+        PriorityFx result = new PriorityFx(index, colorPair, tasks);
+        return result;
+    }
+
+    public PriorityFx getOriginal() {
+        return original;
     }
 }
