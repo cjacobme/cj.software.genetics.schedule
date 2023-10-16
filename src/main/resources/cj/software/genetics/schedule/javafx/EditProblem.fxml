@@ -23,17 +23,19 @@
                             <center>
                                 <TableView fx:id="tblPriorities">
                                     <columns>
-                                        <TableColumn prefWidth="75.0" text="Priority" fx:id="tcolPriority"/>
-                                        <TableColumn prefWidth="75.0" text="Colors" fx:id="tcolColor"/>
-                                        <TableColumn prefWidth="250.0" text="Tasks" fx:id="tcolTasks"/>
+                                        <TableColumn fx:id="tcolPriority" prefWidth="75.0" text="Priority"/>
+                                        <TableColumn fx:id="tcolColor" prefWidth="75.0" text="Colors"/>
+                                        <TableColumn fx:id="tcolTasks" prefWidth="250.0" text="Tasks"/>
                                     </columns>
                                 </TableView>
                             </center>
                             <bottom>
                                 <ButtonBar>
                                     <buttons>
-                                        <Button fx:id="btnAdd" mnemonicParsing="false" text="Add"/>
-                                        <Button fx:id="btnEdit" mnemonicParsing="false" text="Edit..."/>
+                                        <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#addPriority"
+                                                text="Add"/>
+                                        <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#editPriority"
+                                                text="Edit..."/>
                                         <Button fx:id="btnDelete" text="Delete..."/>
                                     </buttons>
                                 </ButtonBar>

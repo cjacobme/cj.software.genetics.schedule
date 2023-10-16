@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.javafx;
 
+import cj.software.genetics.schedule.entity.setup.Priority;
 import cj.software.genetics.schedule.entity.setupfx.ColorPair;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
@@ -13,7 +14,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
+import javafx.stage.Window;
 import net.rgielen.fxweaver.core.FxmlView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
@@ -44,6 +49,9 @@ public class EditProblemController implements Initializable {
     @FXML
     private Button btnEdit;
 
+    @Autowired
+    private ConfigurableApplicationContext applicationContext;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tcolPriority.setCellValueFactory(new PropertyValueFactory<>("value"));
@@ -55,5 +63,23 @@ public class EditProblemController implements Initializable {
 
     public void setData(ObservableList<PriorityFx> tableData) {
         tblPriorities.setItems(tableData);
+    }
+
+    @FXML
+    public void addPriority() {
+        int numRows = this.tblPriorities.getItems().size();
+        Priority priority = Priority.builder().withValue(numRows).withBackground(Color.DARKGRAY).withForeground(Color.BLACK).build();
+        PriorityFx priorityFx = new PriorityFx(priority);
+        Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+        EditPriorityDetailsDialog dialog = new EditPriorityDetailsDialog(applicationContext, owner, priorityFx);
+        dialog.showAndWait();
+    }
+
+    @FXML
+    public void editPriority() {
+        PriorityFx selectedValue = this.tblPriorities.getSelectionModel().getSelectedItem();
+        Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+        EditPriorityDetailsDialog dialog = new EditPriorityDetailsDialog(applicationContext, owner, selectedValue);
+        dialog.showAndWait();
     }
 }

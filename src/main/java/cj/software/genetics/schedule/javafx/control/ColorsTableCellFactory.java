@@ -5,10 +5,10 @@ import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.paint.Color;
 import javafx.util.Callback;
 
 public class ColorsTableCellFactory implements Callback<TableColumn<PriorityFx, ColorPair>, TableCell<PriorityFx, ColorPair>> {
+    private final ColorService colorService = new ColorService();
 
     public ColorsTableCellFactory() {
         // default constructor
@@ -23,11 +23,7 @@ public class ColorsTableCellFactory implements Callback<TableColumn<PriorityFx, 
                 if (!empty) {
                     Button button = new Button("sample");
                     ColorPair retrieved = getTableView().getItems().get(getIndex()).getColors();
-                    Color background = retrieved.getBackground();
-                    Color foreground = retrieved.getForeground();
-                    String foregroundStr = ColorsTableCellFactory.this.normalize(foreground);
-                    String backgroundStr = ColorsTableCellFactory.this.normalize(background);
-                    String style = String.format("-fx-background-color:%s;-fx-text-fill:%s;", backgroundStr, foregroundStr);
+                    String style = colorService.constructStyle(retrieved);
                     button.setStyle(style);
                     setGraphic(button);
                     setText(null);
@@ -37,17 +33,6 @@ public class ColorsTableCellFactory implements Callback<TableColumn<PriorityFx, 
                 }
             }
         };
-        return result;
-    }
-
-    private String normalize(Color source) {
-        String result = source.toString();
-        if (result.startsWith("0x")) {
-            result = result.substring("0x".length());
-        }
-        if (!result.startsWith("#")) {
-            result = "#" + result;
-        }
         return result;
     }
 }
