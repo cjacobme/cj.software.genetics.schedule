@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.javafx;
 
+import cj.software.genetics.schedule.entity.setup.Tasks;
 import cj.software.genetics.schedule.entity.setupfx.ColorPair;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
@@ -105,7 +106,12 @@ public class EditPriorityDetailsController implements Initializable {
 
     @FXML
     public void addTasksLine() {
-        throw new UnsupportedOperationException("not yet implemented");
+        Tasks source = Tasks.builder().withNumberTasks(0).withDurationSeconds(0).build();
+        TasksFx tasksFx = new TasksFx(source);
+        ObservableList<TasksFx> tasksList = this.tblTasks.getItems();
+        tasksList.add(tasksFx);
+        int numTasks = tasksList.size();
+        this.tblTasks.getSelectionModel().select(numTasks - 1);
     }
 
     @FXML
