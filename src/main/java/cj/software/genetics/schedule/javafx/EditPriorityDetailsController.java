@@ -16,7 +16,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.paint.Color;
+import javafx.util.converter.IntegerStringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,8 +62,22 @@ public class EditPriorityDetailsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        tcolDuration.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         tcolDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        tcolDuration.setOnEditCommit(event -> {
+            TasksFx tasksFx = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            Integer newValue = event.getNewValue();
+            tasksFx.setDuration(newValue);
+        });
+
+        tcolCount.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         tcolCount.setCellValueFactory(new PropertyValueFactory<>("count"));
+        tcolCount.setOnEditCommit(event -> {
+            TasksFx tasksFx = event.getTableView().getItems().get(event.getTablePosition().getRow());
+            Integer newValue = event.getNewValue();
+            tasksFx.setCount(newValue);
+        });
+
         btnDelTaskLine.disableProperty().bind(Bindings.isEmpty(tblTasks.getSelectionModel().getSelectedItems()));
     }
 

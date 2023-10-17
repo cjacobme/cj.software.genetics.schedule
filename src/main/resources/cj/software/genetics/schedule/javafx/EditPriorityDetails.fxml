@@ -52,7 +52,7 @@
                 <Tab closable="false" text="Tasks">
                     <BorderPane>
                         <center>
-                            <TableView fx:id="tblTasks" prefWidth="450.0">
+                            <TableView fx:id="tblTasks" prefWidth="450.0" editable="true">
                                 <columns>
                                     <TableColumn fx:id="tcolDuration" text="duration / s"/>
                                     <TableColumn fx:id="tcolCount" text="count"/>
