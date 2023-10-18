@@ -2,6 +2,7 @@ package cj.software.genetics.schedule.javafx;
 
 import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
+import cj.software.genetics.schedule.entity.setupfx.SolutionSetupFx;
 import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Dialog;
@@ -18,14 +19,15 @@ public class EditProblemDialog extends Dialog<GeneticAlgorithm> {
     public EditProblemDialog(
             ConfigurableApplicationContext context,
             Window owner,
-            ObservableList<PriorityFx> tableData) {
+            ObservableList<PriorityFx> tableData,
+            SolutionSetupFx solutionSetupFx) {
         FxWeaver fxWeaver = context.getBean(FxWeaver.class);
         FxControllerAndView<EditProblemController, DialogPane> controllerAndView =
                 fxWeaver.load(EditProblemController.class);
         Optional<DialogPane> optional = controllerAndView.getView();
         if (optional.isPresent()) {
             final EditProblemController controller = controllerAndView.getController();
-            controller.setData(tableData);
+            controller.setData(tableData, solutionSetupFx);
             initOwner(owner);
             initModality(Modality.APPLICATION_MODAL);
             DialogPane dialogPane = optional.get();
