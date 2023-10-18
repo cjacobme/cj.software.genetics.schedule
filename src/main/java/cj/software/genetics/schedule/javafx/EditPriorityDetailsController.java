@@ -16,10 +16,12 @@ import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.paint.Color;
 import javafx.util.converter.IntegerStringConverter;
+import javafx.util.converter.NumberStringConverter;
 import net.rgielen.fxweaver.core.FxmlView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,8 +36,13 @@ public class EditPriorityDetailsController implements Initializable {
 
     private PriorityFx original;
 
+    private PriorityFx priorityFx;
+
     @FXML
     private TextField tfPriority;
+
+    @FXML
+    private TextField tfNumSlots;
 
     @FXML
     private Button btnSample;
@@ -63,6 +70,8 @@ public class EditPriorityDetailsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        TextFormatter<Integer> integerTextFormatter = new TextFormatter<>(new IntegerStringConverter());
+        tfNumSlots.setTextFormatter(integerTextFormatter);
         tcolDuration.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         tcolDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         tcolDuration.setOnEditCommit(event -> {
@@ -83,8 +92,11 @@ public class EditPriorityDetailsController implements Initializable {
     }
 
     public void setData(PriorityFx priorityFx) {
+        NumberStringConverter numberStringConverter = new NumberStringConverter();
+        this.priorityFx = priorityFx;
         this.original = new PriorityFx(priorityFx);
-        this.tfPriority.setText(String.format("%d", priorityFx.getValue()));
+        Bindings.bindBidirectional(tfNumSlots.textProperty(), priorityFx.numSlotsProperty(), numberStringConverter);
+        Bindings.bindBidirectional(tfPriority.textProperty(), priorityFx.valueProperty(), numberStringConverter);
         ColorPair colorPair = priorityFx.getColors();
         if (colorPair != null) {
             String style = colorService.constructStyle(colorPair);
@@ -129,12 +141,13 @@ public class EditPriorityDetailsController implements Initializable {
     }
 
     public PriorityFx getModifications() {
-        int index = Integer.parseInt(tfPriority.getText());
+        int index = this.priorityFx.getValue();
         Color foreground = cpForeground.getValue();
         Color background = cpBackground.getValue();
         ColorPair colorPair = new ColorPair(foreground, background);
         ObservableList<TasksFx> tasks = tblTasks.getItems();
-        PriorityFx result = new PriorityFx(index, colorPair, tasks);
+        int numSlots = this.priorityFx.getNumSlots();
+        PriorityFx result = new PriorityFx(index, numSlots, colorPair, tasks);
         return result;
     }
 

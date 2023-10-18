@@ -24,6 +24,10 @@ public class Priority implements Serializable, Comparable<Priority> {
     private Integer value;
 
     @NotNull
+    @Min(1)
+    private Integer numSlots;
+
+    @NotNull
     private String foreground;
 
     @NotNull
@@ -37,6 +41,10 @@ public class Priority implements Serializable, Comparable<Priority> {
 
     public Integer getValue() {
         return value;
+    }
+
+    public Integer getNumSlots() {
+        return numSlots;
     }
 
     public String getForeground() {
@@ -110,6 +118,11 @@ public class Priority implements Serializable, Comparable<Priority> {
 
         public Builder withValue(Integer value) {
             instance.value = value;
+            return this;
+        }
+
+        public Builder withNumSlots(Integer numSlots) {
+            instance.numSlots = numSlots;
             return this;
         }
 

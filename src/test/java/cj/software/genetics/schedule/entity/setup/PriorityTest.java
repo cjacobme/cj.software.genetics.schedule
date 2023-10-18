@@ -55,6 +55,7 @@ class PriorityTest {
         softy.assertThat(instance.getTasks()).as("tasks").isEmpty();
         softy.assertThat(instance.getForegroundColor()).as("foreground color").isNull();
         softy.assertThat(instance.getBackgroundColor()).as("background color").isNull();
+        softy.assertThat(instance.getNumSlots()).as("number of slots").isNull();
         softy.assertAll();
     }
 
@@ -66,9 +67,11 @@ class PriorityTest {
         Tasks tasksDefault = new TasksBuilder().build();
         Tasks tasksMinus13 = new TasksBuilder().withDurationSeconds(-13).build();
         Collection<Tasks> tasks = List.of(tasksDefault, tasksMinus13);
+        Integer numSlots = -3;
 
         Priority instance = Priority.builder()
                 .withValue(value)
+                .withNumSlots(numSlots)
                 .withForeground(foreground)
                 .withBackground(background)
                 .withTasks(tasks)
@@ -77,6 +80,7 @@ class PriorityTest {
         assertThat(instance).as("built instance").isNotNull();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getValue()).as("prio value").isEqualTo(value);
+        softy.assertThat(instance.getNumSlots()).as("number of slots").isEqualTo(numSlots);
         softy.assertThat(instance.getForeground()).as("foreground").isEqualTo("0xd3d3d3ff");
         softy.assertThat(instance.getBackground()).as("background").isEqualTo("0xffebcdff");
         softy.assertThat(instance.getTasks())

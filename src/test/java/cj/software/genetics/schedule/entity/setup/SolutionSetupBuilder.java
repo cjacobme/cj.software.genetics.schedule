@@ -5,7 +5,6 @@ public class SolutionSetupBuilder extends SolutionSetup.Builder {
     public SolutionSetupBuilder() {
         super.withNumSolutions(100)
                 .withNumWorkers(5)
-                .withNumSlots(100)
                 .withElitismCount(2)
                 .withTournamentSize(5);
     }

@@ -45,6 +45,9 @@ public class EditProblemController implements Initializable {
     private TableColumn<PriorityFx, ObservableList<TasksFx>> tcolTasks;
 
     @FXML
+    private TableColumn<PriorityFx, Integer> tcolNumSlots;
+
+    @FXML
     private Button btnDelete;
 
     @FXML
@@ -58,6 +61,7 @@ public class EditProblemController implements Initializable {
         tcolPriority.setCellValueFactory(new PropertyValueFactory<>("value"));
         tcolColor.setCellFactory(new ColorsTableCellFactory());
         tcolTasks.setCellFactory(new TasksSubTableCellFactory());
+        tcolNumSlots.setCellValueFactory(new PropertyValueFactory<>("numSlots"));
         btnDelete.disableProperty().bind(Bindings.isEmpty(tblPriorities.getSelectionModel().getSelectedItems()));
         btnEdit.disableProperty().bind(Bindings.isEmpty(tblPriorities.getSelectionModel().getSelectedItems()));
     }

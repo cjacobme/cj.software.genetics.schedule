@@ -9,6 +9,7 @@ public class PriorityBuilder extends Priority.Builder {
     public PriorityBuilder() {
         super
                 .withValue(0)
+                .withNumSlots(100)
                 .withForeground(Color.BLACK)
                 .withBackground(Color.RED)
                 .withTasks(List.of(

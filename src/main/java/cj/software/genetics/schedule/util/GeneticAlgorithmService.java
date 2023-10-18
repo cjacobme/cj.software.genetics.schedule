@@ -17,7 +17,6 @@ public class GeneticAlgorithmService {
         SolutionSetup solutionSetup = SolutionSetup.builder()
                 .withNumSolutions(100)
                 .withNumWorkers(5)
-                .withNumSlots(500)
                 .withElitismCount(4)
                 .withTournamentSize(10)
                 .build();
@@ -25,6 +24,7 @@ public class GeneticAlgorithmService {
                 .withValue(0)
                 .withBackground(Color.RED)
                 .withForeground(Color.BLACK)
+                .withNumSlots(500)
                 .withTasks(List.of(
                         Tasks.builder().withNumberTasks(50).withDurationSeconds(10).build(),
                         Tasks.builder().withNumberTasks(80).withDurationSeconds(20).build(),
@@ -33,6 +33,7 @@ public class GeneticAlgorithmService {
                 )).build();
         Priority prio1 = Priority.builder()
                 .withValue(1)
+                .withNumSlots(100)
                 .withBackground(Color.YELLOW)
                 .withForeground(Color.BLACK)
                 .withTasks(List.of(
@@ -41,6 +42,7 @@ public class GeneticAlgorithmService {
                 )).build();
         Priority prio2 = Priority.builder()
                 .withValue(2)
+                .withNumSlots(50)
                 .withBackground(Color.GREEN)
                 .withForeground(Color.YELLOW)
                 .withTasks(List.of(

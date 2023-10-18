@@ -18,10 +18,6 @@ public class SolutionSetup implements Serializable {
     private Integer numWorkers;
 
     @NotNull
-    @Min(1)
-    private Integer numSlots;
-
-    @NotNull
     @Min(0)
     private Integer elitismCount;
 
@@ -38,10 +34,6 @@ public class SolutionSetup implements Serializable {
 
     public Integer getNumWorkers() {
         return numWorkers;
-    }
-
-    public Integer getNumSlots() {
-        return numSlots;
     }
 
     public Integer getElitismCount() {
@@ -76,11 +68,6 @@ public class SolutionSetup implements Serializable {
 
         public Builder withNumWorkers(Integer numWorkers) {
             instance.numWorkers = numWorkers;
-            return this;
-        }
-
-        public Builder withNumSlots(Integer numSlots) {
-            instance.numSlots = numSlots;
             return this;
         }
 

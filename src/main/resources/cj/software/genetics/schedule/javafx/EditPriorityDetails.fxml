@@ -27,13 +27,15 @@
                     <GridPane hgap="5.0" vgap="5.0">
                         <Label text="Priority:"/>
                         <TextField fx:id="tfPriority" alignment="CENTER_RIGHT" editable="false"
-                                   promptText="Priority value" GridPane.columnIndex="1"
-                                   GridPane.columnSpan="2147483647"/>
-                        <Label text="Colors:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-                        <Button fx:id="btnSample" text="Sample" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                        <ColorPicker promptText="background" GridPane.columnIndex="2" GridPane.rowIndex="1"
+                                   GridPane.columnIndex="1" GridPane.columnSpan="2147483647"/>
+                        <Label text="Number of Slots:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                        <TextField fx:id="tfNumSlots" alignment="CENTER_RIGHT"
+                                   GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.columnSpan="2147483647"/>
+                        <Label text="Colors:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                        <Button fx:id="btnSample" text="Sample" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                        <ColorPicker promptText="background" GridPane.columnIndex="2" GridPane.rowIndex="2"
                                      fx:id="cpBackground" onAction="#colorsChanged"/>
-                        <ColorPicker promptText="foreground" GridPane.columnIndex="3" GridPane.rowIndex="1"
+                        <ColorPicker promptText="foreground" GridPane.columnIndex="3" GridPane.rowIndex="2"
                                      fx:id="cpForeground" onAction="#colorsChanged"/>
                         <columnConstraints>
                             <ColumnConstraints/>

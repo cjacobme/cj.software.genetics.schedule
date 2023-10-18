@@ -23,9 +23,12 @@
                             <center>
                                 <TableView fx:id="tblPriorities">
                                     <columns>
-                                        <TableColumn fx:id="tcolPriority" prefWidth="75.0" text="Priority"/>
+                                        <TableColumn fx:id="tcolPriority" prefWidth="75.0" text="Priority"
+                                                     style="-fx-alignment: TOP-RIGHT;"/>
                                         <TableColumn fx:id="tcolColor" prefWidth="75.0" text="Colors"/>
                                         <TableColumn fx:id="tcolTasks" prefWidth="250.0" text="Tasks"/>
+                                        <TableColumn fx:id="tcolNumSlots" prefWidth="100.0" text="Number of slots"
+                                                     style="-fx-alignment: TOP-RIGHT;"/>
                                     </columns>
                                 </TableView>
                             </center>

@@ -8,6 +8,7 @@ public class GeneticAlgorithmBuilder extends GeneticAlgorithm.Builder {
     public static Priority priority1() {
         Priority result = Priority.builder()
                 .withValue(1)
+                .withNumSlots(350)
                 .withBackground(Color.YELLOW)
                 .withForeground(Color.BLACK)
                 .withTasks(List.of(
@@ -21,6 +22,7 @@ public class GeneticAlgorithmBuilder extends GeneticAlgorithm.Builder {
     public static Priority priority2() {
         Priority result = Priority.builder()
                 .withValue(2)
+                .withNumSlots(400)
                 .withBackground(Color.GREEN)
                 .withForeground(Color.YELLOW)
                 .withTasks(List.of(

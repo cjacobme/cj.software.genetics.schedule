@@ -44,7 +44,6 @@ class SolutionSetupTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getNumSolutions()).as("number of solutions").isNull();
         softy.assertThat(instance.getNumWorkers()).as("number of workers").isNull();
-        softy.assertThat(instance.getNumSlots()).as("number of slots").isNull();
         softy.assertThat(instance.getElitismCount()).as("elitism count").isNull();
         softy.assertThat(instance.getTournamentSize()).as("tournament size").isNull();
         softy.assertAll();
@@ -54,14 +53,12 @@ class SolutionSetupTest {
     void constructFilled() {
         Integer numSolutions = -1;
         Integer numWorkers = -2;
-        Integer numSlots = -3;
         Integer elitismCount = -4;
         Integer tournamentSize = -5;
 
         SolutionSetup instance = SolutionSetup.builder()
                 .withNumSolutions(numSolutions)
                 .withNumWorkers(numWorkers)
-                .withNumSlots(numSlots)
                 .withElitismCount(elitismCount)
                 .withTournamentSize(tournamentSize)
                 .build();
@@ -70,7 +67,6 @@ class SolutionSetupTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getNumSolutions()).as("number of solutions").isEqualTo(numSolutions);
         softy.assertThat(instance.getNumWorkers()).as("number of workers").isEqualTo(numWorkers);
-        softy.assertThat(instance.getNumSlots()).as("number of slots").isEqualTo(numSlots);
         softy.assertThat(instance.getElitismCount()).as("elitism count").isEqualTo(elitismCount);
         softy.assertThat(instance.getTournamentSize()).as("tournament size").isEqualTo(tournamentSize);
         softy.assertAll();
