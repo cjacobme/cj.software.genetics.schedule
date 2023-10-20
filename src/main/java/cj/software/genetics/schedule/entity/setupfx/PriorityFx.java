@@ -42,7 +42,7 @@ public class PriorityFx {
     public PriorityFx(Priority source) {
         this.value = new SimpleIntegerProperty(source.getValue());
         this.numSlots = new SimpleIntegerProperty(source.getNumSlots());
-        this.colors = new SimpleObjectProperty<>(new ColorPair(source.getForegroundColor(), source.getBackgroundColor()));
+        this.colors = new SimpleObjectProperty<>(new ColorPair(source.getForeground(), source.getBackground()));
         this.tasksList = FXCollections.observableArrayList();
         for (Tasks tasks : source.getTasks()) {
             TasksFx converted = new TasksFx(tasks);

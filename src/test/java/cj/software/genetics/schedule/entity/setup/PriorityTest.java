@@ -53,8 +53,6 @@ class PriorityTest {
         softy.assertThat(instance.getForeground()).as("foreground").isNull();
         softy.assertThat(instance.getBackground()).as("background").isNull();
         softy.assertThat(instance.getTasks()).as("tasks").isEmpty();
-        softy.assertThat(instance.getForegroundColor()).as("foreground color").isNull();
-        softy.assertThat(instance.getBackgroundColor()).as("background color").isNull();
         softy.assertThat(instance.getNumSlots()).as("number of slots").isNull();
         softy.assertAll();
     }
@@ -81,8 +79,8 @@ class PriorityTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getValue()).as("prio value").isEqualTo(value);
         softy.assertThat(instance.getNumSlots()).as("number of slots").isEqualTo(numSlots);
-        softy.assertThat(instance.getForeground()).as("foreground").isEqualTo("0xd3d3d3ff");
-        softy.assertThat(instance.getBackground()).as("background").isEqualTo("0xffebcdff");
+        softy.assertThat(instance.getForeground()).as("foreground").isEqualTo(Color.valueOf("d3d3d3ff"));
+        softy.assertThat(instance.getBackground()).as("background").isEqualTo(Color.valueOf("ffebcdff"));
         softy.assertThat(instance.getTasks())
                 .as("tasks")
                 .extracting("durationSeconds", "numberTasks")
@@ -100,8 +98,8 @@ class PriorityTest {
             Set<ConstraintViolation<Priority>> violations = validator.validate(instance);
             assertThat(violations).as("constraint violations").isEmpty();
         }
-        Color background = instance.getBackgroundColor();
-        Color foreground = instance.getForegroundColor();
+        Color background = instance.getBackground();
+        Color foreground = instance.getForeground();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(background).as("background").isEqualTo(Color.RED);
         softy.assertThat(foreground).as("foreground").isEqualTo(Color.BLACK);

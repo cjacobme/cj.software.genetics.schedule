@@ -28,10 +28,12 @@ public class Priority implements Serializable, Comparable<Priority> {
     private Integer numSlots;
 
     @NotNull
-    private String foreground;
+    @SuppressWarnings("java:S1948") // ignore not Serializable
+    private Color foreground;
 
     @NotNull
-    private String background;
+    @SuppressWarnings("java:S1948") // ignore not Serializable
+    private Color background;
 
     @NotEmpty
     private final SortedSet<Tasks> tasks = new TreeSet<>();
@@ -47,11 +49,11 @@ public class Priority implements Serializable, Comparable<Priority> {
         return numSlots;
     }
 
-    public String getForeground() {
+    public Color getForeground() {
         return foreground;
     }
 
-    public String getBackground() {
+    public Color getBackground() {
         return background;
     }
 
@@ -61,16 +63,6 @@ public class Priority implements Serializable, Comparable<Priority> {
 
     public static Builder builder() {
         return new Builder();
-    }
-
-    public Color getBackgroundColor() {
-        Color result = (background != null ? Color.valueOf(background) : null);
-        return result;
-    }
-
-    public Color getForegroundColor() {
-        Color result = (foreground != null ? Color.valueOf(foreground) : null);
-        return result;
     }
 
     @Override
@@ -127,29 +119,11 @@ public class Priority implements Serializable, Comparable<Priority> {
         }
 
         public Builder withForeground(Color foreground) {
-            Builder result = withForeground(foreground != null ? foreground.toString() : null);
-            return result;
-        }
-
-        public Builder withBackground(Color background) {
-            Builder result = withBackground(background != null ? background.toString() : null);
-            return result;
-        }
-
-        public Builder withForeground(String foreground) {
-            if (foreground != null) {
-                // check whether it can be converted
-                Color.valueOf(foreground);
-            }
             instance.foreground = foreground;
             return this;
         }
 
-        public Builder withBackground(String background) {
-            if (background != null) {
-                // check whether it can be converted
-                Color.valueOf(background);
-            }
+        public Builder withBackground(Color background) {
             instance.background = background;
             return this;
         }
