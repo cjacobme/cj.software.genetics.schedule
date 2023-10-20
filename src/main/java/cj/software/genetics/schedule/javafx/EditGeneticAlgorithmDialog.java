@@ -1,9 +1,7 @@
 package cj.software.genetics.schedule.javafx;
 
 import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
-import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
-import cj.software.genetics.schedule.entity.setupfx.SolutionSetupFx;
-import javafx.collections.ObservableList;
+import cj.software.genetics.schedule.entity.setupfx.GeneticAlgorithmFx;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -15,19 +13,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Optional;
 
-public class EditProblemDialog extends Dialog<GeneticAlgorithm> {
-    public EditProblemDialog(
+public class EditGeneticAlgorithmDialog extends Dialog<GeneticAlgorithm> {
+    public EditGeneticAlgorithmDialog(
             ConfigurableApplicationContext context,
             Window owner,
-            ObservableList<PriorityFx> tableData,
-            SolutionSetupFx solutionSetupFx) {
+            GeneticAlgorithmFx geneticAlgorithmFx) {
         FxWeaver fxWeaver = context.getBean(FxWeaver.class);
-        FxControllerAndView<EditProblemController, DialogPane> controllerAndView =
-                fxWeaver.load(EditProblemController.class);
+        FxControllerAndView<EditGeneticAlgorithmController, DialogPane> controllerAndView =
+                fxWeaver.load(EditGeneticAlgorithmController.class);
         Optional<DialogPane> optional = controllerAndView.getView();
         if (optional.isPresent()) {
-            final EditProblemController controller = controllerAndView.getController();
-            controller.setData(tableData, solutionSetupFx);
+            final EditGeneticAlgorithmController controller = controllerAndView.getController();
+            controller.setData(geneticAlgorithmFx);
             initOwner(owner);
             initModality(Modality.APPLICATION_MODAL);
             DialogPane dialogPane = optional.get();

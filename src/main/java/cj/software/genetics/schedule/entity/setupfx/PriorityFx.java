@@ -2,13 +2,9 @@ package cj.software.genetics.schedule.entity.setupfx;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import java.util.List;
 
 public class PriorityFx {
     private final IntegerProperty value;
@@ -18,17 +14,6 @@ public class PriorityFx {
     private final ObjectProperty<ColorPair> colors;
 
     private final ObservableList<TasksFx> tasksList;
-
-    public PriorityFx(PriorityFx source) {
-        this.value = new ReadOnlyIntegerWrapper(source.getValue());
-        this.numSlots = new SimpleIntegerProperty(source.getNumSlots());
-        ColorPair sourceColors = source.getColors();
-        ColorPair colorPair = new ColorPair(sourceColors.getForeground(), sourceColors.getBackground());
-        colors = new SimpleObjectProperty<>(colorPair);
-        tasksList = FXCollections.observableArrayList();
-        List<TasksFx> list = source.tasksList.stream().toList();
-        tasksList.addAll(list);
-    }
 
     public PriorityFx(int value, int numSlots, ColorPair colorPair, ObservableList<TasksFx> tasksList) {
         this.value = new SimpleIntegerProperty(value);

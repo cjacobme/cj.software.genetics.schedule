@@ -2,6 +2,7 @@ package cj.software.genetics.schedule.javafx;
 
 import cj.software.genetics.schedule.entity.setup.Priority;
 import cj.software.genetics.schedule.entity.setupfx.ColorPair;
+import cj.software.genetics.schedule.entity.setupfx.GeneticAlgorithmFx;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.entity.setupfx.SolutionSetupFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
@@ -30,8 +31,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 @Component
-@FxmlView("EditProblem.fxml")
-public class EditProblemController implements Initializable {
+@FxmlView("EditGeneticAlgorithm.fxml")
+public class EditGeneticAlgorithmController implements Initializable {
 
     @FXML
     private Button btnAdd;
@@ -75,9 +76,9 @@ public class EditProblemController implements Initializable {
     @Autowired
     private Converter converter;
 
-    private SolutionSetupFx solutionSetupFx;
+    private GeneticAlgorithmFx geneticAlgorithmFx;
 
-    private SolutionSetupFx originalSolutionsSetupFx;
+    private GeneticAlgorithmFx originalGeneticsAlgorithmFx;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -89,17 +90,17 @@ public class EditProblemController implements Initializable {
         btnEdit.disableProperty().bind(Bindings.isEmpty(tblPriorities.getSelectionModel().getSelectedItems()));
     }
 
-    public void setData(
-            ObservableList<PriorityFx> tableData,
-            SolutionSetupFx solutionSetupFx) {
-        this.solutionSetupFx = solutionSetupFx;
-        this.originalSolutionsSetupFx = new SolutionSetupFx(solutionSetupFx);
+    public void setData(GeneticAlgorithmFx geneticAlgorithmFx) {
+        this.geneticAlgorithmFx = geneticAlgorithmFx;
+        this.originalGeneticsAlgorithmFx = converter.copy(geneticAlgorithmFx);
         NumberStringConverter numberStringConverter = new NumberStringConverter();
+        SolutionSetupFx solutionSetupFx = geneticAlgorithmFx.getSolutionsSetup();
         Bindings.bindBidirectional(tfNumSolutions.textProperty(), solutionSetupFx.numSolutionsProperty(), numberStringConverter);
         Bindings.bindBidirectional(tfNumWorkers.textProperty(), solutionSetupFx.numWorkersProperty(), numberStringConverter);
         Bindings.bindBidirectional(tfElitismCount.textProperty(), solutionSetupFx.elitismCountProperty(), numberStringConverter);
         Bindings.bindBidirectional(tfTournamentSize.textProperty(), solutionSetupFx.tournamentSizeProperty(), numberStringConverter);
-        tblPriorities.setItems(tableData);
+        ObservableList<PriorityFx> priorities = geneticAlgorithmFx.getPriorities();
+        tblPriorities.setItems(priorities);
     }
 
     @FXML
@@ -126,11 +127,11 @@ public class EditProblemController implements Initializable {
         }
     }
 
-    public SolutionSetupFx getSolutionSetupFx() {
-        return solutionSetupFx;
+    public GeneticAlgorithmFx getGeneticAlgorithmFx() {
+        return geneticAlgorithmFx;
     }
 
-    public SolutionSetupFx getOriginalSolutionsSetupFx() {
-        return originalSolutionsSetupFx;
+    public GeneticAlgorithmFx getOriginalGeneticsAlgorithmFx() {
+        return originalGeneticsAlgorithmFx;
     }
 }

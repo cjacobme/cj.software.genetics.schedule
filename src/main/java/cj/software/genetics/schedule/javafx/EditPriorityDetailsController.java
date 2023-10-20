@@ -98,7 +98,7 @@ public class EditPriorityDetailsController implements Initializable {
     public void setData(PriorityFx priorityFx) {
         NumberStringConverter numberStringConverter = new NumberStringConverter();
         this.priorityFx = priorityFx;
-        this.original = new PriorityFx(priorityFx);
+        this.original = converter.copy(priorityFx);
         Bindings.bindBidirectional(tfNumSlots.textProperty(), priorityFx.numSlotsProperty(), numberStringConverter);
         Bindings.bindBidirectional(tfPriority.textProperty(), priorityFx.valueProperty(), numberStringConverter);
         ColorPair colorPair = priorityFx.getColors();

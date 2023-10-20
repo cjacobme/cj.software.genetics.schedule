@@ -1,6 +1,5 @@
 package cj.software.genetics.schedule.entity.setupfx;
 
-import cj.software.genetics.schedule.entity.setup.SolutionSetup;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -14,11 +13,11 @@ public class SolutionSetupFx {
 
     private final IntegerProperty tournamentSize;
 
-    public SolutionSetupFx(SolutionSetup source) {
-        this.numSolutions = new SimpleIntegerProperty(source.getNumSolutions());
-        this.numWorkers = new SimpleIntegerProperty(source.getNumWorkers());
-        this.elitismCount = new SimpleIntegerProperty(source.getElitismCount());
-        this.tournamentSize = new SimpleIntegerProperty(source.getTournamentSize());
+    public SolutionSetupFx(int numSolutions, int numWorkers, int elitismCount, int tournamentSize) {
+        this.numSolutions = new SimpleIntegerProperty(numSolutions);
+        this.numWorkers = new SimpleIntegerProperty(numWorkers);
+        this.elitismCount = new SimpleIntegerProperty(elitismCount);
+        this.tournamentSize = new SimpleIntegerProperty(tournamentSize);
     }
 
     public SolutionSetupFx(SolutionSetupFx source) {

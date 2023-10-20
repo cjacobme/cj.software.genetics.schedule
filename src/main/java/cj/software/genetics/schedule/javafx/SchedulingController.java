@@ -5,8 +5,7 @@ import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
-import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
-import cj.software.genetics.schedule.entity.setupfx.SolutionSetupFx;
+import cj.software.genetics.schedule.entity.setupfx.GeneticAlgorithmFx;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.Converter;
@@ -168,10 +167,10 @@ public class SchedulingController implements Initializable, ApplicationListener<
     public void newProblem2() {
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
         GeneticAlgorithm geneticAlgorithm = geneticAlgorithmService.createDefault();
-        ObservableList<PriorityFx> priorityFxes = converter.toPriorityFx(geneticAlgorithm.getPriorities());
-        SolutionSetupFx solutionSetupFx = new SolutionSetupFx(geneticAlgorithm.getSolutionSetup());
-        EditProblemDialog editProblemDialog = new EditProblemDialog(applicationContext, owner, priorityFxes, solutionSetupFx);
-        Optional<GeneticAlgorithm> optional = editProblemDialog.showAndWait();
+        GeneticAlgorithmFx geneticAlgorithmFx = converter.toGeneticsAlgorithmFx(geneticAlgorithm);
+        EditGeneticAlgorithmDialog editGeneticAlgorithmDialog = new EditGeneticAlgorithmDialog(
+                applicationContext, owner, geneticAlgorithmFx);
+        Optional<GeneticAlgorithm> optional = editGeneticAlgorithmDialog.showAndWait();
         if (optional.isPresent()) {
             logger.warn("not yet implemented: data were entered");
         } else {
