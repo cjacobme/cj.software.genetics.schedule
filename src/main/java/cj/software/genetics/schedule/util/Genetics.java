@@ -4,14 +4,12 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
-import cj.software.genetics.schedule.entity.WorkerChain;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +28,8 @@ public class Genetics {
     private final Logger logger = LogManager.getFormatterLogger();
 
     public Solution mate(int cycleCounter, int indexInCycle, Solution parent1, Solution parent2, int numWorkers, int numSlots) {
+        throw new UnsupportedOperationException("to be implemented");
+        /*
         Map<Integer, List<Worker>> prioMap = new HashMap<>();
         for (int iPrio = 0; iPrio < 3; iPrio++) {
             Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1, iPrio);
@@ -63,6 +63,8 @@ public class Genetics {
         int duration = solutionService.calcDuration(result);
         result.setDurationInSeconds(duration);
         return result;
+
+         */
     }
 
     private void dispatch(List<Task> tasks, List<Worker> workers, Map<Task, Coordinate> converted, int lower, int upper) {

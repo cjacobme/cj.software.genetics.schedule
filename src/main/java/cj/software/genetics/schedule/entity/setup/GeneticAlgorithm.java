@@ -21,6 +21,8 @@ public class GeneticAlgorithm implements Serializable {
     @Valid
     private SolutionSetup solutionSetup;
 
+    private int cycleCounter;
+
     private GeneticAlgorithm() {
     }
 
@@ -34,6 +36,15 @@ public class GeneticAlgorithm implements Serializable {
 
     public void add(Priority priority) {
         priorities.add(priority);
+    }
+
+    public int getCycleCounter() {
+        return cycleCounter;
+    }
+
+    public int incCycleCounter() {
+        cycleCounter++;
+        return cycleCounter;
     }
 
     public static Builder builder() {

@@ -5,6 +5,8 @@ import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
+import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setup.SolutionSetup;
 import cj.software.genetics.schedule.entity.setupfx.GeneticAlgorithmFx;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.Breeder;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.SortedMap;
 
 @Component
 @FxmlView("Scheduling.fxml")
@@ -90,6 +93,8 @@ public class SchedulingController implements Initializable, ApplicationListener<
     private Label lbScale;
 
     private ProblemSetup problemSetup;
+
+    private GeneticAlgorithm geneticAlgorithm;
 
     private List<Solution> population;
 
@@ -166,13 +171,18 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @FXML
     public void newProblem2() {
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
-        GeneticAlgorithm geneticAlgorithm = geneticAlgorithmService.createDefault();
-        GeneticAlgorithmFx geneticAlgorithmFx = converter.toGeneticsAlgorithmFx(geneticAlgorithm);
+        GeneticAlgorithm source = geneticAlgorithmService.createDefault();
+        GeneticAlgorithmFx geneticAlgorithmFx = converter.toGeneticAlgorithmFx(source);
         EditGeneticAlgorithmDialog editGeneticAlgorithmDialog = new EditGeneticAlgorithmDialog(
                 applicationContext, owner, geneticAlgorithmFx);
-        Optional<GeneticAlgorithm> optional = editGeneticAlgorithmDialog.showAndWait();
+        Optional<GeneticAlgorithmFx> optional = editGeneticAlgorithmDialog.showAndWait();
         if (optional.isPresent()) {
-            logger.warn("not yet implemented: data were entered");
+            GeneticAlgorithmFx editedFx = optional.get();
+            this.geneticAlgorithm = converter.toGeneticAlgorithm(editedFx);
+            SortedMap<Priority, List<Task>> allTasks = taskService.createTasks(this.geneticAlgorithm);
+            SolutionSetup solutionSetup = this.geneticAlgorithm.getSolutionSetup();
+            List<Solution> allSolutions = solutionService.createInitialPopulation(solutionSetup, allTasks);
+            setPopulation(allSolutions, this.geneticAlgorithm.getCycleCounter());
         } else {
             logger.info("dialog was cancelled");
         }

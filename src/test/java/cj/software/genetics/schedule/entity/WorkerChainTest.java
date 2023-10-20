@@ -45,18 +45,14 @@ class WorkerChainTest {
         assertThat(instanceAfter).as("instance in builder after build").isNull();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getWorkers()).as("workers").hasSize(3);
-        softy.assertThat(instance.getMaxNumTasks()).as("max num tasks").isZero();
         softy.assertAll();
     }
 
     @Test
     void constructFilled() {
         int maxNumTasks = 123;
-        WorkerChain instance = WorkerChain.builder()
-                .withMaxNumTasks(maxNumTasks)
-                .build();
+        WorkerChain instance = WorkerChain.builder().build();
         assertThat(instance).as("built instance").isNotNull();
-        assertThat(instance.getMaxNumTasks()).as("max num tasks").isEqualTo(maxNumTasks);
         Worker[] workers = instance.getWorkers();
         assertThat(workers).as("workers").hasSize(3);
         SoftAssertions softy = new SoftAssertions();

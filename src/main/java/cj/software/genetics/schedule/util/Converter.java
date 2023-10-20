@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,83 @@ public class Converter {
                 result.put(task, coordinate);
             }
         }
+        return result;
+    }
+
+    public GeneticAlgorithm toGeneticAlgorithm(GeneticAlgorithmFx source) {
+        SolutionSetup solutionSetup = toSolutionSetup(source.getSolutionsSetup());
+        List<Priority> priorities = toPriorities(source.getPriorities());
+        GeneticAlgorithm result = GeneticAlgorithm.builder()
+                .withSolutionSetup(solutionSetup)
+                .withPriorities(priorities)
+                .build();
+        return result;
+    }
+
+    public List<Priority> toPriorities(ObservableList<PriorityFx> source) {
+        List<Priority> result = new ArrayList<>();
+        for (PriorityFx priorityFx : source) {
+            Priority converted = toPriority(priorityFx);
+            result.add(converted);
+        }
+        return result;
+    }
+
+    public Priority toPriority(PriorityFx source) {
+        int value = source.getValue();
+        int numSlots = source.getNumSlots();
+        ColorPair colors = source.getColors();
+        ObservableList<TasksFx> tasksFx = source.getTasksList();
+        Color background = colors.getBackground();
+        Color foreground = colors.getForeground();
+        List<Tasks> tasks = toTasks(tasksFx);
+
+        Priority result = Priority.builder()
+                .withValue(value)
+                .withNumSlots(numSlots)
+                .withForeground(foreground)
+                .withBackground(background)
+                .withTasks(tasks)
+                .build();
+        return result;
+    }
+
+    public List<Tasks> toTasks(ObservableList<TasksFx> source) {
+        List<Tasks> result = new ArrayList<>();
+        for (TasksFx tasksFx : source) {
+            Tasks converted = toTasks(tasksFx);
+            result.add(converted);
+        }
+        result.sort(new Comparator<Tasks>() {
+            @Override
+            public int compare(Tasks o1, Tasks o2) {
+                CompareToBuilder builder = new CompareToBuilder()
+                        .append(o1.getDurationSeconds(), o2.getDurationSeconds());
+                int result = builder.build();
+                return result;
+            }
+        });
+        return result;
+    }
+
+    public Tasks toTasks(TasksFx source) {
+        int duration = source.getDuration();
+        int count = source.getCount();
+        Tasks result = Tasks.builder().withDurationSeconds(duration).withNumberTasks(count).build();
+        return result;
+    }
+
+    public SolutionSetup toSolutionSetup(SolutionSetupFx source) {
+        int numSolutions = source.getNumSolutions();
+        int numWorkers = source.getNumWorkers();
+        int elitismCount = source.getElitismCount();
+        int tournamentSize = source.getTournamentSize();
+        SolutionSetup result = SolutionSetup.builder()
+                .withNumSolutions(numSolutions)
+                .withNumWorkers(numWorkers)
+                .withElitismCount(elitismCount)
+                .withTournamentSize(tournamentSize)
+                .build();
         return result;
     }
 
@@ -100,11 +178,11 @@ public class Converter {
         int numSolutions = source.getNumSolutions();
         int elitismCount = source.getElitismCount();
         int tournamentSize = source.getTournamentSize();
-        SolutionSetupFx result = new SolutionSetupFx(numWorkers, numSolutions, elitismCount, tournamentSize);
+        SolutionSetupFx result = new SolutionSetupFx(numSolutions, numWorkers, elitismCount, tournamentSize);
         return result;
     }
 
-    public GeneticAlgorithmFx toGeneticsAlgorithmFx(GeneticAlgorithm source) {
+    public GeneticAlgorithmFx toGeneticAlgorithmFx(GeneticAlgorithm source) {
         SolutionSetupFx solutionSetupFx = toSolutionSetupFx(source.getSolutionSetup());
         ObservableList<PriorityFx> priorities = toPriorityFx(source.getPriorities());
         GeneticAlgorithmFx result = new GeneticAlgorithmFx(solutionSetupFx, priorities);

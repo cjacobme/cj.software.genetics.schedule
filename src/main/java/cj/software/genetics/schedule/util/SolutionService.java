@@ -2,8 +2,9 @@ package cj.software.genetics.schedule.util;
 
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
-import cj.software.genetics.schedule.entity.Worker;
 import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setup.SolutionSetup;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 
 @Service
 public class SolutionService {
@@ -24,6 +26,8 @@ public class SolutionService {
     private WorkerChainService workerChainService;
 
     public Solution createInitialSolution(int indexInCycle, int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
+        throw new UnsupportedOperationException("to be deleted");
+        /*
         List<WorkerChain> allWorkersChains = new ArrayList<>();
         for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
             WorkerChain workerChain = WorkerChain.builder()
@@ -49,6 +53,8 @@ public class SolutionService {
         int durationInSeconds = calcDuration(result);
         result.setDurationInSeconds(durationInSeconds);
         return result;
+
+         */
     }
 
     public int calcDuration(Solution solution) {
@@ -68,6 +74,21 @@ public class SolutionService {
             result.add(solution);
         }
         sortDescendingFitnessValue(result);
+        return result;
+    }
+
+    public List<Solution> createInitialPopulation(SolutionSetup solutionSetup, SortedMap<Priority, List<Task>> priorities) {
+        int numSolutions = solutionSetup.getNumSolutions();
+        int numWorkerChains = solutionSetup.getNumWorkers();
+        List<Solution> result = new ArrayList<>(numSolutions);
+        for (int iSolution = 0; iSolution < numSolutions; iSolution++) {
+            WorkerChain[] workerChains = new WorkerChain[numWorkerChains];
+            for (int iWorkerChain = 0; iWorkerChain < numWorkerChains; iWorkerChain++) {
+                workerChains[iWorkerChain] = workerChainService.createWorkerChain(priorities);
+            }
+            Solution solution = Solution.builder(0, iSolution).withWorkerChains(workerChains).build();
+            result.add(solution);
+        }
         return result;
     }
 

@@ -1,6 +1,5 @@
 package cj.software.genetics.schedule.javafx;
 
-import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
 import cj.software.genetics.schedule.entity.setupfx.GeneticAlgorithmFx;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Dialog;
@@ -13,7 +12,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.Optional;
 
-public class EditGeneticAlgorithmDialog extends Dialog<GeneticAlgorithm> {
+public class EditGeneticAlgorithmDialog extends Dialog<GeneticAlgorithmFx> {
     public EditGeneticAlgorithmDialog(
             ConfigurableApplicationContext context,
             Window owner,
@@ -30,11 +29,10 @@ public class EditGeneticAlgorithmDialog extends Dialog<GeneticAlgorithm> {
             DialogPane dialogPane = optional.get();
             setDialogPane(dialogPane);
             setResultConverter(buttonType -> {
-                GeneticAlgorithm result;
+                GeneticAlgorithmFx result;
                 ButtonBar.ButtonData buttonData = buttonType.getButtonData();
                 if (buttonData.isDefaultButton()) {
-                    //TODO obtain values from controller
-                    result = GeneticAlgorithm.builder().build();
+                    result = controller.getGeneticAlgorithmFx();
                 } else {
                     result = null;
                 }

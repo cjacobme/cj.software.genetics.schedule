@@ -105,8 +105,8 @@ public class SolutionControl extends Pane {
             children.add(label);
             myChildren.add(label);
             double posX = WORKER_LABEL_WIDTH + 10;
-            for (int iPrio = 0; iPrio < 3; iPrio++) {
-                Worker worker = workerChain.getWorkerForPriority(iPrio);
+            Worker[] workers = workerChain.getWorkers();
+            for (Worker worker : workers) {
                 posX = drawWorker(worker, posX, posY, children);
             }
             posY += ROW_HEIGHT + LINE_GAP;
