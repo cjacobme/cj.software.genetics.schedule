@@ -44,7 +44,7 @@
                                                 text="Add"/>
                                         <Button fx:id="btnEdit" mnemonicParsing="false" onAction="#editPriority"
                                                 text="Edit..."/>
-                                        <Button fx:id="btnDelete" text="Delete..."/>
+                                        <Button fx:id="btnDelete" text="Delete..." onAction="#deletePriority"/>
                                     </buttons>
                                 </ButtonBar>
                             </bottom>

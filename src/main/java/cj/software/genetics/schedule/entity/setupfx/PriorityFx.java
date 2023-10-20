@@ -26,6 +26,10 @@ public class PriorityFx {
         return value.getValue();
     }
 
+    public void seValue(Integer priority) {
+        value.setValue(priority);
+    }
+
     public IntegerProperty valueProperty() {
         return value;
     }
