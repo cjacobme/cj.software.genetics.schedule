@@ -88,9 +88,12 @@ public class SolutionService {
             }
             Solution solution = Solution.builder(0, iSolution).withWorkerChains(workerChains).build();
             result.add(solution);
+            int durationInSeconds = calcDuration(solution);
+            solution.setDurationInSeconds(durationInSeconds);
         }
         return result;
     }
+
 
     public void sortDescendingFitnessValue(List<Solution> solutions) {
         solutions.sort((o1, o2) -> {

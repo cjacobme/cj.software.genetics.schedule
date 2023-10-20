@@ -53,7 +53,7 @@ class WorkerChainTest {
         int maxNumTasks = 123;
         WorkerChain instance = WorkerChain.builder().build();
         assertThat(instance).as("built instance").isNotNull();
-        Worker[] workers = instance.getWorkers();
+        Worker[] workers = instance.getWorkersAsArray();
         assertThat(workers).as("workers").hasSize(3);
         SoftAssertions softy = new SoftAssertions();
         for (int iPrio = 0; iPrio < 3; iPrio++) {
@@ -81,7 +81,7 @@ class WorkerChainTest {
         Task task = new TaskBuilder().withPriority(priority).build();
         WorkerChain instance = new WorkerChainBuilder().build();
         instance.setTaskAt(position, task);
-        Worker[] workers = instance.getWorkers();
+        Worker[] workers = instance.getWorkersAsArray();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(workers[0].getTasks()).as("tasks prio 0").containsExactly(task);
         softy.assertThat(workers[1].getTasks()).as("tasks prio 1").isEmpty();

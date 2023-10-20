@@ -8,6 +8,7 @@ import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
 import cj.software.genetics.schedule.entity.setup.Priority;
 import cj.software.genetics.schedule.entity.setup.SolutionSetup;
 import cj.software.genetics.schedule.entity.setupfx.GeneticAlgorithmFx;
+import cj.software.genetics.schedule.javafx.control.ColorService;
 import cj.software.genetics.schedule.javafx.control.SolutionControl;
 import cj.software.genetics.schedule.util.Breeder;
 import cj.software.genetics.schedule.util.Converter;
@@ -68,6 +69,9 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @Autowired
     private Converter converter;
 
+    @Autowired
+    private ColorService colorService;
+
     @FXML
     private ScrollPane scrollPane;
 
@@ -92,6 +96,9 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @FXML
     private Label lbScale;
 
+    @FXML
+    private TextField tfStatus;
+
     private ProblemSetup problemSetup;
 
     private GeneticAlgorithm geneticAlgorithm;
@@ -100,8 +107,9 @@ public class SchedulingController implements Initializable, ApplicationListener<
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        SolutionControl solutionControl = new SolutionControl();
+        SolutionControl solutionControl = new SolutionControl(colorService);
         scrollPane.setContent(solutionControl);
+        tfStatus.textProperty().bind(solutionControl.statusProperty());
 
         tcolCycle.setCellValueFactory(new PropertyValueFactory<>("cycleCounter"));
         tcolDuration.setCellValueFactory(new PropertyValueFactory<>("durationInSeconds"));

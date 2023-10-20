@@ -26,10 +26,9 @@ public class GeneticAlgorithmService {
                 .withForeground(Color.BLACK)
                 .withNumSlots(500)
                 .withTasks(List.of(
-                        Tasks.builder().withNumberTasks(50).withDurationSeconds(10).build(),
-                        Tasks.builder().withNumberTasks(80).withDurationSeconds(20).build(),
-                        Tasks.builder().withNumberTasks(120).withDurationSeconds(30).build(),
-                        Tasks.builder().withNumberTasks(12).withDurationSeconds(60).build()
+                        Tasks.builder().withNumberTasks(17).withDurationSeconds(10).build(),
+                        Tasks.builder().withNumberTasks(13).withDurationSeconds(20).build(),
+                        Tasks.builder().withNumberTasks(10).withDurationSeconds(50).build()
                 )).build();
         Priority prio1 = Priority.builder()
                 .withValue(1)
@@ -38,15 +37,15 @@ public class GeneticAlgorithmService {
                 .withForeground(Color.BLACK)
                 .withTasks(List.of(
                         Tasks.builder().withNumberTasks(10).withDurationSeconds(10).build(),
-                        Tasks.builder().withNumberTasks(30).withDurationSeconds(30).build()
+                        Tasks.builder().withNumberTasks(20).withDurationSeconds(30).build()
                 )).build();
         Priority prio2 = Priority.builder()
                 .withValue(2)
-                .withNumSlots(50)
+                .withNumSlots(150)
                 .withBackground(Color.GREEN)
                 .withForeground(Color.YELLOW)
                 .withTasks(List.of(
-                        Tasks.builder().withNumberTasks(30).withDurationSeconds(15).build()
+                        Tasks.builder().withNumberTasks(10).withDurationSeconds(15).build()
                 )).build();
         GeneticAlgorithm result = GeneticAlgorithm.builder()
                 .withSolutionSetup(solutionSetup)
