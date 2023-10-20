@@ -1,6 +1,5 @@
 package cj.software.genetics.schedule.entity.setupfx;
 
-import cj.software.genetics.schedule.entity.setup.Tasks;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -10,9 +9,9 @@ public class TasksFx {
 
     private final SimpleIntegerProperty count;
 
-    public TasksFx(Tasks source) {
-        this.duration = new SimpleIntegerProperty(source.getDurationSeconds());
-        this.count = new SimpleIntegerProperty(source.getNumberTasks());
+    public TasksFx(int duration, int count) {
+        this.duration = new SimpleIntegerProperty(duration);
+        this.count = new SimpleIntegerProperty(count);
     }
 
     public void setDuration(int duration) {

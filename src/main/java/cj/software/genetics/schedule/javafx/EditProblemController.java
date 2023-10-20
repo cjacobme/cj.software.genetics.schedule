@@ -7,6 +7,7 @@ import cj.software.genetics.schedule.entity.setupfx.SolutionSetupFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
 import cj.software.genetics.schedule.javafx.control.ColorsTableCellFactory;
 import cj.software.genetics.schedule.javafx.control.TasksSubTableCellFactory;
+import cj.software.genetics.schedule.util.Converter;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -71,6 +72,9 @@ public class EditProblemController implements Initializable {
     @Autowired
     private ConfigurableApplicationContext applicationContext;
 
+    @Autowired
+    private Converter converter;
+
     private SolutionSetupFx solutionSetupFx;
 
     private SolutionSetupFx originalSolutionsSetupFx;
@@ -102,7 +106,7 @@ public class EditProblemController implements Initializable {
     public void addPriority() {
         int numRows = this.tblPriorities.getItems().size();
         Priority priority = Priority.builder().withValue(numRows).withBackground(Color.DARKGRAY).withForeground(Color.BLACK).build();
-        PriorityFx priorityFx = new PriorityFx(priority);
+        PriorityFx priorityFx = converter.toPriorityFx(priority);
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
         EditPriorityDetailsDialog dialog = new EditPriorityDetailsDialog(applicationContext, owner, priorityFx);
         dialog.showAndWait();

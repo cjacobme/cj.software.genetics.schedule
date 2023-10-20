@@ -6,9 +6,13 @@ import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
 import cj.software.genetics.schedule.entity.WorkerChain;
 import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setup.Tasks;
+import cj.software.genetics.schedule.entity.setupfx.ColorPair;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
+import cj.software.genetics.schedule.entity.setupfx.TasksFx;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Service;
 
@@ -58,9 +62,32 @@ public class Converter {
     public ObservableList<PriorityFx> toPriorityFx(SortedSet<Priority> source) {
         ObservableList<PriorityFx> result = FXCollections.observableArrayList();
         for (Priority priority : source) {
-            PriorityFx converted = new PriorityFx(priority);
+            PriorityFx converted = toPriorityFx(priority);
             result.add(converted);
         }
+        return result;
+    }
+
+    public PriorityFx toPriorityFx(Priority source) {
+        int priorityValue = source.getValue();
+        int numSlots = source.getNumSlots();
+        Color foreground = source.getForeground();
+        Color background = source.getBackground();
+        ColorPair colorPair = new ColorPair(foreground, background);
+        ObservableList<TasksFx> tasksList = FXCollections.observableArrayList();
+        for (Tasks tasks : source.getTasks()) {
+            TasksFx tasksFx = toTasksFx(tasks);
+            tasksList.add(tasksFx);
+        }
+
+        PriorityFx result = new PriorityFx(priorityValue, numSlots, colorPair, tasksList);
+        return result;
+    }
+
+    public TasksFx toTasksFx(Tasks source) {
+        int duration = source.getDurationSeconds();
+        int count = source.getNumberTasks();
+        TasksFx result = new TasksFx(duration, count);
         return result;
     }
 }

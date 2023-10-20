@@ -5,6 +5,7 @@ import cj.software.genetics.schedule.entity.setupfx.ColorPair;
 import cj.software.genetics.schedule.entity.setupfx.PriorityFx;
 import cj.software.genetics.schedule.entity.setupfx.TasksFx;
 import cj.software.genetics.schedule.javafx.control.ColorService;
+import cj.software.genetics.schedule.util.Converter;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -68,6 +69,9 @@ public class EditPriorityDetailsController implements Initializable {
     @Autowired
     private ColorService colorService;
 
+    @Autowired
+    private Converter converter;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         TextFormatter<Integer> integerTextFormatter = new TextFormatter<>(new IntegerStringConverter());
@@ -119,7 +123,7 @@ public class EditPriorityDetailsController implements Initializable {
     @FXML
     public void addTasksLine() {
         Tasks source = Tasks.builder().withNumberTasks(0).withDurationSeconds(0).build();
-        TasksFx tasksFx = new TasksFx(source);
+        TasksFx tasksFx = converter.toTasksFx(source);
         ObservableList<TasksFx> tasksList = this.tblTasks.getItems();
         tasksList.add(tasksFx);
         int numTasks = tasksList.size();

@@ -1,7 +1,5 @@
 package cj.software.genetics.schedule.entity.setupfx;
 
-import cj.software.genetics.schedule.entity.setup.Priority;
-import cj.software.genetics.schedule.entity.setup.Tasks;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -37,17 +35,6 @@ public class PriorityFx {
         this.numSlots = new SimpleIntegerProperty(numSlots);
         this.colors = new SimpleObjectProperty<>(colorPair);
         this.tasksList = tasksList;
-    }
-
-    public PriorityFx(Priority source) {
-        this.value = new SimpleIntegerProperty(source.getValue());
-        this.numSlots = new SimpleIntegerProperty(source.getNumSlots());
-        this.colors = new SimpleObjectProperty<>(new ColorPair(source.getForeground(), source.getBackground()));
-        this.tasksList = FXCollections.observableArrayList();
-        for (Tasks tasks : source.getTasks()) {
-            TasksFx converted = new TasksFx(tasks);
-            this.tasksList.add(converted);
-        }
     }
 
     public Integer getValue() {
