@@ -51,8 +51,7 @@ public class WorkerChain implements Serializable {
     }
 
     public void setTaskAt(int position, Task task) {
-        int priorityValue = task.getPriority();
-        Priority priority = Priority.builder().withValue(priorityValue).build();
+        Priority priority = task.getPriority();
         Worker worker = workers.get(priority);
         worker.setTaskAt(position, task);
     }

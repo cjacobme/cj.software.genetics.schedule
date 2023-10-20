@@ -1,17 +1,22 @@
 package cj.software.genetics.schedule.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SolutionBuilder extends Solution.Builder {
     public static List<Task> createTasks() {
+        throw new UnsupportedOperationException("to be refined");
+        //TODO refine
+        /*
         List<Task> result = new ArrayList<>();
         for (int iTask = 0; iTask < 6; iTask++) {
             int prio = iTask % 3;
-            Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(iTask * 10).withPriority(prio).build();
+            Priority priority = new PriorityBuilder().withValue(prio).build();
+            Task task = Task.builder().withIdentifier(iTask).withDurationSeconds(iTask * 10).withPriority(priority).build();
             result.add(task);
         }
         return result;
+
+         */
     }
 
     public SolutionBuilder() {
