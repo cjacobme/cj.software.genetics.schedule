@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -92,6 +94,14 @@ public class Priority implements Serializable, Comparable<Priority> {
         } else {
             result = false;
         }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+                .append(value);
+        String result = builder.build();
         return result;
     }
 

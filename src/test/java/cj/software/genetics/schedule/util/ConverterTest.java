@@ -4,8 +4,8 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.SolutionBuilder;
 import cj.software.genetics.schedule.entity.Task;
-import cj.software.genetics.schedule.entity.WorkerChain;
-import cj.software.genetics.schedule.entity.WorkerChainBuilder;
+import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setup.PriorityBuilder;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Converter.class)
@@ -35,7 +36,8 @@ class ConverterTest {
     @Test
     void toTaskList() {
         Solution solution = new SolutionBuilder().build();
-        List<Task> taskList = converter.toTaskList(solution, 2);
+        Priority priority = new PriorityBuilder().withValue(1).build();
+        List<Task> taskList = converter.toTaskList(solution, priority);
         List<Task> fromSolutionBuilder = SolutionBuilder.createTasks();
         List<Task> expected = List.of(fromSolutionBuilder.get(2), fromSolutionBuilder.get(5));
         assertThat(taskList).usingRecursiveAssertion().isEqualTo(expected);
@@ -44,15 +46,19 @@ class ConverterTest {
     @Test
     void solutionToMap1() {
         Solution solution = new SolutionBuilder().build();
+        Priority priority = new PriorityBuilder().build();
         List<Task> tasks = SolutionBuilder.createTasks();
         Map<Task, Coordinate> expected = Map.of(
                 tasks.get(0), Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build(),
                 tasks.get(3), Coordinate.builder().withWorkerIndex(0).withSlotIndex(2).build());
-        solutionToMap(solution, expected, 0);
+        solutionToMap(solution, expected, priority);
     }
 
     @Test
     void solutionToMap2() {
+        fail("to be refined");
+        // TODO refine
+        /*
         int numTasks = 10;
         Task[] tasks = new Task[numTasks];
         for (int iTask = 0; iTask < numTasks; iTask++) {
@@ -77,9 +83,11 @@ class ConverterTest {
                 tasks[4], Coordinate.builder().withWorkerIndex(0).withSlotIndex(4).build(),
                 tasks[7], Coordinate.builder().withWorkerIndex(3).withSlotIndex(7).build());
         solutionToMap(solution, expected, 1);
+
+         */
     }
 
-    private void solutionToMap(Solution solution, Map<Task, Coordinate> expected, int prio) {
+    private void solutionToMap(Solution solution, Map<Task, Coordinate> expected, Priority prio) {
         Map<Task, Coordinate> actual = converter.toMapTaskCoordinate(solution, prio);
         SoftAssertions softy = new SoftAssertions();
         for (Map.Entry<Task, Coordinate> actEntry : actual.entrySet()) {

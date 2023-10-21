@@ -1,6 +1,5 @@
 package cj.software.genetics.schedule.util;
 
-import cj.software.genetics.schedule.entity.Task;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.stereotype.Service;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = TaskService.class)
@@ -31,6 +28,9 @@ class TaskServiceTest {
 
     @Test
     void generate10Seconds() {
+        fail("to be implemented");
+        // TODO
+        /*
         int startIndex = 0;
         int durationInSeconds = 10;
         int count = 3;
@@ -45,10 +45,15 @@ class TaskServiceTest {
                 Task.builder().withDurationSeconds(10).withIdentifier(2).withPriority(2).build()));
 
         verify(randomService, times(3)).nextRandom(3);
+
+         */
     }
 
     @Test
     void generate20Seconds() {
+        fail("to be implemented");
+        //TODO
+        /*
         when(randomService.nextRandom(3)).thenReturn(2, 1);
 
         List<Task> tasks = taskService.createTasks(25, 20, 2);
@@ -57,5 +62,8 @@ class TaskServiceTest {
                 Task.builder().withDurationSeconds(20).withIdentifier(26).withPriority(1).build()));
 
         verify(randomService, times(2)).nextRandom(3);
+
+         */
     }
+
 }

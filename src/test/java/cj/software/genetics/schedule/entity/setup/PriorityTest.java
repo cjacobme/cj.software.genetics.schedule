@@ -159,4 +159,11 @@ class PriorityTest {
         Object instance2 = "hello world";
         assertThat(instance1).isNotEqualTo(instance2);
     }
+
+    @Test
+    void stringPresentation() {
+        Priority instance = new PriorityBuilder().withValue(42).build();
+        String asString = instance.toString();
+        assertThat(asString).as("String presentation").isEqualTo("Priority[42]");
+    }
 }

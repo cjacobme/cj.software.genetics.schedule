@@ -1,5 +1,7 @@
 package cj.software.genetics.schedule.entity.setup;
 
+import cj.software.genetics.schedule.entity.CycleCounter;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -10,7 +12,7 @@ import java.util.Collections;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class GeneticAlgorithm implements Serializable {
+public class GeneticAlgorithm implements Serializable, CycleCounter {
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -20,6 +22,8 @@ public class GeneticAlgorithm implements Serializable {
     @NotNull
     @Valid
     private SolutionSetup solutionSetup;
+
+    private int cycleCounter;
 
     private GeneticAlgorithm() {
     }
@@ -34,6 +38,17 @@ public class GeneticAlgorithm implements Serializable {
 
     public void add(Priority priority) {
         priorities.add(priority);
+    }
+
+    @Override
+    public int getCycleCounter() {
+        return cycleCounter;
+    }
+
+    @Override
+    public int incCycleCounter() {
+        cycleCounter++;
+        return cycleCounter;
     }
 
     public static Builder builder() {

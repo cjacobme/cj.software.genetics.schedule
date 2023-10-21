@@ -7,7 +7,6 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
@@ -26,9 +25,7 @@
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="Problem">
-                <MenuItem mnemonicParsing="false" onAction="#newProblem" text="New..."/>
-                <SeparatorMenuItem mnemonicParsing="false"/>
-                <MenuItem mnemonicParsing="false" onAction="#newProblem2" text="New (advanced)..."/>
+                <MenuItem mnemonicParsing="false" onAction="#newProblem2" text="New..."/>
                 <MenuItem mnemonicParsing="false" onAction="#exitApplication" text="Exit"/>
             </Menu>
         </MenuBar>
@@ -87,4 +84,7 @@
     <padding>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
     </padding>
+    <bottom>
+        <TextField fx:id="tfStatus" editable="false" BorderPane.alignment="CENTER"/>
+    </bottom>
 </BorderPane>

@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.entity;
 
+import cj.software.genetics.schedule.entity.setup.Priority;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -45,7 +46,7 @@ class TaskTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getIdentifier()).as("identifier").isZero();
         softy.assertThat(instance.getDurationSeconds()).as("duration in seconds").isZero();
-        softy.assertThat(instance.getPriority()).as("priority").isZero();
+        softy.assertThat(instance.getPriority()).as("priority").isNull();
         softy.assertAll();
     }
 
@@ -53,7 +54,7 @@ class TaskTest {
     void constructFilled() {
         int identifier = 4711;
         int durationSeconds = 15;
-        int priority = 1;
+        Priority priority = Priority.builder().build();
         Task instance = Task.builder()
                 .withIdentifier(identifier)
                 .withDurationSeconds(durationSeconds)
@@ -63,7 +64,7 @@ class TaskTest {
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getIdentifier()).as("identifier").isEqualTo(identifier);
         softy.assertThat(instance.getDurationSeconds()).as("duration in seconds").isEqualTo(durationSeconds);
-        softy.assertThat(instance.getPriority()).as("priority").isEqualTo(priority);
+        softy.assertThat(instance.getPriority()).as("priority").isSameAs(priority);
         softy.assertAll();
     }
 

@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.entity;
 
+import cj.software.genetics.schedule.entity.setup.Priority;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,10 +10,10 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 class WorkerChainTest {
 
@@ -45,19 +46,15 @@ class WorkerChainTest {
         assertThat(instanceAfter).as("instance in builder after build").isNull();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(instance.getWorkers()).as("workers").hasSize(3);
-        softy.assertThat(instance.getMaxNumTasks()).as("max num tasks").isZero();
         softy.assertAll();
     }
 
     @Test
     void constructFilled() {
         int maxNumTasks = 123;
-        WorkerChain instance = WorkerChain.builder()
-                .withMaxNumTasks(maxNumTasks)
-                .build();
+        WorkerChain instance = WorkerChain.builder().build();
         assertThat(instance).as("built instance").isNotNull();
-        assertThat(instance.getMaxNumTasks()).as("max num tasks").isEqualTo(maxNumTasks);
-        Worker[] workers = instance.getWorkers();
+        Worker[] workers = instance.getWorkersAsArray();
         assertThat(workers).as("workers").hasSize(3);
         SoftAssertions softy = new SoftAssertions();
         for (int iPrio = 0; iPrio < 3; iPrio++) {
@@ -80,12 +77,12 @@ class WorkerChainTest {
 
     @Test
     void setTaskAt() {
-        int priority = 0;
         int position = 0;
-        Task task = new TaskBuilder().withPriority(priority).build();
         WorkerChain instance = new WorkerChainBuilder().build();
+        Priority priority = instance.getWorkers().firstKey();
+        Task task = new TaskBuilder().withPriority(priority).build();
         instance.setTaskAt(position, task);
-        Worker[] workers = instance.getWorkers();
+        Worker[] workers = instance.getWorkersAsArray();
         SoftAssertions softy = new SoftAssertions();
         softy.assertThat(workers[0].getTasks()).as("tasks prio 0").containsExactly(task);
         softy.assertThat(workers[1].getTasks()).as("tasks prio 1").isEmpty();
@@ -98,6 +95,9 @@ class WorkerChainTest {
 
     @Test
     void iterate() {
+        fail("to be refined");
+        //TODO refine
+        /*
         WorkerChain instance = new WorkerChainBuilder().build();
         Task task1 = new TaskBuilder().withIdentifier(1).withPriority(2).build();
         Task task65 = new TaskBuilder().withIdentifier(65).withPriority(0).build();
@@ -113,5 +113,7 @@ class WorkerChainTest {
 
         List<Task> tasks = instance.getTasks();
         assertThat(tasks).as("tasks").isEqualTo(List.of(task65, task32, task73, task2, task1));
+
+         */
     }
 }

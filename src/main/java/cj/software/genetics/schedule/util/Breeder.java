@@ -30,9 +30,7 @@ public class Breeder {
             int cycleCounter,
             List<Solution> solutions,
             int elitismCount,
-            int tournamentSize,
-            int numWorkers,
-            int numSlots) {
+            int tournamentSize) {
         List<Solution> population = new ArrayList<>(solutions);
         sort(population);
         int size = population.size();
@@ -43,7 +41,7 @@ public class Breeder {
         for (int i = elitismCount; i < size; i++) {
             Solution parent1 = population.get(i);
             Solution parent2 = arbitraryParent(population, size, tournamentSize);
-            Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2, numWorkers, numSlots);
+            Solution offspring = genetics.mate(cycleCounter, i - elitismCount, parent1, parent2);
             genetics.mutate(offspring);
             result.add(offspring);
         }
@@ -56,13 +54,11 @@ public class Breeder {
             int numSteps,
             List<Solution> solutions,
             int elitismCount,
-            int tournamentSize,
-            int numWorkers,
-            int numSlots) {
+            int tournamentSize) {
         List<Solution> result = solutions;
         for (int step = 0; step < numSteps; step++) {
             int cycleVlaue = cycleCounter.incCycleCounter();
-            result = step(cycleVlaue, result, elitismCount, tournamentSize, numWorkers, numSlots);
+            result = step(cycleVlaue, result, elitismCount, tournamentSize);
             BreedingStepEvent event = new BreedingStepEvent(cycleVlaue, result);
             publisher.publishEvent(event);
         }
