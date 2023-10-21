@@ -4,6 +4,9 @@ import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
 import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.setup.Priority;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
@@ -17,23 +20,16 @@ import javafx.scene.paint.Paint;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 public class SolutionControl extends Pane {
     private static final int LINE_GAP = 3;
     private static final double WORKER_LABEL_WIDTH = 50.0;
     private static final int ROW_HEIGHT = 35;
-    private static final Map<Integer, String> BACKGROUND_COLORS = Map.of(
-            0, "#ff0000;",  // red
-            1, "#ffff00",   // yellow
-            2, "#008000"    // green
-    );
-    private static final Map<Integer, String> FOREGROUND_COLORS = Map.of(
-            0, "#000000",   // black
-            1, "#000000",   // black
-            2, "#ffff00"    // yelllow
-    );
 
     private final Canvas canvas = new Canvas();
+
+    private final ColorService colorService;
 
     private final List<Node> myChildren = new ArrayList<>();
 
@@ -41,7 +37,10 @@ public class SolutionControl extends Pane {
 
     private int scale = 15;
 
-    public SolutionControl() {
+    private final StringProperty status = new SimpleStringProperty();
+
+    public SolutionControl(ColorService colorService) {
+        this.colorService = colorService;
         getChildren().add(canvas);
         canvas.widthProperty().addListener(observable -> draw());
         canvas.heightProperty().addListener(observable -> draw());
@@ -71,6 +70,18 @@ public class SolutionControl extends Pane {
         } finally {
             gc.setFill(oldFill);
         }
+    }
+
+    public String getStatus() {
+        return status.get();
+    }
+
+    public StringProperty statusProperty() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status.set(status);
     }
 
     public void setSolution(Solution solution) {
@@ -105,16 +116,22 @@ public class SolutionControl extends Pane {
             children.add(label);
             myChildren.add(label);
             double posX = WORKER_LABEL_WIDTH + 10;
-            for (int iPrio = 0; iPrio < 3; iPrio++) {
-                Worker worker = workerChain.getWorkerForPriority(iPrio);
-                posX = drawWorker(worker, posX, posY, children);
+            SortedMap<Priority, Worker> workers = workerChain.getWorkers();
+            for (Map.Entry<Priority, Worker> entry : workers.entrySet()) {
+                Priority priority = entry.getKey();
+                Color foregroundColor = priority.getForeground();
+                Color backgroundColor = priority.getBackground();
+                String foreground = colorService.normalize(foregroundColor);
+                String background = colorService.normalize(backgroundColor);
+                Worker worker = entry.getValue();
+                posX = drawWorker(worker, background, foreground, posX, posY, children);
             }
             posY += ROW_HEIGHT + LINE_GAP;
             index++;
         }
     }
 
-    private double drawWorker(Worker worker, double posX, double posY, ObservableList<Node> children) {
+    private double drawWorker(Worker worker, String background, String foreground, double posX, double posY, ObservableList<Node> children) {
         double result = posX;
         List<Task> tasks = worker.getTasks();
         for (Task task : tasks) {
@@ -123,9 +140,6 @@ public class SolutionControl extends Pane {
             String text = String.format("#%d (%d)", identifier, duration);
             Button button = new Button(text);
             double width = duration * (double) scale;
-            int priority = task.getPriority();
-            String background = BACKGROUND_COLORS.get(priority);
-            String foreground = FOREGROUND_COLORS.get(priority);
             String style = String.format("-fx-background-color:%s;-fx-text-fill:%s;", background, foreground);
             button.setLayoutX(result);
             button.setLayoutY(posY);
@@ -135,7 +149,8 @@ public class SolutionControl extends Pane {
             button.setStyle(style);
             children.add(button);
             myChildren.add(button);
-            result += width;
+            button.setOnAction(event -> setStatus(task.toString()));
+            result += width + 2.0;
         }
         return result;
     }

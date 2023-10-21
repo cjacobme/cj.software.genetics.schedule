@@ -1,48 +1,49 @@
 package cj.software.genetics.schedule.entity;
 
-import javax.validation.constraints.Min;
+import cj.software.genetics.schedule.entity.setup.Priority;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 
 public class WorkerChain implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
-    private final Worker[] workers = new Worker[3];
-
-    @Min(1)
-    private int maxNumTasks;
+    private final SortedMap<Priority, Worker> workers = new TreeMap<>();
 
     private WorkerChain() {
     }
 
-    public int getMaxNumTasks() {
-        return maxNumTasks;
-    }
-
-    private void setMaxNumTasks(int maxNumTasks) {
-        this.maxNumTasks = maxNumTasks;
-        for (int iPrio = 0; iPrio < 3; iPrio++) {
-            this.workers[iPrio] = Worker.builder().withMaxNumTasks(maxNumTasks).build();
+    public Worker[] getWorkersAsArray() {
+        Worker[] result = new Worker[workers.size()];
+        int index = 0;
+        for (Map.Entry<Priority, Worker> entry : workers.entrySet()) {
+            result[index] = entry.getValue();
+            index++;
         }
-    }
-
-    public Worker[] getWorkers() {
-        Worker[] result = Arrays.copyOf(this.workers, 3);
         return result;
     }
 
-    public Worker getWorkerForPriority(int priority) {
-        Worker result = this.workers[priority];
+    public SortedMap<Priority, Worker> getWorkers() {
+        return Collections.unmodifiableSortedMap(workers);
+    }
+
+    public Worker getWorkerForPriority(int priorityValue) {
+        Priority priority = Priority.builder().withValue(priorityValue).build();
+        Worker result = getWorkerForPriority(priority);
         return result;
     }
 
-    public void setWorkerAt(int priority, Worker worker) {
-        workers[priority] = worker;
+    public Worker getWorkerForPriority(Priority priority) {
+        Worker result = this.workers.get(priority);
+        return result;
     }
 
     public static Builder builder() {
@@ -50,21 +51,22 @@ public class WorkerChain implements Serializable {
     }
 
     public void setTaskAt(int position, Task task) {
-        int priority = task.getPriority();
-        Worker worker = workers[priority];
+        Priority priority = task.getPriority();
+        Worker worker = workers.get(priority);
         worker.setTaskAt(position, task);
     }
 
-    public Task getTaskAt(int priority, int position) {
-        Worker worker = workers[priority];
+    public Task getTaskAt(Priority priority, int position) {
+        Worker worker = workers.get(priority);
         Task result = worker.getTaskAt(position);
         return result;
     }
 
     public List<Task> getTasks() {
         List<Task> result = new ArrayList<>();
-        for (int iPrio = 0; iPrio < 3; iPrio++) {
-            result.addAll(workers[iPrio].getTasks());
+        for (Map.Entry<Priority, Worker> entry : workers.entrySet()) {
+            Worker worker = entry.getValue();
+            result.addAll(worker.getTasks());
         }
         return result;
     }
@@ -76,15 +78,18 @@ public class WorkerChain implements Serializable {
             instance = new WorkerChain();
         }
 
+        public Builder withWorkers(SortedMap<Priority, Worker> workers) {
+            instance.workers.clear();
+            if (workers != null) {
+                instance.workers.putAll(workers);
+            }
+            return this;
+        }
+
         public WorkerChain build() {
             WorkerChain result = instance;
             instance = null;
             return result;
-        }
-
-        public Builder withMaxNumTasks(int maxNumTasks) {
-            instance.setMaxNumTasks(maxNumTasks);
-            return this;
         }
     }
 }
