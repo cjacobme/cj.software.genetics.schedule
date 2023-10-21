@@ -6,7 +6,7 @@ public interface CycleCounter {
      *
      * @return current value
      */
-    int getCurrentValue();
+    int getCycleCounter();
 
     /**
      * increments the current cycle counter

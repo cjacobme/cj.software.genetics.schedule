@@ -27,38 +27,6 @@ public class SolutionService {
     @Autowired
     private WorkerChainService workerChainService;
 
-    public Solution createInitialSolution(int indexInCycle, int numWorkers, int numSlotsPerWorker, List<Task> tasks) {
-        throw new UnsupportedOperationException("to be deleted");
-        /*
-        List<WorkerChain> allWorkersChains = new ArrayList<>();
-        for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
-            WorkerChain workerChain = WorkerChain.builder()
-                    .withMaxNumTasks(numSlotsPerWorker)
-                    .build();
-            allWorkersChains.add(workerChain);
-        }
-        for (Task task : tasks) {
-            int priority = task.getPriority();
-            int selectedWorker = randomService.nextRandom(numWorkers);
-            WorkerChain workerChain = allWorkersChains.get(selectedWorker);
-            Worker worker = workerChain.getWorkerForPriority(priority);
-            int selectedSlot = randomService.nextRandom(numSlotsPerWorker);
-            Task occupied = worker.getTaskAt(selectedSlot);
-            while (occupied != null) {
-                logger.info("slot %d already occupied, try another one", selectedSlot);
-                selectedSlot = randomService.nextRandom(numSlotsPerWorker);
-                occupied = worker.getTaskAt(selectedSlot);
-            }
-            worker.setTaskAt(selectedSlot, task);
-        }
-        Solution result = Solution.builder(0, indexInCycle).withWorkerChains(allWorkersChains).build();
-        int durationInSeconds = calcDuration(result);
-        result.setDurationInSeconds(durationInSeconds);
-        return result;
-
-         */
-    }
-
     public int calcDuration(Solution solution) {
         int result = 0;
         List<WorkerChain> workerChains = solution.getWorkerChains();
@@ -66,16 +34,6 @@ public class SolutionService {
             int workerDuration = workerChainService.calcDuration(workerChain);
             result = Math.max(result, workerDuration);
         }
-        return result;
-    }
-
-    public List<Solution> createInitialPopulation(int numSolutions, int numWorkers, int numSlots, List<Task> tasks) {
-        List<Solution> result = new ArrayList<>(numSolutions);
-        for (int i = 0; i < numSlots; i++) {
-            Solution solution = createInitialSolution(i, numWorkers, numSlots, tasks);
-            result.add(solution);
-        }
-        sortDescendingFitnessValue(result);
         return result;
     }
 

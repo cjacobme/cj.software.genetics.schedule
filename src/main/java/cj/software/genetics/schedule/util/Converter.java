@@ -29,7 +29,7 @@ import java.util.SortedSet;
 
 @Service
 public class Converter {
-    public Map<Task, Coordinate> toMapTaskCoordinate(Solution solution, int priority) {
+    public Map<Task, Coordinate> toMapTaskCoordinate(Solution solution, Priority priority) {
         Map<Task, Coordinate> result = new HashMap<>();
         List<WorkerChain> workerChains = solution.getWorkerChains();
         int numWorkerChains = workerChains.size();
@@ -124,7 +124,7 @@ public class Converter {
         return result;
     }
 
-    public List<Task> toTaskList(Solution solution, int priority) {
+    public List<Task> toTaskList(Solution solution, Priority priority) {
         List<Task> result = new ArrayList<>();
         List<WorkerChain> workerChains = solution.getWorkerChains();
         for (WorkerChain workerChain : workerChains) {

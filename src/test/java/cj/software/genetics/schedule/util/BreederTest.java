@@ -3,7 +3,6 @@ package cj.software.genetics.schedule.util;
 import cj.software.genetics.schedule.entity.CycleCounter;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.SolutionBuilder;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = {Breeder.class, TestEventListener.class})
@@ -64,6 +63,9 @@ class BreederTest {
      */
     @Test
     void singleStep() {
+        fail("to be refined");
+        // TODO
+        /*
         List<Solution> population = createPopulation(50, 1, 47, 42, 37);
         List<Solution> offsprings = createPopulation(10, 9, 8, 7);
         int[][] shuffles = new int[][]{
@@ -101,13 +103,15 @@ class BreederTest {
         softy.assertThat(nextGeneration.get(3)).isSameAs(offsprings.get(2));
         softy.assertThat(nextGeneration.get(4)).isSameAs(offsprings.get(3));
         softy.assertAll();
+
+         */
     }
 
     private static class MyCounter implements CycleCounter {
         private int currentValue = 3;
 
         @Override
-        public int getCurrentValue() {
+        public int getCycleCounter() {
             return currentValue;
         }
 
@@ -120,6 +124,9 @@ class BreederTest {
 
     @Test
     void multipleSteps() {
+        fail("to be refined");
+        // TODO
+        /*
         CycleCounter cycleCounter = new MyCounter();
         listener.resetCounter();
         List<Solution> population = createPopulation(50, 1, 47, 42, 37);
@@ -149,10 +156,12 @@ class BreederTest {
                 numSlots);
         assertThat(nextGeneration).isNotNull();
         SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(cycleCounter.getCurrentValue()).isEqualTo(10);
+        softy.assertThat(cycleCounter.getCycleCounter()).isEqualTo(10);
         softy.assertThat(listener.getCounter()).isEqualTo(10);
         softy.assertAll();
         verify(randomService, times(28)).shuffledUpTo(5);
         verify(genetics, times(28)).mate(anyInt(), anyInt(), any(Solution.class), any(Solution.class), eq(numWorkers), eq(numSlots));
+
+         */
     }
 }

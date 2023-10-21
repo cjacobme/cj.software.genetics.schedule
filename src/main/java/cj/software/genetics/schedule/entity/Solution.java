@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.entity;
 
+import cj.software.genetics.schedule.entity.setup.Priority;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -72,7 +73,7 @@ public class Solution implements Serializable {
         return result;
     }
 
-    public Worker getWorkerAt(int priority, int workerindex) {
+    public Worker getWorkerAt(Priority priority, int workerindex) {
         WorkerChain workerChain = this.workerChains.get(workerindex);
         Worker result = workerChain.getWorkerForPriority(priority);
         return result;

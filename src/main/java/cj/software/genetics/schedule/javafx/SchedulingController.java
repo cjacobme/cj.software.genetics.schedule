@@ -1,7 +1,6 @@
 package cj.software.genetics.schedule.javafx;
 
 import cj.software.genetics.schedule.entity.BreedingStepEvent;
-import cj.software.genetics.schedule.entity.ProblemSetup;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.setup.GeneticAlgorithm;
@@ -39,7 +38,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -99,8 +97,6 @@ public class SchedulingController implements Initializable, ApplicationListener<
     @FXML
     private TextField tfStatus;
 
-    private ProblemSetup problemSetup;
-
     private GeneticAlgorithm geneticAlgorithm;
 
     private List<Solution> population;
@@ -133,47 +129,6 @@ public class SchedulingController implements Initializable, ApplicationListener<
                 }
             }
         });
-    }
-
-    private List<Task> createAllTasks(ProblemSetup problemSetup) {
-        int num10 = problemSetup.getNumTasks10();
-        int num20 = problemSetup.getNumTasks20();
-        int num50 = problemSetup.getNumTasks50();
-        int num100 = problemSetup.getNumTasks100();
-        int num1000 = problemSetup.getNumTasks1000();
-        int total = num10 + num20 + num50 + num100 + num1000;
-        List<Task> result = new ArrayList<>(total);
-        int startIndex = 0;
-        result.addAll(taskService.createTasks(startIndex, 10, num10));
-        startIndex += num10;
-        result.addAll(taskService.createTasks(startIndex, 20, num20));
-        startIndex += num20;
-        result.addAll(taskService.createTasks(startIndex, 50, num50));
-        startIndex += num50;
-        result.addAll(taskService.createTasks(startIndex, 100, num100));
-        startIndex += num100;
-        result.addAll(taskService.createTasks(startIndex, 1000, num1000));
-        return result;
-    }
-
-    @FXML
-    public void newProblem() {
-        Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
-        NewProblemDialog newProblemDialog = new NewProblemDialog(applicationContext, owner);
-        Optional<ProblemSetup> optProblemSetup = newProblemDialog.showAndWait();
-        if (optProblemSetup.isPresent()) {
-            logger.info("a new problem was defined");
-            problemSetup = optProblemSetup.get();
-            List<Task> allTasks = createAllTasks(problemSetup);
-            List<Solution> allSolutions = solutionService.createInitialPopulation(
-                    problemSetup.getNumSolutions(),
-                    problemSetup.getNumWorkers(),
-                    problemSetup.getNumSlots(),
-                    allTasks);
-            setPopulation(allSolutions, problemSetup.getCurrentValue());
-        } else {
-            logger.info("dialog was cancelled");
-        }
     }
 
     @FXML
@@ -215,31 +170,27 @@ public class SchedulingController implements Initializable, ApplicationListener<
 
     @FXML
     public void singleStep() {
-        int cycleCounter = problemSetup.incCycleCounter();
-        int elitismCount = problemSetup.getElitismCount();
-        int tournamentSize = problemSetup.getTournamentSize();
-        int numWorkers = problemSetup.getNumWorkers();
-        int numSlots = problemSetup.getNumSlots();
+        int cycleCounter = geneticAlgorithm.getCycleCounter();
+        SolutionSetup solutionSetup = geneticAlgorithm.getSolutionSetup();
+        int elitismCount = solutionSetup.getElitismCount();
+        int tournamentSize = solutionSetup.getTournamentSize();
         List<Solution> newPopulation =
-                breeder.step(cycleCounter, population, elitismCount, tournamentSize, numWorkers, numSlots);
+                breeder.step(cycleCounter, population, elitismCount, tournamentSize);
         setPopulation(newPopulation, cycleCounter);
     }
 
     @FXML
     public void multipleSteps() {
         int numSteps = spNumCycles.getValue();
-        int elitismCount = problemSetup.getElitismCount();
-        int tournamentSize = problemSetup.getTournamentSize();
-        int numWorkers = problemSetup.getNumWorkers();
-        int numSlots = problemSetup.getNumSlots();
+        SolutionSetup solutionSetup = geneticAlgorithm.getSolutionSetup();
+        int elitismCount = solutionSetup.getElitismCount();
+        int tournamentSize = solutionSetup.getTournamentSize();
         Thread thread = new Thread(() -> breeder.multipleSteps(
-                problemSetup,
+                geneticAlgorithm,
                 numSteps,
                 SchedulingController.this.population,
                 elitismCount,
-                tournamentSize,
-                numWorkers,
-                numSlots), "multiple steps");
+                tournamentSize), "multiple steps");
         thread.start();
     }
 

@@ -89,7 +89,7 @@ public class ProblemSetup implements Serializable, CycleCounter {
         return result;
     }
 
-    public int getCurrentValue() {
+    public int getCycleCounter() {
         return cycleCounter;
     }
 

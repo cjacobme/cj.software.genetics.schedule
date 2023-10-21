@@ -4,14 +4,20 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
+import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.setup.Priority;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 @Service
 public class Genetics {
@@ -27,15 +33,16 @@ public class Genetics {
 
     private final Logger logger = LogManager.getFormatterLogger();
 
-    public Solution mate(int cycleCounter, int indexInCycle, Solution parent1, Solution parent2, int numWorkers, int numSlots) {
-        throw new UnsupportedOperationException("to be implemented");
-        /*
-        Map<Integer, List<Worker>> prioMap = new HashMap<>();
-        for (int iPrio = 0; iPrio < 3; iPrio++) {
-            Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1, iPrio);
-            Map<Task, Coordinate> converted2 = converter.toMapTaskCoordinate(parent2, iPrio);
-            List<Worker> workers = createWorkers(numWorkers, numSlots);
-            List<Task> tasks = converter.toTaskList(parent1, iPrio);
+    public Solution mate(int cycleCounter, int indexInCycle, Solution parent1, Solution parent2) {
+        Set<Priority> priorities = determinePriorities(parent1);
+        int numWorkerChains = determineNumWorkerChains(parent1);
+        Map<Priority, List<Worker>> prioMap = new HashMap<>();
+        for (Priority priority : priorities) {
+            Map<Task, Coordinate> converted1 = converter.toMapTaskCoordinate(parent1, priority);
+            Map<Task, Coordinate> converted2 = converter.toMapTaskCoordinate(parent2, priority);
+            int numSlots = priority.getNumSlots();
+            List<Worker> workers = createWorkers(numWorkerChains, numSlots);
+            List<Task> tasks = converter.toTaskList(parent1, priority);
             int numTasks = tasks.size();
             int pos1 = randomService.nextRandom(numTasks);
             int pos2 = randomService.nextRandom(numTasks);
@@ -44,27 +51,48 @@ public class Genetics {
             dispatch(tasks, workers, converted1, lower, upper);
             dispatch(tasks, workers, converted2, upper, numTasks);
             dispatch(tasks, workers, converted2, 0, lower);
-            prioMap.put(iPrio, workers);
+            prioMap.put(priority, workers);
         }
-        WorkerChain[] workerChains = new WorkerChain[numWorkers];
-        for (int iWorker = 0; iWorker < numWorkers; iWorker++) {
-            workerChains[iWorker] = WorkerChain.builder()
-                    .withMaxNumTasks(numSlots)
+
+        WorkerChain[] workerChains = new WorkerChain[numWorkerChains];
+        for (int iWorkerChain = 0; iWorkerChain < numWorkerChains; iWorkerChain++) {
+            SortedMap<Priority, Worker> workers = toSortedMap(prioMap, iWorkerChain);
+            workerChains[iWorkerChain] = WorkerChain.builder()
+                    .withWorkers(workers)
                     .build();
-            for (int iPrio = 0; iPrio < 3; iPrio++) {
-                List<Worker> prioWorkers = prioMap.get(iPrio);
-                Worker theWorker = prioWorkers.get(iWorker);
-                workerChains[iWorker].setWorkerAt(iPrio, theWorker);
-            }
         }
+
         Solution result = Solution.builder(cycleCounter, indexInCycle)
                 .withWorkerChains(workerChains)
                 .build();
         int duration = solutionService.calcDuration(result);
         result.setDurationInSeconds(duration);
         return result;
+    }
 
-         */
+    private SortedMap<Priority, Worker> toSortedMap(Map<Priority, List<Worker>> prioMap, int index) {
+        SortedMap<Priority, Worker> result = new TreeMap<>();
+        Set<Priority> keys = prioMap.keySet();
+        for (Priority priority : keys) {
+            List<Worker> workersOfPriority = prioMap.get(priority);
+            Worker worker = workersOfPriority.get(index);
+            result.put(priority, worker);
+        }
+        return result;
+    }
+
+    private Set<Priority> determinePriorities(Solution solution) {
+        List<WorkerChain> workerChains1 = solution.getWorkerChains();
+        WorkerChain workerChain = workerChains1.get(0);
+        SortedMap<Priority, Worker> workers = workerChain.getWorkers();
+        Set<Priority> result = workers.keySet();
+        return result;
+    }
+
+    private int determineNumWorkerChains(Solution solution) {
+        List<WorkerChain> workerChains1 = solution.getWorkerChains();
+        int result = workerChains1.size();
+        return result;
     }
 
     private void dispatch(List<Task> tasks, List<Worker> workers, Map<Task, Coordinate> converted, int lower, int upper) {
@@ -101,7 +129,10 @@ public class Genetics {
     }
 
     public void mutate(Solution solution) {
-        int priority = randomService.nextRandom(3);
+        List<Priority> priorities = new ArrayList<>(determinePriorities(solution));
+        int numPriorities = priorities.size();
+        int selectedPriority = randomService.nextRandom(numPriorities);
+        Priority priority = priorities.get(selectedPriority);
         List<Task> tasks = converter.toTaskList(solution, priority);
         int size = tasks.size();
         int index0 = randomService.nextRandom(size);
