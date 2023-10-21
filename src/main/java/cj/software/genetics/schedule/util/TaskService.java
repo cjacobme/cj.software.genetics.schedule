@@ -18,27 +18,6 @@ public class TaskService {
     @Autowired
     private RandomService randomService;
 
-    public List<Task> createTasks(int startIndex, int durationInSeconds, int count) {
-        throw new UnsupportedOperationException("should be deleted");
-        //TODO delete that
-        /*
-        List<Task> result = new ArrayList<>(count);
-        int runningIndex = startIndex;
-        for (int i = 0; i < count; i++) {
-            int priority = randomService.nextRandom(3);
-            Task task = Task.builder()
-                    .withIdentifier(runningIndex)
-                    .withDurationSeconds(durationInSeconds)
-                    .withPriority(priority)
-                    .build();
-            result.add(task);
-            runningIndex++;
-        }
-        return result;
-
-         */
-    }
-
     public SortedMap<Priority, List<Task>> createTasks(GeneticAlgorithm geneticAlgorithm) {
         int startIndex = 0;
         SortedMap<Priority, List<Task>> result = new TreeMap<>();
