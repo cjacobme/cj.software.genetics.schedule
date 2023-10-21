@@ -21,7 +21,6 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,14 +90,11 @@ public class Converter {
             Tasks converted = toTasks(tasksFx);
             result.add(converted);
         }
-        result.sort(new Comparator<Tasks>() {
-            @Override
-            public int compare(Tasks o1, Tasks o2) {
-                CompareToBuilder builder = new CompareToBuilder()
-                        .append(o1.getDurationSeconds(), o2.getDurationSeconds());
-                int result = builder.build();
-                return result;
-            }
+        result.sort((o1, o2) -> {
+            CompareToBuilder builder = new CompareToBuilder()
+                    .append(o1.getDurationSeconds(), o2.getDurationSeconds());
+            int result1 = builder.build();
+            return result1;
         });
         return result;
     }
@@ -152,7 +148,8 @@ public class Converter {
 
     public PriorityFx toPriorityFx(Priority source) {
         int priorityValue = source.getValue();
-        int numSlots = source.getNumSlots();
+        Integer numSlotsWrapper = source.getNumSlots();
+        int numSlots = (numSlotsWrapper != null ? numSlotsWrapper : 0);
         Color foreground = source.getForeground();
         Color background = source.getBackground();
         ColorPair colorPair = new ColorPair(foreground, background);
