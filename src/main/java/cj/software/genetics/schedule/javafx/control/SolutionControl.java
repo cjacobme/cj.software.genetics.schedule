@@ -8,8 +8,6 @@ import cj.software.genetics.schedule.entity.setup.Priority;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -39,7 +37,7 @@ public class SolutionControl extends Pane {
 
     private int scale = 15;
 
-    private StringProperty status = new SimpleStringProperty();
+    private final StringProperty status = new SimpleStringProperty();
 
     public SolutionControl(ColorService colorService) {
         this.colorService = colorService;
@@ -151,13 +149,8 @@ public class SolutionControl extends Pane {
             button.setStyle(style);
             children.add(button);
             myChildren.add(button);
-            button.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    setStatus(task.toString());
-                }
-            });
-            result += width;
+            button.setOnAction(event -> setStatus(task.toString()));
+            result += width + 2.0;
         }
         return result;
     }
