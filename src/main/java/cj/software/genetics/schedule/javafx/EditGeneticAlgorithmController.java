@@ -108,11 +108,19 @@ public class EditGeneticAlgorithmController implements Initializable {
     @FXML
     public void addPriority() {
         int numRows = this.tblPriorities.getItems().size();
-        Priority priority = Priority.builder().withValue(numRows).withBackground(Color.DARKGRAY).withForeground(Color.BLACK).build();
+        Priority priority = Priority.builder()
+                .withValue(numRows)
+                .withBackground(Color.DARKGRAY)
+                .withForeground(Color.BLACK)
+                .build();
         PriorityFx priorityFx = converter.toPriorityFx(priority);
         Window owner = Window.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
         EditPriorityDetailsDialog dialog = new EditPriorityDetailsDialog(applicationContext, owner, priorityFx);
-        dialog.showAndWait();
+        Optional<?> optional = dialog.showAndWait();
+        if (optional.isPresent()) {
+            PriorityFx editedValue = dialog.getResult();
+            this.tblPriorities.getItems().add(editedValue);
+        }
     }
 
     @FXML
