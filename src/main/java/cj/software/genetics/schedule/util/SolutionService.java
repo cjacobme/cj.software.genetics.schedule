@@ -2,6 +2,7 @@ package cj.software.genetics.schedule.util;
 
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.Task;
+import cj.software.genetics.schedule.entity.Worker;
 import cj.software.genetics.schedule.entity.WorkerChain;
 import cj.software.genetics.schedule.entity.setup.Priority;
 import cj.software.genetics.schedule.entity.setup.SolutionSetup;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 @Service
@@ -86,10 +88,37 @@ public class SolutionService {
             for (int iWorkerChain = 0; iWorkerChain < numWorkerChains; iWorkerChain++) {
                 workerChains[iWorkerChain] = workerChainService.createWorkerChain(priorities);
             }
+            dispatchTasks(workerChains, priorities);
             Solution solution = Solution.builder(0, iSolution).withWorkerChains(workerChains).build();
             result.add(solution);
             int durationInSeconds = calcDuration(solution);
             solution.setDurationInSeconds(durationInSeconds);
+        }
+        sortDescendingFitnessValue(result);
+        return result;
+    }
+
+    private WorkerChain[] dispatchTasks(WorkerChain[] source, SortedMap<Priority, List<Task>> priorities) {
+        WorkerChain[] result = source;
+        int numWorkerChains = result.length;
+        for (Map.Entry<Priority, List<Task>> entry : priorities.entrySet()) {
+            Priority priority = entry.getKey();
+
+            List<Task> tasksOfPriority = entry.getValue();
+            for (Task task : tasksOfPriority) {
+                int workerChainIndex = randomService.nextRandom(numWorkerChains);
+                WorkerChain workerChain = result[workerChainIndex];
+                Worker worker = workerChain.getWorkerForPriority(priority);
+                int numSlots = worker.getMaxNumTasks();
+                int selectedSlot = randomService.nextRandom(numSlots);
+                Task occupied = worker.getTaskAt(selectedSlot);
+                while (occupied != null) {
+                    logger.info("slot %d already occupied, try another one", selectedSlot);
+                    selectedSlot = randomService.nextRandom(numSlots);
+                    occupied = worker.getTaskAt(selectedSlot);
+                }
+                worker.setTaskAt(selectedSlot, task);
+            }
         }
         return result;
     }

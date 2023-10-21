@@ -4,8 +4,6 @@ import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.Worker;
 import cj.software.genetics.schedule.entity.WorkerChain;
 import cj.software.genetics.schedule.entity.setup.Priority;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +20,6 @@ public class WorkerChainService {
 
     @Autowired
     private RandomService randomService;
-
-    private final Logger logger = LogManager.getFormatterLogger();
 
     public int calcDuration(WorkerChain workerChain) {
         int result = 0;
@@ -44,17 +40,6 @@ public class WorkerChainService {
                     .withMaxNumTasks(numSlots)
                     .build();
             workers.put(priority, worker);
-            List<Task> tasksOfPriority = priorityEntry.getValue();
-            for (Task task : tasksOfPriority) {
-                int selectedSlot = randomService.nextRandom(numSlots);
-                Task occupied = worker.getTaskAt(selectedSlot);
-                while (occupied != null) {
-                    logger.info("slot %d already occupied, try another one", selectedSlot);
-                    selectedSlot = randomService.nextRandom(numSlots);
-                    occupied = worker.getTaskAt(selectedSlot);
-                }
-                worker.setTaskAt(selectedSlot, task);
-            }
         }
         WorkerChain result = WorkerChain.builder().withWorkers(workers).build();
         return result;
