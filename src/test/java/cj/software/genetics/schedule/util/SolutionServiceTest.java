@@ -3,6 +3,7 @@ package cj.software.genetics.schedule.util;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.SolutionBuilder;
 import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.WorkerChainBuilder;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,11 @@ class SolutionServiceTest {
 
     @Test
     void duration4711() {
-        Solution solution = new SolutionBuilder().build();
+        Solution solution = new SolutionBuilder()
+                .withWorkerChains(
+                        new WorkerChainBuilder().build(),
+                        new WorkerChainBuilder().build())
+                .build();
 
         when(workerChainService.calcDuration(any(WorkerChain.class))).thenReturn(0, 4711);
 
