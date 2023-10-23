@@ -33,6 +33,17 @@ public class WorkerChainBuilder extends WorkerChain.Builder {
                 .build();
         result.put(prio1, worker1);
 
+        Worker worker2 = Worker.builder()
+                .withMaxNumTasks(122)
+                .build();
+        Priority prio2 = Priority.builder()
+                .withValue(2)
+                .withNumSlots(350)
+                .withForeground(Color.BLACK)
+                .withBackground(Color.ORANGE)
+                .build();
+        result.put(prio2, worker2);
+
         return result;
     }
 

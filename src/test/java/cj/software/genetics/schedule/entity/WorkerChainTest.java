@@ -1,6 +1,7 @@
 package cj.software.genetics.schedule.entity;
 
 import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setup.PriorityBuilder;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +11,12 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 class WorkerChainTest {
 
@@ -44,15 +47,25 @@ class WorkerChainTest {
 
         Object instanceAfter = field.get(builder);
         assertThat(instanceAfter).as("instance in builder after build").isNull();
-        SoftAssertions softy = new SoftAssertions();
-        softy.assertThat(instance.getWorkers()).as("workers").hasSize(3);
-        softy.assertAll();
+        assertThat(instance.getWorkers()).as("workers").isEmpty();
     }
 
     @Test
     void constructFilled() {
-        int maxNumTasks = 123;
-        WorkerChain instance = WorkerChain.builder().build();
+        int[] maxNumTasks = new int[]{100, 200, 300};
+        Priority prio0 = new PriorityBuilder().build();
+        Priority prio1 = new PriorityBuilder().withValue(1).build();
+        Priority prio2 = new PriorityBuilder().withValue(2).build();
+        Worker worker0 = new WorkerBuilder().build();
+        Worker worker1 = new WorkerBuilder().withMaxNumTasks(200).build();
+        Worker worker2 = new WorkerBuilder().withMaxNumTasks(300).build();
+        SortedMap<Priority, Worker> map = new TreeMap<>();
+        map.put(prio0, worker0);
+        map.put(prio1, worker1);
+        map.put(prio2, worker2);
+        WorkerChain instance = WorkerChain.builder()
+                .withWorkers(map)
+                .build();
         assertThat(instance).as("built instance").isNotNull();
         Worker[] workers = instance.getWorkersAsArray();
         assertThat(workers).as("workers").hasSize(3);
@@ -60,7 +73,7 @@ class WorkerChainTest {
         for (int iPrio = 0; iPrio < 3; iPrio++) {
             Worker worker = workers[iPrio];
             int workerNumTasks = worker.getMaxNumTasks();
-            softy.assertThat(workerNumTasks).as("num tasks in worker %d", iPrio).isEqualTo(maxNumTasks);
+            softy.assertThat(workerNumTasks).as("num tasks in worker %d", iPrio).isEqualTo(maxNumTasks[iPrio]);
         }
         softy.assertAll();
     }
@@ -95,15 +108,15 @@ class WorkerChainTest {
 
     @Test
     void iterate() {
-        fail("to be refined");
-        //TODO refine
-        /*
+        Priority prio0 = new PriorityBuilder().build();
+        Priority prio1 = new PriorityBuilder().withValue(1).build();
+        Priority prio2 = new PriorityBuilder().withValue(2).build();
         WorkerChain instance = new WorkerChainBuilder().build();
-        Task task1 = new TaskBuilder().withIdentifier(1).withPriority(2).build();
-        Task task65 = new TaskBuilder().withIdentifier(65).withPriority(0).build();
-        Task task32 = new TaskBuilder().withIdentifier(32).withPriority(0).build();
-        Task task73 = new TaskBuilder().withIdentifier(73).withPriority(1).build();
-        Task task2 = new TaskBuilder().withIdentifier(2).withPriority(2).build();
+        Task task1 = new TaskBuilder().withIdentifier(1).withPriority(prio2).build();
+        Task task65 = new TaskBuilder().withIdentifier(65).withPriority(prio0).build();
+        Task task32 = new TaskBuilder().withIdentifier(32).withPriority(prio0).build();
+        Task task73 = new TaskBuilder().withIdentifier(73).withPriority(prio1).build();
+        Task task2 = new TaskBuilder().withIdentifier(2).withPriority(prio2).build();
 
         instance.setTaskAt(12, task65);
         instance.setTaskAt(20, task32);
@@ -113,7 +126,5 @@ class WorkerChainTest {
 
         List<Task> tasks = instance.getTasks();
         assertThat(tasks).as("tasks").isEqualTo(List.of(task65, task32, task73, task2, task1));
-
-         */
     }
 }
