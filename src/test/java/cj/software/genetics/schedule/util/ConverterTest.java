@@ -6,6 +6,8 @@ import cj.software.genetics.schedule.entity.SolutionBuilder;
 import cj.software.genetics.schedule.entity.Task;
 import cj.software.genetics.schedule.entity.WorkerChain;
 import cj.software.genetics.schedule.entity.WorkerChainBuilder;
+import cj.software.genetics.schedule.entity.setup.Priority;
+import cj.software.genetics.schedule.entity.setup.PriorityBuilder;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,28 +37,39 @@ class ConverterTest {
     @Test
     void toTaskList() {
         Solution solution = new SolutionBuilder().build();
-        List<Task> taskList = converter.toTaskList(solution, 2);
+        Priority priority = new PriorityBuilder().withValue(1).build();
+
+        List<Task> taskList = converter.toTaskList(solution, priority);
+
         List<Task> fromSolutionBuilder = SolutionBuilder.createTasks();
-        List<Task> expected = List.of(fromSolutionBuilder.get(2), fromSolutionBuilder.get(5));
+        List<Task> expected = List.of(fromSolutionBuilder.get(1), fromSolutionBuilder.get(4));
         assertThat(taskList).usingRecursiveAssertion().isEqualTo(expected);
     }
 
     @Test
     void solutionToMap1() {
         Solution solution = new SolutionBuilder().build();
+        Priority priority = new PriorityBuilder().build();
         List<Task> tasks = SolutionBuilder.createTasks();
         Map<Task, Coordinate> expected = Map.of(
                 tasks.get(0), Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build(),
-                tasks.get(3), Coordinate.builder().withWorkerIndex(0).withSlotIndex(2).build());
-        solutionToMap(solution, expected, 0);
+                tasks.get(3), Coordinate.builder().withWorkerIndex(0).withSlotIndex(3).build());
+        solutionToMap(solution, expected, priority);
     }
 
     @Test
     void solutionToMap2() {
         int numTasks = 10;
         Task[] tasks = new Task[numTasks];
+        Priority[] priorities = new Priority[]{
+                new PriorityBuilder().withValue(0).build(),
+                new PriorityBuilder().withValue(1).build(),
+                new PriorityBuilder().withValue(2).build()
+        };
         for (int iTask = 0; iTask < numTasks; iTask++) {
-            tasks[iTask] = Task.builder().withDurationSeconds(iTask * 10 + 10).withIdentifier(iTask).withPriority(iTask % 3).build();
+            int prioIndex = iTask % 3;
+            Priority priority = priorities[prioIndex];
+            tasks[iTask] = Task.builder().withDurationSeconds(iTask * 10 + 10).withIdentifier(iTask).withPriority(priority).build();
         }
         int numWorkers = 4;
         WorkerChain[] workers = new WorkerChain[numWorkers];
@@ -76,10 +89,10 @@ class ConverterTest {
                 tasks[1], Coordinate.builder().withWorkerIndex(1).withSlotIndex(1).build(),
                 tasks[4], Coordinate.builder().withWorkerIndex(0).withSlotIndex(4).build(),
                 tasks[7], Coordinate.builder().withWorkerIndex(3).withSlotIndex(7).build());
-        solutionToMap(solution, expected, 1);
+        solutionToMap(solution, expected, priorities[1]);
     }
 
-    private void solutionToMap(Solution solution, Map<Task, Coordinate> expected, int prio) {
+    private void solutionToMap(Solution solution, Map<Task, Coordinate> expected, Priority prio) {
         Map<Task, Coordinate> actual = converter.toMapTaskCoordinate(solution, prio);
         SoftAssertions softy = new SoftAssertions();
         for (Map.Entry<Task, Coordinate> actEntry : actual.entrySet()) {

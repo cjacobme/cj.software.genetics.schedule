@@ -1,5 +1,6 @@
 package cj.software.genetics.schedule.entity;
 
+import cj.software.genetics.schedule.entity.setup.Priority;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -20,8 +21,7 @@ public class Task implements Serializable {
     @Min(1)
     private int durationSeconds;
 
-    @Min(1)
-    private int priority;
+    private Priority priority;
 
     private Task() {
     }
@@ -34,7 +34,7 @@ public class Task implements Serializable {
         return durationSeconds;
     }
 
-    public int getPriority() {
+    public Priority getPriority() {
         return priority;
     }
 
@@ -64,7 +64,7 @@ public class Task implements Serializable {
         ToStringBuilder builder = new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
                 .append("identifier", identifier)
                 .append("duration", durationSeconds)
-                .append("prio", priority);
+                .append("prio", priority != null ? priority.getValue() : -1);
         String result = builder.build();
         return result;
     }
@@ -96,7 +96,7 @@ public class Task implements Serializable {
             return this;
         }
 
-        public Builder withPriority(int priority) {
+        public Builder withPriority(Priority priority) {
             instance.priority = priority;
             return this;
         }
