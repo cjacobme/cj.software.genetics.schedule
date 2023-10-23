@@ -4,6 +4,8 @@ import cj.software.genetics.schedule.entity.Coordinate;
 import cj.software.genetics.schedule.entity.Solution;
 import cj.software.genetics.schedule.entity.SolutionBuilder;
 import cj.software.genetics.schedule.entity.Task;
+import cj.software.genetics.schedule.entity.WorkerChain;
+import cj.software.genetics.schedule.entity.WorkerChainBuilder;
 import cj.software.genetics.schedule.entity.setup.Priority;
 import cj.software.genetics.schedule.entity.setup.PriorityBuilder;
 import org.assertj.core.api.SoftAssertions;
@@ -18,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = Converter.class)
@@ -58,13 +59,17 @@ class ConverterTest {
 
     @Test
     void solutionToMap2() {
-        fail("to be refined");
-        // TODO refine
-        /*
         int numTasks = 10;
         Task[] tasks = new Task[numTasks];
+        Priority[] priorities = new Priority[]{
+                new PriorityBuilder().withValue(0).build(),
+                new PriorityBuilder().withValue(1).build(),
+                new PriorityBuilder().withValue(2).build()
+        };
         for (int iTask = 0; iTask < numTasks; iTask++) {
-            tasks[iTask] = Task.builder().withDurationSeconds(iTask * 10 + 10).withIdentifier(iTask).withPriority(iTask % 3).build();
+            int prioIndex = iTask % 3;
+            Priority priority = priorities[prioIndex];
+            tasks[iTask] = Task.builder().withDurationSeconds(iTask * 10 + 10).withIdentifier(iTask).withPriority(priority).build();
         }
         int numWorkers = 4;
         WorkerChain[] workers = new WorkerChain[numWorkers];
@@ -84,9 +89,7 @@ class ConverterTest {
                 tasks[1], Coordinate.builder().withWorkerIndex(1).withSlotIndex(1).build(),
                 tasks[4], Coordinate.builder().withWorkerIndex(0).withSlotIndex(4).build(),
                 tasks[7], Coordinate.builder().withWorkerIndex(3).withSlotIndex(7).build());
-        solutionToMap(solution, expected, 1);
-
-         */
+        solutionToMap(solution, expected, priorities[1]);
     }
 
     private void solutionToMap(Solution solution, Map<Task, Coordinate> expected, Priority prio) {
