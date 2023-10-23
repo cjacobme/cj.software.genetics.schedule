@@ -37,9 +37,11 @@ class ConverterTest {
     void toTaskList() {
         Solution solution = new SolutionBuilder().build();
         Priority priority = new PriorityBuilder().withValue(1).build();
+
         List<Task> taskList = converter.toTaskList(solution, priority);
+
         List<Task> fromSolutionBuilder = SolutionBuilder.createTasks();
-        List<Task> expected = List.of(fromSolutionBuilder.get(2), fromSolutionBuilder.get(5));
+        List<Task> expected = List.of(fromSolutionBuilder.get(1), fromSolutionBuilder.get(4));
         assertThat(taskList).usingRecursiveAssertion().isEqualTo(expected);
     }
 
@@ -50,7 +52,7 @@ class ConverterTest {
         List<Task> tasks = SolutionBuilder.createTasks();
         Map<Task, Coordinate> expected = Map.of(
                 tasks.get(0), Coordinate.builder().withWorkerIndex(0).withSlotIndex(0).build(),
-                tasks.get(3), Coordinate.builder().withWorkerIndex(0).withSlotIndex(2).build());
+                tasks.get(3), Coordinate.builder().withWorkerIndex(0).withSlotIndex(3).build());
         solutionToMap(solution, expected, priority);
     }
 

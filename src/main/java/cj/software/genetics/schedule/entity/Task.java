@@ -21,7 +21,6 @@ public class Task implements Serializable {
     @Min(1)
     private int durationSeconds;
 
-    @Min(1)
     private Priority priority;
 
     private Task() {
